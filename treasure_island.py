@@ -228,12 +228,6 @@ class MapGenerator:
 # %% [markdown]
 # ## Map
 
-# %%
-a = (1, 2)
-b = list(a)
-b[0] += 1
-a = tuple(b)
-a
 
 # %%
 class Agent:
@@ -289,7 +283,7 @@ class Map:
         self.mountain = np.array(map.mountain_map)
 
         self.scanned = np.zeros((map.rows, map.cols), dtype=bool)
-        self.potential= np.zeros((map.rows, map.cols), dtype=int)
+        self.potential= np.ones((map.rows, map.cols), dtype=bool)
 
         self.jacksparrow = JackSparrow(map.place_agent())
         self.value[self.jacksparrow.coord] = 'A'
@@ -395,10 +389,10 @@ class Map:
 
         # if one of them contain the treasure
         if not trueness:
-            self.potential[tile_coords] += 1
-            masked_tiles = np.ones(self.shape, dtype=bool)
-            masked_tiles[tile_coords] = False
-            self.scanned[masked_tiles] = True
+            masked_tiles = np.zeros(self.shape, dtype=bool)
+            masked_tiles[tile_coords] = True
+            self.potential &= masked_tiles
+            self.scanned[~masked_tiles] = True
         
         # if they are not contain the treasure
         else:
@@ -436,7 +430,7 @@ class Map:
 
         # if random region consist of a region that has the treasure
         if trueness:
-            self.potential[masked_tiles] += 1
+            self.potential &= masked_tiles
             self.scanned[~masked_tiles] = True
 
         # if they are not contain the treasure
@@ -474,7 +468,7 @@ class Map:
 
         # if random region consist of a region that has the treasure
         if not trueness:
-            self.potential[masked_tiles] += 1
+            self.potential &= masked_tiles
             self.scanned[~masked_tiles] = True
 
         # if they are not contain the treasure
@@ -763,26 +757,34 @@ class Map:
     def verify_hint_12(self, trueness: bool, part: int) -> None:
         # A half of the map without treasure
 
+        masked_tiles = np.zeros(self.shape, dtype=bool)
+
         match part:
             case 0:
                 vertical_middle_axis = (self.shape[1] - 1) // 2 + 1
 
-                # if the treasure is in the left part
+                # if the treasure is not in the left part
                 if trueness and self.treasure[1] < vertical_middle_axis:
                     self.scanned[:, :vertical_middle_axis] = True
+
+                # if the treausure is in the left part
                 else:
-                    self.potential[:, :vertical_middle_axis] += 1
+                    masked_tiles[:, :vertical_middle_axis] = True
+                    self.potential &= masked_tiles
                     self.scanned[:, vertical_middle_axis:] = True
 
             case 1:
                 horizontal_middle_axis = (self.shape[0] - 1) // 2 + 1
 
-                # if the treasure is in the top part
+                # if the treasure is not in the top part
                 if trueness and self.treasure[0] < horizontal_middle_axis:
                     self.scanned[:horizontal_middle_axis] = True
+
+                # if the treasure is in the top part
                 else:
-                    self.potential[:horizontal_middle_axis] += 1
-                    self.scanned[horizontal_middle_axis:] = False
+                    masked_tiles[:horizontal_middle_axis] = True
+                    self.potential &= masked_tiles
+                    self.scanned[horizontal_middle_axis:] = True
 
             case 2:
                 horizontal_middle_axis = (self.shape[0] + 1) // 2
@@ -791,8 +793,9 @@ class Map:
                 if trueness and self.treasure[0] >= horizontal_middle_axis:
                     self.scanned[horizontal_middle_axis:] = True
                 else:
-                    self.potential[horizontal_middle_axis] += 1
-                    self.scanned[:horizontal_middle_axis] = False
+                    masked_tiles[horizontal_middle_axis:] = True
+                    self.potential &= masked_tiles
+                    self.scanned[:horizontal_middle_axis] = True
 
             case 3:
                 vertical_middle_axis = (self.shape[1] - 1) // 2
@@ -801,7 +804,8 @@ class Map:
                 if trueness and self.treasure[1] >= vertical_middle_axis:
                     self.scanned[:, vertical_middle_axis:] = True
                 else:
-                    self.potential[:, vertical_middle_axis:] = True
+                    masked_tiles[:, vertical_middle_axis:] = True
+                    self.potential &= masked_tiles
                     self.scanned[:, :vertical_middle_axis] = True
 
     def generate_hint_13(self) -> Tuple[bool, str, str]:
@@ -943,7 +947,20 @@ class Map:
         
         log = f"The treasure is in a region that has mountain"
 
-        return trueness, None, log
+        return trueness, masked_titles, log
+    
+    def verify_hint_15(self, trueness: bool) -> None:
+        # The treasure is in a region that has mountain
+
+        # get all tiles that is in mountain region
+        masked_titles = np.isin(self.region, self.mountain).T
+
+        # if the treasure is in region mountain        
+        if trueness:
+            self.potential &= masked_titles
+            self.scanned[~masked_titles] = True
+        else:
+            self.scanned[masked_titles] = True
 
     def scan(self, size: int):
         start_row = max(self.jacksparrow.coord[0] - size // 2, 0)
