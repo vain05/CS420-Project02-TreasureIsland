@@ -660,7 +660,7 @@ class Map:
         hinted_map = np.zeros(self.shape, dtype=bool)
 
         for i in range(self.total_region):
-            bound = np.isin(self.region, i)
+            bound = np.isin(self.region, i).T
             bound = binary_dilation(bound==0, k) & bound
             hinted_map += bound
             
@@ -685,7 +685,7 @@ class Map:
         trueness = False
 
         k = np.zeros((3,3),dtype=int); k[1] = 1; k[:,1] = 1 # for 8-connected
-        bound = np.isin(self.region, 0)
+        bound = np.isin(self.region, 0).T
         masked = ~bound
 
         res = np.zeros(self.shape, dtype=bool)
@@ -995,7 +995,7 @@ def map_print(Map, number_of_region):
         print()
 
 # %%
-map_gen = MapGenerator(16, 16)
+map_gen = MapGenerator(16, 18)
 m = Map(map_gen)
 
 # %%
@@ -1006,7 +1006,7 @@ print(f"Treasure coord: {m.treasure}")
 print(f"Treasure's region: {m.region[m.treasure]}")
 print()
 
-trueness, data, log = m.generate_hint_13()
+trueness, data, log = m.generate_hint_10()
 print(trueness)
 print(data)
 print(log)
