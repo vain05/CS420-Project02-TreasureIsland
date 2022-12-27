@@ -9,7 +9,7 @@ import math
 from string import digits
 import copy
 
-rng = np.random.RandomState(22)
+rng = np.random.RandomState(51)
 
 class Agent:
     def __init__(self, coord: Tuple[int, int]) -> None:

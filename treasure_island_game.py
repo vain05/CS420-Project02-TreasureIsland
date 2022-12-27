@@ -26,7 +26,7 @@ class ScreenSurface:
         self.width, self.height = self.surface.get_size()
         self.rect = self.surface.get_rect()
         self.parent_surface = None
-        self.x, self.y = self.rect.topleft
+        self.x, self.y = 0, 0
 
     def get_parent_pos(self,parent_surface):
         return 0, 0    
@@ -53,7 +53,6 @@ class ColoredSurface:
         self.color = color
         self.rect = self.surface.get_rect()
         self.parent_surface = None
-        self.x, self.y = self.rect.topleft
 
     def get_parent_pos(self,parent_surface):
         return parent_surface.x, parent_surface.y
@@ -75,22 +74,22 @@ class ColoredSurface:
     def draw_center(self, parent_surface) -> None:
         parent_surface.surface.blit(self.surface, self.get_center(parent_surface))
         a = self.get_center(parent_surface)
-        b = parent_surface.get_center(parent_surface.parent_surface)
+        b = parent_surface.rect.topleft
         self.rect.topleft = (a[0] + b[0], a[1] + b[1])
         
 
     def draw_center_horizontal(self, parent_surface, y) -> None:
         parent_surface.surface.blit(self.surface, (self.get_horizontal_center(parent_surface), y))
-        self.rect.topleft = (parent_surface.get_horizontal_center(parent_surface.parent_surface) + self.get_horizontal_center(parent_surface), parent_surface.get_vertical_center(parent_surface.parent_surface) + y)
+        self.rect.topleft = (parent_surface.rect.left + self.get_horizontal_center(parent_surface), parent_surface.rect.top + y)
         
 
     def draw_center_vertical(self, parent_surface, x) -> None:
         parent_surface.surface.blit(self.surface, (x, self.get_vertical_center(parent_surface)))
-        self.rect.topleft = (parent_surface.get_horizontal_center(parent_surface.parent_surface) + x, parent_surface.get_vertical_center(parent_surface.parent_surface) + self.get_vertical_center(parent_surface))
+        self.rect.topleft = (parent_surface.rect.left + x, parent_surface.rect.top + self.get_vertical_center(parent_surface))
 
     def draw(self, parent_surface, x, y):
         parent_surface.surface.blit(self.surface, (x,y))
-        self.rect.topleft = (parent_surface.get_horizontal_center(parent_surface.parent_surface) + x, parent_surface.get_vertical_center(parent_surface.parent_surface) + y)
+        self.rect.topleft = (parent_surface.rect.left + x, parent_surface.rect.top + y)
 
 class ImageSurface:
     def __init__(
@@ -119,23 +118,23 @@ class ImageSurface:
     def draw_center(self, parent_surface) -> None:
         parent_surface.surface.blit(self.surface, self.get_center(parent_surface))
         a = self.get_center(parent_surface)
-        b = parent_surface.get_center(parent_surface.parent_surface)
+        b = parent_surface.rect.topleft
         self.rect.topleft = (a[0] + b[0], a[1] + b[1])
         
 
     def draw_center_horizontal(self, parent_surface, y) -> None:
         parent_surface.surface.blit(self.surface, (self.get_horizontal_center(parent_surface), y))
-        self.rect.topleft = (parent_surface.get_horizontal_center(parent_surface.parent_surface) + self.get_horizontal_center(parent_surface), parent_surface.get_vertical_center(parent_surface.parent_surface) + y)
+        self.rect.topleft = (parent_surface.rect.left + self.get_horizontal_center(parent_surface), parent_surface.rect.top + y)
         
 
     def draw_center_vertical(self, parent_surface, x) -> None:
         parent_surface.surface.blit(self.surface, (x, self.get_vertical_center(parent_surface)))
-        self.rect.topleft = (parent_surface.get_horizontal_center(parent_surface.parent_surface) + x, parent_surface.get_vertical_center(parent_surface.parent_surface) + self.get_vertical_center(parent_surface))
+        self.rect.topleft = (parent_surface.rect.left + x, parent_surface.rect.top + self.get_vertical_center(parent_surface))
 
     def draw(self, parent_surface, x, y):
         parent_surface.surface.blit(self.surface, (x,y))
-        self.rect.topleft = (parent_surface.get_horizontal_center(parent_surface.parent_surface) + x, parent_surface.get_vertical_center(parent_surface.parent_surface) + y)
-
+        self.rect.topleft = (parent_surface.rect.left + x, parent_surface.rect.top + y)
+        
 class Text:
     def __init__(
         self,
@@ -165,22 +164,23 @@ class Text:
     def draw_center(self, parent_surface) -> None:
         parent_surface.surface.blit(self.surface, self.get_center(parent_surface))
         a = self.get_center(parent_surface)
-        b = parent_surface.get_center(parent_surface.parent_surface)
+        b = parent_surface.rect.topleft
         self.rect.topleft = (a[0] + b[0], a[1] + b[1])
         
 
     def draw_center_horizontal(self, parent_surface, y) -> None:
         parent_surface.surface.blit(self.surface, (self.get_horizontal_center(parent_surface), y))
-        self.rect.topleft = (parent_surface.get_horizontal_center(parent_surface.parent_surface) + self.get_horizontal_center(parent_surface), parent_surface.get_vertical_center(parent_surface.parent_surface) + y)
+        self.rect.topleft = (parent_surface.rect.left + self.get_horizontal_center(parent_surface), parent_surface.rect.top + y)
         
 
     def draw_center_vertical(self, parent_surface, x) -> None:
         parent_surface.surface.blit(self.surface, (x, self.get_vertical_center(parent_surface)))
-        self.rect.topleft = (parent_surface.get_horizontal_center(parent_surface.parent_surface) + x, parent_surface.get_vertical_center(parent_surface.parent_surface) + self.get_vertical_center(parent_surface))
-    
+        self.rect.topleft = (parent_surface.rect.left + x, parent_surface.rect.top + self.get_vertical_center(parent_surface))
+
     def draw(self, parent_surface, x, y):
         parent_surface.surface.blit(self.surface, (x,y))
-        self.rect.topleft = (parent_surface.get_horizontal_center(parent_surface.parent_surface) + x, parent_surface.get_vertical_center(parent_surface.parent_surface) + y)
+        self.rect.topleft = (parent_surface.rect.left + x, parent_surface.rect.top + y)
+
 class Button:
     def __init__(
         self,
@@ -218,23 +218,22 @@ class Button:
     def draw_center(self, parent_surface) -> None:
         parent_surface.surface.blit(self.surface, self.get_center(parent_surface))
         a = self.get_center(parent_surface)
-        b = parent_surface.get_center(parent_surface.parent_surface)
+        b = parent_surface.rect.topleft
         self.rect.topleft = (a[0] + b[0], a[1] + b[1])
         
 
     def draw_center_horizontal(self, parent_surface, y) -> None:
         parent_surface.surface.blit(self.surface, (self.get_horizontal_center(parent_surface), y))
-        self.rect.topleft = (parent_surface.get_horizontal_center(parent_surface.parent_surface) + self.get_horizontal_center(parent_surface), parent_surface.get_vertical_center(parent_surface.parent_surface) + y)
+        self.rect.topleft = (parent_surface.rect.left + self.get_horizontal_center(parent_surface), parent_surface.rect.top + y)
         
 
     def draw_center_vertical(self, parent_surface, x) -> None:
         parent_surface.surface.blit(self.surface, (x, self.get_vertical_center(parent_surface)))
-        self.rect.topleft = (parent_surface.get_horizontal_center(parent_surface.parent_surface) + x, parent_surface.get_vertical_center(parent_surface.parent_surface) + self.get_vertical_center(parent_surface))
+        self.rect.topleft = (parent_surface.rect.left + x, parent_surface.rect.top + self.get_vertical_center(parent_surface))
 
     def draw(self, parent_surface, x, y):
         parent_surface.surface.blit(self.surface, (x,y))
-        self.rect.topleft = (parent_surface.get_horizontal_center(parent_surface.parent_surface) + x, parent_surface.get_vertical_center(parent_surface.parent_surface) + y)
-       
+        self.rect.topleft = (parent_surface.rect.left + x, parent_surface.rect.top + y)       
     def is_clicked(self) -> bool:
         mouse_pos = pg.mouse.get_pos()
         
@@ -306,10 +305,17 @@ quit_button = Button(400, 100, button_color, 'Quit', 80, 'tan4')
 game_box = ColoredSurface(950, 950, main_color)
 game_inner_box = ColoredSurface(925, 925, button_color)
 info_box = ColoredSurface(550, 950, secondary_color)
+log_box = ColoredSurface(500, 600, 'wheat1')
+log_title = Text('Log', 35, tile_text_color)
 
 play_button = Button(500, 50, button_color, 'Play', 55, 'tan4')
 regenerate_button = Button(500, 50, button_color, 'New Map', 55, 'tan4')
 back_button = Button(500, 50, button_color, 'Back', 55, 'tan4')
+
+up_button = Button(80, 50, button_color, 'UP', 30, 'tan4')
+down_button = Button(80, 50, button_color, 'DOWN', 30, 'tan4')
+left_button = Button(80, 50, button_color, 'LEFT', 30, 'tan4')
+right_button = Button(80, 50, button_color, 'RIGHT', 30, 'tan4')
 
 stage = 0
 
@@ -340,11 +346,18 @@ while True:
     elif stage == 1:
         background.draw_center(screen)
         
-        info_box.draw_center_vertical(screen, 1025)      
-        
+        info_box.draw_center_vertical(screen, 1025)
+
+        log_box.draw_center_horizontal(info_box, 25)
+        log_title.draw(log_box, 15, 10)
         play_button.draw_center_horizontal(info_box, 725)
         regenerate_button.draw_center_horizontal(info_box, 800)
         back_button.draw_center_horizontal(info_box, 875)
+
+        up_button.draw(info_box, 25 ,650)
+        down_button.draw(info_box, 165,650)
+        left_button.draw(info_box, 305,650)
+        right_button.draw(info_box, 445 ,650)
 
         if(play_button.is_clicked()):
             pass
@@ -354,43 +367,47 @@ while True:
 
         if(back_button.is_clicked()):
             stage = 0
-        print(back_button.rect.topleft, back_button.rect.bottomright, pg.mouse.get_pos())
 
+        if(up_button.is_clicked()):
+            m.jacksparrow.coord = (m.jacksparrow.coord[0] - 1, m.jacksparrow.coord[1])
+        if(down_button.is_clicked()):
+            m.jacksparrow.coord = (m.jacksparrow.coord[0] + 1, m.jacksparrow.coord[1])
+        if(left_button.is_clicked()):
+            m.jacksparrow.coord = (m.jacksparrow.coord[0], m.jacksparrow.coord[1] - 1)
+        if(right_button.is_clicked()):
+            m.jacksparrow.coord = (m.jacksparrow.coord[0], m.jacksparrow.coord[1] + 1)
 
         game_box.draw_center_vertical(screen, 25)
-        game_inner_box.draw_center(game_box)
+        game_inner_box.draw_center(game_box)        
 
-        
-        str_regions =  [str(i) for i in range(1, m.total_region + 1)]            
+        str_regions =  [str(i) for i in range(1, m.total_region + 1)]     
         for i, r in enumerate(Map):
             for j, value in enumerate(r):
                 tile = Button(tile_size, tile_size, default_tile_color, '', tile_font_size, tile_text_color)
-                tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                
                 if value == '0':
-                    tile = Button(tile_size, tile_size, sea_color, value, tile_font_size, tile_text_color)
-                    tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    tile = Button(tile_size, tile_size, sea_color, '', tile_font_size, tile_text_color)
                 elif value == '_' or value in str_regions:
                     tile = Button(tile_size, tile_size, land_color, str(value), tile_font_size, tile_text_color)
-                    tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                 elif value == 'M':
                     tile = Button(tile_size, tile_size, mountain_color, str(value), tile_font_size, tile_text_color)
-                    tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                 elif value == 'p':
                     tile = Button(tile_size, tile_size, prison_color, str(value), tile_font_size, tile_text_color)
-                    tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                 
-                if (i,j) == m.jacksparrow.coord:                    
-                    agent_icon = ImageSurface('asset/agent.png', icon_size)
-                    agent_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                
                 if (i,j) == m.pirate.coord:
                     pirate_icon = ImageSurface('asset/pirate.png', icon_size)
                     pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                 if (i,j) == m.treasure:
                     treasure_icon = ImageSurface('asset/treasure.png', icon_size)
                     treasure_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                if (i,j) == m.jacksparrow.coord:                    
+                    agent_icon = ImageSurface('asset/agent.png', icon_size)
+                    agent_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
 
                 j += 1
             i += 1
     
     pg.display.update() 
-    clock.tick(30)
+    clock.tick(60)
