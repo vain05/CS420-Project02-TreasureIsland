@@ -20,7 +20,7 @@ import copy
 # ### Set a Random Number Generator
 
 # %%
-rng = np.random.RandomState(43)
+rng = np.random.RandomState(70)
 
 # %%
 class UserInterface:
@@ -53,9 +53,9 @@ class MapGenerator:
         self.mountain_chance = 0.01                     #Probability of 'land terrain' cells to become 'mountain terrain' for each adjacent 'mountain terrain' cell, range 0 to 1
         self.sea_mountain_chance = -0.01                #Probability of 'land terrain' cells to become 'mountain terrain' for each adjacent 'sea terrain' cell, range -1 to 1
         self.mountain_amplifier = 12                    #Increase to have larger mountain ranges, range >= 0 
-        self.Map = [['.']*self.cols for _ in range(self.rows)]
-        self.region_map = [[0]*self.cols for _ in range(self.rows)]
-        self.mountain_map = [[0]*self.cols for _ in range(self.rows)]
+        self.Map = [['.']*self.rows for _ in range(self.cols)]
+        self.region_map = [[0]*self.rows for _ in range(self.cols)]
+        self.mountain_map = [[0]*self.rows for _ in range(self.cols)]
 
     def neighbors(self, a, radius, row_number, column_number):
      return [[a[i][j] if  i >= 0 and i < len(a) and j >= 0 and j < len(a[0]) else '|'
@@ -410,7 +410,7 @@ class Map:
         overlap = rand_regions == self.region[self.treasure]
 
         # get mask of titles of those regions
-        masked_tiles = np.isin(self.region, rand_regions).T
+        masked_tiles = np.isin(self.region, rand_regions)
 
         # if random region consist of a region that has the treasure
         if np.any(overlap):

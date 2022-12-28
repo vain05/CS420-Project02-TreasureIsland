@@ -242,7 +242,7 @@ class Button:
 
 ###########################################################################################
 
-map_gen = mg.MapGenerator(10, 6)
+map_gen = mg.MapGenerator(12, 12)
 m = mg.Map(map_gen)
 rows, cols = m.shape
 Map = m.value
@@ -307,6 +307,7 @@ game_inner_box = ColoredSurface(925, 925, button_color)
 info_box = ColoredSurface(550, 950, secondary_color)
 log_box = ColoredSurface(500, 600, 'wheat1')
 log_title = Text('Log', 35, tile_text_color)
+log_card = Button(480, 30, button_color, 'The treasure is somewhere in an area bounded by 5 tiles from sea', 16, 'grey10')
 
 play_button = Button(500, 50, button_color, 'Play', 55, 'tan4')
 regenerate_button = Button(500, 50, button_color, 'New Map', 55, 'tan4')
@@ -350,7 +351,11 @@ while True:
         info_box.draw_center_vertical(screen, 1025)
 
         log_box.draw_center_horizontal(info_box, 25)
-        log_title.draw(log_box, 15, 10)
+        log_title.draw(log_box, 15, 5)
+
+        for i in range(0,14):
+            log_card.draw_center_horizontal(log_box, 40 + 40*i)
+
         play_button.draw_center_horizontal(info_box, 725)
         regenerate_button.draw_center_horizontal(info_box, 800)
         back_button.draw_center_horizontal(info_box, 875)
@@ -365,7 +370,10 @@ while True:
             pass
 
         if(regenerate_button.is_clicked()):
-            pass
+            map_gen = mg.MapGenerator(12, 12)
+            m = mg.Map(map_gen)
+            rows, cols = m.shape
+            Map = m.value
 
         if(back_button.is_clicked()):
             stage = 0
@@ -384,10 +392,10 @@ while True:
             print()
 
         if hint_button.is_clicked():
-            trueness, data, log = m.generate_hint_2()
+            hint_type, trueness, data, log = m.generate_hint_8()
             print()
             print(data, '\n')
-            m.apply_masked_tiles(trueness, data)
+            m.verify_hint(hint_type, trueness, data)
 
         game_box.draw_center_vertical(screen, 25)
         game_inner_box.draw_center(game_box)        
@@ -402,10 +410,10 @@ while True:
                 elif value == '_' or value in str_regions:
                     # if m.scanned[i][j] == 1:
                     #     tile = Button(tile_size, tile_size, scanned_color, str(value), tile_font_size, tile_text_color)
-                    # # if m.potential[i][j] == 1:
-                    # #     tile = Button(tile_size, tile_size, potential_color, str(value), tile_font_size, tile_text_color)
-                    # else: 
-                    tile = Button(tile_size, tile_size, land_color, str(value), tile_font_size, tile_text_color)
+                    if m.potential[i][j] == 0:
+                        tile = Button(tile_size, tile_size, scanned_color, str(value), tile_font_size, tile_text_color)
+                    else: 
+                        tile = Button(tile_size, tile_size, land_color, str(value), tile_font_size, tile_text_color)
                 elif value == 'M':
                     tile = Button(tile_size, tile_size, mountain_color, str(value), tile_font_size, tile_text_color)
                 elif value == 'p':
@@ -427,4 +435,4 @@ while True:
             i += 1
     
     pg.display.update() 
-    clock.tick(120)
+    clock.tick(30)
