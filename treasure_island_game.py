@@ -242,7 +242,7 @@ class Button:
 
 ###########################################################################################
 
-map_gen = mg.MapGenerator(10, 10)
+map_gen = mg.MapGenerator(10, 7)
 m = mg.Map(map_gen)
 rows, cols = m.shape
 Map = m.value
@@ -385,6 +385,8 @@ while True:
 
         if hint_button.is_clicked():
             trueness, data, log = m.generate_hint_2()
+            print()
+            print(data, '\n')
             m.apply_masked_tiles(trueness, data)
 
         game_box.draw_center_vertical(screen, 25)
@@ -398,12 +400,12 @@ while True:
                 if value == '0':
                     tile = Button(tile_size, tile_size, sea_color, '', tile_font_size, tile_text_color)
                 elif value == '_' or value in str_regions:
-                    if m.scanned[i][j] == 1:
-                        tile = Button(tile_size, tile_size, scanned_color, str(value), tile_font_size, tile_text_color)
-                    # if m.potential[i][j] == 1:
-                    #     tile = Button(tile_size, tile_size, potential_color, str(value), tile_font_size, tile_text_color)
-                    else: 
-                        tile = Button(tile_size, tile_size, land_color, str(value), tile_font_size, tile_text_color)
+                    # if m.scanned[i][j] == 1:
+                    #     tile = Button(tile_size, tile_size, scanned_color, str(value), tile_font_size, tile_text_color)
+                    # # if m.potential[i][j] == 1:
+                    # #     tile = Button(tile_size, tile_size, potential_color, str(value), tile_font_size, tile_text_color)
+                    # else: 
+                    tile = Button(tile_size, tile_size, land_color, str(value), tile_font_size, tile_text_color)
                 elif value == 'M':
                     tile = Button(tile_size, tile_size, mountain_color, str(value), tile_font_size, tile_text_color)
                 elif value == 'p':
