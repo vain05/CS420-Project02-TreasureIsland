@@ -244,8 +244,8 @@ class Button:
         return False
 
 ###########################################################################################
-
-map_gen = mg.MapGenerator(12, 12)
+HEIGTH, WIDTH = 16, 12
+map_gen = mg.MapGenerator(HEIGTH, WIDTH)
 m = mg.Map(map_gen)
 rows, cols = m.shape
 Map = m.value
@@ -381,7 +381,7 @@ while True:
             pass
 
         if(regenerate_button.is_clicked()):
-            map_gen = mg.MapGenerator(12, 12)
+            map_gen = mg.MapGenerator(HEIGTH, WIDTH)
             m = mg.Map(map_gen)
             rows, cols = m.shape
             Map = m.value
@@ -403,7 +403,7 @@ while True:
             print()
 
         if hint_button.is_clicked():
-            hint_type, trueness, data, log = m.generate_hint_8()
+            hint_type, trueness, data, log = m.generate_hint_10()
             print()
             m.verify_hint(hint_type, trueness, data)
             print(log)

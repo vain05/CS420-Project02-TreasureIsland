@@ -176,6 +176,11 @@ class MapGenerator:
                 if Map[coord_x][coord_y] == '_':
                     Map[coord_x][coord_y] = 0
         
+        for coord_x, row in enumerate(Map):
+            for coord_y, terrain in enumerate(row):     
+                if Map[coord_x][coord_y] == '_':
+                    Map[coord_x][coord_y] = 0
+        
         self.region_map = copy.deepcopy(list(map(list, zip(*Map))))
 
         for coord_x, row in enumerate(Map):
@@ -284,8 +289,8 @@ class Map:
         map.generate()
 
         self.value = np.array(map.Map, dtype=str)
-        self.region = np.array(map.region_map)
-        self.mountain = np.array(map.mountain_map)
+        self.region = np.array(map.region_map, dtype=int)
+        self.mountain = np.array(map.mountain_map, dtype=int)
 
         self.scanned = np.zeros((map.rows, map.cols), dtype=bool)
         self.potential= np.ones((map.rows, map.cols), dtype=bool)
@@ -399,9 +404,10 @@ class Map:
         trueness = False
 
         # number of regions
-        no_reg = rng.randint(1, 5)
+        no_reg = rng.randint(2, 6)
         rand_regions = rng.choice(np.arange(1, self.total_region + 1), size=no_reg, replace=False)
         print(rand_regions)
+
         # get region that overlaps with the treasure's region
         overlap = rand_regions == self.region[self.treasure]
 
@@ -429,12 +435,13 @@ class Map:
         # number of regions
         no_reg = rng.randint(1, 3)
         rand_regions = rng.choice(np.arange(1, self.total_region + 1), size=no_reg, replace=False)
+        print(rand_regions)
 
         # get region that overlaps with the treasure's region
         overlap = rand_regions == self.region[self.treasure]
 
         # get mask of titles of those regions
-        masked_tiles = np.isin(self.region, rand_regions).T
+        masked_tiles = np.isin(self.region, rand_regions)
 
         # if random region consist of a region that has the treasure
         if np.any(overlap):
@@ -506,6 +513,7 @@ class Map:
 
         # trueness of this hint
         trueness = agent_treasure < pirate_treasure
+        print(trueness)
 
         log = "You are the nearest person to the treasure"
 
@@ -523,7 +531,7 @@ class Map:
         masked_tiles = np.zeros(self.shape, dtype=bool)
 
         if no_type in [0, 2]: 
-            masked_tiles[no_row, ] = True
+            masked_tiles[no_row, :] = True
             if self.treasure[0] == no_row:
                 trueness = True
 
@@ -543,7 +551,7 @@ class Map:
 
     def generate_hint_8(self) -> Tuple[str, bool, np.ndarray, str]:
         # A column and/or a row that do not contain the treasure
-        trueness = False
+        trueness = True 
 
         # -----> VERY IMPORTANT (Not Trueness)!!!! <------
 
@@ -555,14 +563,14 @@ class Map:
         masked_tiles = np.zeros(self.shape, dtype=bool)
 
         if no_type in [0, 2]: 
-            masked_tiles[no_row, ] = True
-            if self.treasure[0] != no_row:
-                trueness = True
+            masked_tiles[no_row, :] = True
+            if self.treasure[0] == no_row:
+                trueness = False
 
         if no_type in [1, 2]:
             masked_tiles[:, no_col] = True
-            if self.treasure[1] != no_col:
-                trueness = True
+            if self.treasure[1] == no_col:
+                trueness = False
 
         if no_type == 0:
             log = "Row {} does not contain the treasure".format(no_row)
@@ -579,16 +587,16 @@ class Map:
 
         #random two regions
         rand_regions = rng.choice(np.arange(1, self.total_region + 1), size=2, replace=False)
+        print(rand_regions)
                 
         # get region that overlaps with the treasure's region
-        overlap = rand_regions == self.region[self.treasure]
+        # overlap = rand_regions == self.region[self.treasure]
 
         # if random region consist of a region that has the treasure
-        masked_tiles = np.zeros(self.shape, dtype=bool)
-        if np.any(overlap):
-            masked_tiles = self.get_boundary(rand_regions[0], rand_regions[1])
-            if masked_tiles[self.treasure]:
-                trueness = True
+        masked_tiles = self.get_boundary(rand_regions[0], rand_regions[1])
+
+        if masked_tiles[self.treasure]:
+            trueness = True
         
         log = "The treasure is somewhere in the boundary of region {} and region {}".format(rand_regions[0], rand_regions[1])
         return "9", trueness, masked_tiles, log
@@ -602,7 +610,7 @@ class Map:
         masked_tiles = np.zeros(self.shape, dtype=bool)
 
         for i in range(self.total_region):
-            bound = np.isin(self.region, i).T
+            bound = np.isin(self.region, i)
             bound = binary_dilation(bound==0, k) & bound
             masked_tiles += bound
             
@@ -823,7 +831,7 @@ class Map:
         overlap = self.mountain == self.region[self.treasure]
 
         # get all tiles that is in mountain region
-        masked_titles = np.isin(self.region, self.mountain).T
+        masked_titles = np.isin(self.region, self.mountain)
 
         # if the treasure is in region mountain        
         if np.any(overlap):
@@ -882,6 +890,9 @@ class Map:
             self.potential[masked_tiles] = False
 
     def verify_hint(self, hint_type: str, trueness: bool, masked_tiles: np.ndarray):
+        if hint_type == "6":
+            return
+
         if hint_type in self.veri_important:
             trueness = not trueness
         elif hint_type == "12":
