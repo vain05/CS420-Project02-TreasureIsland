@@ -384,11 +384,13 @@ class Map:
         tile_coords = np.unravel_index(rand_tiles, self.shape)
 
         masked_tiles = np.zeros(self.shape, dtype=bool)
+        masked_tiles[tile_coords] = True
 
         # if one of them contain the treasure
         if np.any(overlap):
             trueness = False
-            masked_tiles[tile_coords] = True
+        else:
+            masked_tiles = ~masked_tiles
         
         hinted_tiles = list(zip(tile_coords[0], tile_coords[1]))
 
