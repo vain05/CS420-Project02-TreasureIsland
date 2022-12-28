@@ -170,6 +170,11 @@ class MapGenerator:
                     if Map[coord_x][coord_y] == '_':
                         area = self.neighbors(Map, 1, coord_x, coord_y).copy()
                         Map[coord_x][coord_y] = self.get_neighbour_region(area)
+
+        for coord_x, row in enumerate(Map):
+            for coord_y, terrain in enumerate(row):     
+                if Map[coord_x][coord_y] == '_':
+                    Map[coord_x][coord_y] = 0
         
         self.region_map = copy.deepcopy(list(map(list, zip(*Map))))
 
