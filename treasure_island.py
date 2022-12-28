@@ -356,15 +356,6 @@ class Map:
 
         return res
 
-    def apply_masked_tiles(self, trueness: bool, masked_tiles: np.ndarray) -> None:
-        # The treasure is somewhere in a boundary of 2 regions 
-
-        if trueness:
-            self.potential &= masked_tiles
-        #     self.scanned[~masked_tiles] = True
-        else:
-            self.potential[masked_tiles] = False
-
     def generate_hint_1(self) -> Tuple[str, bool, np.ndarray, str]:
         # A list of random tiles that doesn't contain the treasure (1 to 12)
 
@@ -876,7 +867,15 @@ class Map:
 
         self.logs.append(f"HINT{n_turn}: The agent receives a hint:" + f"{log}")
         self.logs.append(f"ADD HINT{n_turn} TO HINT LIST")
-    
+
+    def apply_masked_tiles(self, trueness: bool, masked_tiles: np.ndarray) -> None:
+        # The treasure is somewhere in a boundary of 2 regions 
+
+        if trueness:
+            self.potential &= masked_tiles
+        else:
+            self.potential[masked_tiles] = False
+
     def verify_hint(self, hint_type: str, trueness: bool, masked_tiles: np.ndarray):
         if hint_type in self.veri_important:
             trueness = not trueness
