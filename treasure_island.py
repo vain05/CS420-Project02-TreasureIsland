@@ -361,9 +361,9 @@ class Map:
 
         if trueness:
             self.potential &= masked_tiles
-            self.scanned[~masked_tiles] = True
+        #     self.scanned[~masked_tiles] = True
         else:
-            self.scanned[masked_tiles] = True
+            self.potential[masked_tiles] = False
 
     def generate_hint_1(self) -> Tuple[bool, np.ndarray, str]:
         # A list of random tiles that doesn't contain the treasure (1 to 12)
