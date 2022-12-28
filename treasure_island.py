@@ -628,7 +628,7 @@ class Map:
         trueness = False
 
         k = np.zeros((3,3),dtype=int); k[1] = 1; k[:,1] = 1 # for 8-connected
-        bound = np.isin(self.region, 0).T
+        bound = np.isin(self.region, 0)
         masked_sea = ~bound
 
         masked_titles = np.zeros(self.shape, dtype=bool)
@@ -690,7 +690,7 @@ class Map:
                     trueness = True
 
             case 2:
-                horizontal_middle_axis = (self.shape[0] + 1) // 2
+                horizontal_middle_axis = (self.shape[0] - 1) // 2 + 1
 
                 masked_tiles[:horizontal_middle_axis] = True
 
@@ -699,7 +699,7 @@ class Map:
                     trueness = True
 
             case 3:
-                vertical_middle_axis = (self.shape[1] - 1) // 2
+                vertical_middle_axis = (self.shape[1] - 1) // 2 + 1
 
                 masked_tiles[:, :vertical_middle_axis] = True
 
@@ -829,6 +829,7 @@ class Map:
 
         # if list of mountain region contain the region of the treasure
         overlap = self.mountain == self.region[self.treasure]
+        print(overlap)
 
         # get all tiles that is in mountain region
         masked_titles = np.isin(self.region, self.mountain)

@@ -356,10 +356,6 @@ while True:
         log_box.draw_center_horizontal(info_box, 25)
         log_title.draw(log_box, 12, 5)
 
-        
-        
-        print(len(log_list))
-
         if len(log_list) <= 14:
             for i in range(0, len(log_list)):
                 log_list[i].draw_center_horizontal(log_box, 40 + 40*i)
@@ -385,6 +381,7 @@ while True:
             m = mg.Map(map_gen)
             rows, cols = m.shape
             Map = m.value
+            log_list = []
 
         if(back_button.is_clicked()):
             stage = 0
@@ -403,7 +400,7 @@ while True:
             print()
 
         if hint_button.is_clicked():
-            hint_type, trueness, data, log = m.generate_hint_10()
+            hint_type, trueness, data, log = m.generate_hint_2()
             print()
             m.verify_hint(hint_type, trueness, data)
             print(log)
