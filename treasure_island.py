@@ -295,11 +295,16 @@ class Map:
         self.treasure = map.place_treasure()
         # self.value[self.treasure] = 'T'
 
+        self.logs = []
+
+        self.veri_important = ["1", "3", "5", "8"]
+
         # Map generate hints function to string
         self.hints = {"1": self.generate_hint_1, "2": self.generate_hint_2, "3": self.generate_hint_3, "4": self.generate_hint_4,
                       "5": self.generate_hint_5, "6": self.generate_hint_6, "7": self.generate_hint_7, "8": self.generate_hint_8,
                       "9": self.generate_hint_9, "10": self.generate_hint_10, "11": self.generate_hint_11, "12": self.generate_hint_12,
                       "13": self.generate_hint_13, "14": self.generate_hint_14, "15": self.generate_hint_15}
+
     def map_print(self):
         str_regions =  [str(i) for i in range(1, self.total_region + 1)]
         for coord_x, row in enumerate(self.value):
@@ -853,19 +858,39 @@ class Map:
 
         return False
 
-    def operate(self) -> None:
+    def gen_1st_hint(self):
+        for key, gen_hint in self.hints.items():
+            trueness, masked_tiles, log = gen_hint()
 
-        print("Game start")
-        print(f"Agent appears at {self.jacksparrow.coord}")
-        print(f"The pirate’s prison is going to reveal the at the beginning of {10} turn")
-        print(f"The pirate is free at the beginning of the {5} turn")
+            if trueness:
+                self.logs.append("ADD HINT1 TO HINT LIST")
+                self.logs.append("HINT1: is_verified = TRUE, is_truth = TRUE")
+
+                if key in self.veri_important:
+                    trueness = not trueness
+                elif key == "12":
+                    trueness = True
+                    masked_tiles = ~masked_tiles
+                
+                self.verify_hint(trueness, masked_tiles)
+
+    def operate(self) -> None:
+        self.logs.append("Game start")
+        self.logs.append(f"Agent appears at {self.jacksparrow.coord}")
+
+        reveal_turn = rng.randint()
+        
+        self.logs.append(f"The pirate’s prison is going to reveal the at the beginning of turn number {reveal_turn}")
+        self.logs.append(f"The pirate is free at the beginning of turn number ")
+
         
         n_turn = 1
         n_hint = 1
         while self.jacksparrow != self.treasure:
-            print(f"START TURN {n_turn}")
+            self.logs.append(f"START TURN {n_turn}")
             if n_turn == 1:
-                pass
+                self.gen_1st_hint()
+
 
 # %%
 # map_gen = MapGenerator(16, 18)
