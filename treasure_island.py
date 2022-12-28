@@ -20,7 +20,7 @@ import copy
 # ### Set a Random Number Generator
 
 # %%
-rng = np.random.RandomState(42)
+rng = np.random.RandomState(43)
 
 # %%
 class UserInterface:
@@ -286,13 +286,13 @@ class Map:
         self.potential= np.ones((map.rows, map.cols), dtype=bool)
 
         self.jacksparrow = JackSparrow(map.place_agent())
-        self.value[self.jacksparrow.coord] = 'A'
+        # self.value[self.jacksparrow.coord] = 'A'
 
         self.pirate = Pirate(map.place_pirate())
-        self.value[self.pirate.coord] = 'Pi'
+        # self.value[self.pirate.coord] = 'Pi'
 
         self.treasure = map.place_treasure()
-        self.value[self.treasure] = 'T'
+        # self.value[self.treasure] = 'T'
 
         self.logs = []
 
@@ -405,7 +405,7 @@ class Map:
         # number of regions
         no_reg = rng.randint(1, 5)
         rand_regions = rng.choice(np.arange(1, self.total_region + 1), size=no_reg, replace=False)
-        
+        print(rand_regions)
         # get region that overlaps with the treasure's region
         overlap = rand_regions == self.region[self.treasure]
 

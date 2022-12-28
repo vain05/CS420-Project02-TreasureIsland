@@ -235,7 +235,6 @@ class Button:
         self.rect.topleft = (parent_surface.rect.left + x, parent_surface.rect.top + y)       
     def is_clicked(self) -> bool:
         mouse_pos = pg.mouse.get_pos()
-        
         if event.type == pg.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(mouse_pos):
                 return True
@@ -243,7 +242,7 @@ class Button:
 
 ###########################################################################################
 
-map_gen = mg.MapGenerator(20, 20)
+map_gen = mg.MapGenerator(10, 10)
 m = mg.Map(map_gen)
 rows, cols = m.shape
 Map = m.value
@@ -313,10 +312,10 @@ play_button = Button(500, 50, button_color, 'Play', 55, 'tan4')
 regenerate_button = Button(500, 50, button_color, 'New Map', 55, 'tan4')
 back_button = Button(500, 50, button_color, 'Back', 55, 'tan4')
 
-up_button = Button(80, 50, button_color, 'UP', 30, 'tan4')
-down_button = Button(80, 50, button_color, 'DOWN', 30, 'tan4')
-left_button = Button(80, 50, button_color, 'LEFT', 30, 'tan4')
-right_button = Button(80, 50, button_color, 'RIGHT', 30, 'tan4')
+scanned_button = Button(80, 50, button_color, 'Scan', 30, 'tan4')
+potential_button = Button(80, 50, button_color, 'Potential', 30, 'tan4')
+value_button = Button(80, 50, button_color, 'value', 30, 'tan4')
+region_button = Button(80, 50, button_color, 'region', 30, 'tan4')
 hint_button = Button(80, 50, button_color, 'HINT', 30, 'tan4')
 
 stage = 0
@@ -356,10 +355,10 @@ while True:
         regenerate_button.draw_center_horizontal(info_box, 800)
         back_button.draw_center_horizontal(info_box, 875)
 
-        up_button.draw(info_box, 25 ,650)
-        down_button.draw(info_box, 130,650)
-        left_button.draw(info_box, 235,650)
-        right_button.draw(info_box, 340 ,650)
+        scanned_button.draw(info_box, 25 ,650)
+        potential_button.draw(info_box, 130,650)
+        value_button.draw(info_box, 235,650)
+        region_button.draw(info_box, 340 ,650)
         hint_button.draw(info_box, 445 ,650)
 
         if(play_button.is_clicked()):
@@ -371,19 +370,22 @@ while True:
         if(back_button.is_clicked()):
             stage = 0
 
-        if(up_button.is_clicked()):
-            m.jacksparrow.coord = (m.jacksparrow.coord[0] - 1, m.jacksparrow.coord[1])
-        if(down_button.is_clicked()):
-            m.jacksparrow.coord = (m.jacksparrow.coord[0] + 1, m.jacksparrow.coord[1])
-        if(left_button.is_clicked()):
-            m.jacksparrow.coord = (m.jacksparrow.coord[0], m.jacksparrow.coord[1] - 1)
-        if(right_button.is_clicked()):
-            m.jacksparrow.coord = (m.jacksparrow.coord[0], m.jacksparrow.coord[1] + 1)
-        
+        if(scanned_button.is_clicked()):
+            print(m.scanned)
+            print()
+        if(potential_button.is_clicked()):
+            print(m.potential)
+            print()
+        if(value_button.is_clicked()):
+            print(m.value)
+            print()
+        if(region_button.is_clicked()):
+            print(m.region)
+            print()
+
         if hint_button.is_clicked():
             trueness, data, log = m.generate_hint_2()
-            m.verify_hint(trueness, data)
-            print(m.scanned)
+            m.apply_masked_tiles(trueness, data)
 
         game_box.draw_center_vertical(screen, 25)
         game_inner_box.draw_center(game_box)        
@@ -423,4 +425,4 @@ while True:
             i += 1
     
     pg.display.update() 
-    clock.tick(60)
+    clock.tick(120)
