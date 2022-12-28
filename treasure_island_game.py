@@ -242,7 +242,7 @@ class Button:
 
 ###########################################################################################
 
-map_gen = mg.MapGenerator(10, 7)
+map_gen = mg.MapGenerator(10, 6)
 m = mg.Map(map_gen)
 rows, cols = m.shape
 Map = m.value

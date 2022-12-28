@@ -134,7 +134,7 @@ class MapGenerator:
         return '_'
 
     def generate(self):
-        Map = [['.']*self.cols for _ in range(self.rows)]
+        Map = [['.']*self.rows for _ in range(self.cols)]
 
         for coord_x, row in enumerate(Map):
             for coord_y, terrain in enumerate(row):
@@ -171,7 +171,7 @@ class MapGenerator:
                         area = self.neighbors(Map, 1, coord_x, coord_y).copy()
                         Map[coord_x][coord_y] = self.get_neighbour_region(area)
         
-        self.region_map = copy.deepcopy(Map)
+        self.region_map = copy.deepcopy(list(map(list, zip(*Map))))
 
         for coord_x, row in enumerate(Map):
             for coord_y, terrain in enumerate(row):
@@ -200,8 +200,8 @@ class MapGenerator:
                 for coord_y, terrain in enumerate(row):
                     if Map[coord_x][coord_y] == 'M':
                         self.mountain_map[coord_x][coord_y] = 1
-                        
-        self.Map = Map.copy()
+        self.mountain_map = list(map(list, zip(*self.mountain_map))).copy()                 
+        self.Map = list(map(list, zip(*Map))).copy()
     
     def place_pirate(self):
         
@@ -914,27 +914,27 @@ class Map:
 
 
 # %%
-map_gen = MapGenerator(16, 18)
-m = Map(map_gen)
+# map_gen = MapGenerator(16, 18)
+# m = Map(map_gen)
 
-# %%
-m.map_print()
-print(f"Agent coord: {m.jacksparrow.coord}")
-print(f"Pirate coord: {m.pirate}")
-print(f"Treasure coord: {m.treasure}")
-print(f"Treasure's region: {m.region[m.treasure]}")
-print()
+# # %%
+# m.map_print()
+# print(f"Agent coord: {m.jacksparrow.coord}")
+# print(f"Pirate coord: {m.pirate}")
+# print(f"Treasure coord: {m.treasure}")
+# print(f"Treasure's region: {m.region[m.treasure]}")
+# print()
 
-trueness, data, log = m.generate_hint_10()
-print(trueness)
-print(data)
-print(log)
-print()
+# trueness, data, log = m.generate_hint_10()
+# print(trueness)
+# print(data)
+# print(log)
+# print()
 
-print(m.scanned.astype(int))
-print()
+# print(m.scanned.astype(int))
+# print()
 
-print(m.potential.astype(int))
-print()
+# print(m.potential.astype(int))
+# print()
 
 
