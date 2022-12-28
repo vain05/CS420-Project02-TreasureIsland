@@ -20,8 +20,7 @@ import copy
 # ### Set a Random Number Generator
 
 # %%
-
-rng = np.random.RandomState(random.randint(1,1000))
+rng = np.random.RandomState(42)
 
 # %%
 class UserInterface:
@@ -70,7 +69,7 @@ class MapGenerator:
                 spaces = 3 - len(str(cur))
                 symbol = ' ' * spaces + str(cur)
                 if cur == '_' or cur in range(1, self.number_of_region + 1):                
-                    print('\033[92m', symbol, end='')
+                    print('\025[92m', symbol, end='')
                 elif cur == 0:                
                     print('\033[96m', symbol, end='')
                 elif cur == 'M':                
@@ -287,15 +286,17 @@ class Map:
         self.potential= np.ones((map.rows, map.cols), dtype=bool)
 
         self.jacksparrow = JackSparrow(map.place_agent())
-        # self.value[self.jacksparrow.coord] = 'A'
+        self.value[self.jacksparrow.coord] = 'A'
 
         self.pirate = Pirate(map.place_pirate())
-        # self.value[self.pirate.coord] = 'Pi'
+        self.value[self.pirate.coord] = 'Pi'
 
         self.treasure = map.place_treasure()
-        # self.value[self.treasure] = 'T'
+        self.value[self.treasure] = 'T'
 
         self.logs = []
+
+        self.hint_list = []
 
         self.veri_important = ["1", "3", "5", "8"]
 
@@ -324,9 +325,6 @@ class Map:
                     print('\033[97m', symbol, end='')
             print()
         print('\033[97m')
-
-    def hint_generator(self):
-        rng.randint(16)
 
     def ravel_index(self, index: Tuple[int, int]) -> int:
         H, W = self.shape
@@ -358,10 +356,7 @@ class Map:
 
         return res
 
-    def generate_hint(self, value) -> None:
-        self.hints[str(rng.randint(16))]()
-    
-    def verify_hint(self, trueness: bool, masked_tiles: np.ndarray) -> None:
+    def apply_masked_tiles(self, trueness: bool, masked_tiles: np.ndarray) -> None:
         # The treasure is somewhere in a boundary of 2 regions 
 
         if trueness:
@@ -859,61 +854,87 @@ class Map:
         return False
 
     def gen_1st_hint(self):
-        for key, gen_hint in self.hints.items():
-            trueness, masked_tiles, log = gen_hint()
+        while True:
+            for key, gen_hint in self.hints.items():
+                trueness, masked_tiles, log = gen_hint()
 
-            if trueness:
-                self.logs.append("ADD HINT1 TO HINT LIST")
-                self.logs.append("HINT1: is_verified = TRUE, is_truth = TRUE")
+                if trueness:
+                    self.logs.append("ADD HINT1 TO HINT LIST")
+                    self.logs.append(log)
+                    self.logs.append("HINT1: is_verified = TRUE, is_truth = TRUE")
 
-                if key in self.veri_important:
-                    trueness = not trueness
-                elif key == "12":
-                    trueness = True
-                    masked_tiles = ~masked_tiles
-                
-                self.verify_hint(trueness, masked_tiles)
+                    if key in self.veri_important:
+                        trueness = not trueness
+                    elif key == "12":
+                        if not trueness:
+                            masked_tiles = ~masked_tiles
+                        trueness = True
+                    
+                    self.apply_masked_tiles(trueness, masked_tiles)
+                    break
+                        
+    def hint_generator(self, n_turn: int):
+        key = str(rng.randint(1, 16))
+        
+        trueness, masked_tiles, log = self.hints[key]()
+
+        self.hint_list.append((key, trueness, masked_tiles))
+
+        self.logs.append(f"HINT{n_turn}: The agent receives a hint:" + f"{log}")
+        self.logs.append(f"ADD HINT{n_turn} TO HINT LIST")
+        pass
+    
+    def verify_hint(self):
+        pass
 
     def operate(self) -> None:
         self.logs.append("Game start")
         self.logs.append(f"Agent appears at {self.jacksparrow.coord}")
 
-        reveal_turn = rng.randint()
+        reveal_turn = rng.randint(2, 10)
+        free_turn = rng.randint(reveal_turn + 1, 5)
         
         self.logs.append(f"The pirate’s prison is going to reveal the at the beginning of turn number {reveal_turn}")
-        self.logs.append(f"The pirate is free at the beginning of turn number ")
-
+        self.logs.append(f"The pirate is free at the beginning of turn number {free_turn}")
         
         n_turn = 1
-        n_hint = 1
+
+        # start first turn 
+        self.gen_1st_hint()
+
         while self.jacksparrow != self.treasure:
             self.logs.append(f"START TURN {n_turn}")
-            if n_turn == 1:
-                self.gen_1st_hint()
+
+            # the first hint is supposed to be true
+            self.hint_generator(n_turn)
+
+            # actions of agent
+            
+            # actions of pirate
 
 
 # %%
-# map_gen = MapGenerator(16, 18)
-# m = Map(map_gen)
+map_gen = MapGenerator(16, 18)
+m = Map(map_gen)
 
-# # %%
-# m.map_print()
-# print(f"Agent coord: {m.jacksparrow.coord}")
-# print(f"Pirate coord: {m.pirate.coord}")
-# print(f"Treasure coord: {m.treasure}")
-# print(f"Treasure's region: {m.region[m.treasure]}")
-# print()
+# %%
+m.map_print()
+print(f"Agent coord: {m.jacksparrow.coord}")
+print(f"Pirate coord: {m.pirate}")
+print(f"Treasure coord: {m.treasure}")
+print(f"Treasure's region: {m.region[m.treasure]}")
+print()
 
-# trueness, data, log = m.generate_hint_10()
-# print(trueness)
-# print(data)
-# print(log)
-# print()
+trueness, data, log = m.generate_hint_10()
+print(trueness)
+print(data)
+print(log)
+print()
 
-# print(m.scanned.astype(int))
-# print()
+print(m.scanned.astype(int))
+print()
 
-# print(m.potential.astype(int))
-# print()
+print(m.potential.astype(int))
+print()
 
 
