@@ -365,7 +365,7 @@ class Map:
         else:
             self.potential[masked_tiles] = False
 
-    def generate_hint_1(self) -> Tuple[bool, np.ndarray, str]:
+    def generate_hint_1(self) -> Tuple[str, bool, np.ndarray, str]:
         # A list of random tiles that doesn't contain the treasure (1 to 12)
 
         # -----> VERY IMPORTANT (Not Trueness)!!!! <------
@@ -394,9 +394,9 @@ class Map:
 
         log = f"These tiles {hinted_tiles} do not contain the treasure"
                         
-        return trueness, masked_tiles, log
+        return "1", trueness, masked_tiles, log
     
-    def generate_hint_2(self) -> Tuple[bool, np.ndarray, str]:
+    def generate_hint_2(self) -> Tuple[str, bool, np.ndarray, str]:
         # 2-5 regions that 1 of them has the treasure.
 
         # trueness of this hint
@@ -420,9 +420,9 @@ class Map:
         
         log = f"One of these regions contain the treasure: {hinted_regions}"
             
-        return trueness, masked_tiles, log
+        return "2", trueness, masked_tiles, log
 
-    def generate_hint_3(self) -> Tuple[bool, np.ndarray, str]:
+    def generate_hint_3(self) -> Tuple[str, bool, np.ndarray, str]:
         # 1-3 regions that do not contain the treasure.
 
         # -----> VERY IMPORTANT (Not Trueness)!!!! <------
@@ -448,9 +448,9 @@ class Map:
         
         log = f"These regions do not contain the treasure: {hinted_regions}"
 
-        return trueness, masked_tiles, log
+        return "3", trueness, masked_tiles, log
 
-    def generate_hint_4(self) -> Tuple[bool, np.ndarray, str]:
+    def generate_hint_4(self) -> Tuple[str, bool, np.ndarray, str]:
         # A large rectangle area that has the treasure
 
         trueness = False
@@ -473,9 +473,9 @@ class Map:
         
         log = f"Large rectangle area has the treasure. Top-Left-Bottom-Right = [{start_point_x}, {start_point_y}, {end_point_x}, {end_point_y}]"
 
-        return trueness, masked_tiles, log
+        return "4", trueness, masked_tiles, log
         
-    def generate_hint_5(self) -> Tuple[bool, np.ndarray, str]:
+    def generate_hint_5(self) -> Tuple[str, bool, np.ndarray, str]:
         # A small rectangle area that doesn't has the treasure.
 
         # -----> VERY IMPORTANT (Not Trueness)!!!! <------
@@ -499,9 +499,9 @@ class Map:
         
         log = f"Small rectangle area doesn't the treasure. Top-Left-Bottom-Right = [{start_point_x}, {start_point_y}, {end_point_x}, {end_point_y}]"
         
-        return trueness, masked_tiles, log
+        return "5", trueness, masked_tiles, log
 
-    def generate_hint_6(self) -> Tuple[bool, None, str]:
+    def generate_hint_6(self) -> Tuple[str, bool, None, str]:
         # You are the nearest person to the treasure
 
         # calculate the distances
@@ -513,9 +513,9 @@ class Map:
 
         log = "You are the nearest person to the treasure"
 
-        return trueness, None, log
+        return "6", trueness, None, log
 
-    def generate_hint_7(self) -> Tuple[bool, np.ndarray, str]:
+    def generate_hint_7(self) -> Tuple[str, bool, np.ndarray, str]:
         # A column and/or a row that contain the treasure (rare)
         trueness = False
 
@@ -543,9 +543,9 @@ class Map:
         else:
             log = "Row {} or column {} contain the treasure".format(no_row, no_col)
 
-        return trueness, masked_tiles, log
+        return "7", trueness, masked_tiles, log
 
-    def generate_hint_8(self) -> Tuple[bool, np.ndarray, str]:
+    def generate_hint_8(self) -> Tuple[str, bool, np.ndarray, str]:
         # A column and/or a row that do not contain the treasure
         trueness = False
 
@@ -575,9 +575,9 @@ class Map:
         else:
             log = "Row {} or column {} do not contain the treasure".format(no_row, no_col)
 
-        return trueness, masked_tiles, log
+        return "8", trueness, masked_tiles, log
 
-    def generate_hint_9(self) -> Tuple[bool, np.ndarray, str]:
+    def generate_hint_9(self) -> Tuple[str, bool, np.ndarray, str]:
         # 2 regions that the treasure is somewhere in their boundary
         trueness = False
 
@@ -595,9 +595,9 @@ class Map:
                 trueness = True
         
         log = "The treasure is somewhere in the boundary of region {} and region {}".format(rand_regions[0], rand_regions[1])
-        return trueness, masked_tiles, log
+        return "9", trueness, masked_tiles, log
     
-    def generate_hint_10(self) -> Tuple[bool, np.ndarray, str]:
+    def generate_hint_10(self) -> Tuple[str, bool, np.ndarray, str]:
         # The treasure is somewhere in a boundary of 2 regions 
         trueness = False
 
@@ -614,9 +614,9 @@ class Map:
             trueness = True
 
         log = "The treasure is somewhere in a boundary of 2 regions"
-        return trueness, masked_tiles, log
+        return "10", trueness, masked_tiles, log
 
-    def generate_hint_11(self) -> Tuple[bool, np.ndarray, str]:
+    def generate_hint_11(self) -> Tuple[str, bool, np.ndarray, str]:
         # The treasure is somewhere in an area bounded by 2-3 tiles from sea
         no_tiles = rng.randint(2, 3)
 
@@ -650,9 +650,9 @@ class Map:
 
         log = "The treasure is somewhere in an area bounded by {} tiles from sea".format(no_tiles)
 
-        return trueness, masked_titles, log
+        return "11", trueness, masked_titles, log
 
-    def generate_hint_12(self) -> Tuple[bool, np.ndarray, str]:
+    def generate_hint_12(self) -> Tuple[str, bool, np.ndarray, str]:
         # A half of the map without treasure
 
         # -----> VERY IMPORTANT (True, False for negation)!!!! <------
@@ -705,9 +705,9 @@ class Map:
         
         log = f"{parts[part]} part of the map does not contain the treasure."
 
-        return trueness, masked_tiles, log
+        return "12", trueness, masked_tiles, log
 
-    def generate_hint_13(self) -> Tuple[bool, np.ndarray, str]:
+    def generate_hint_13(self) -> Tuple[str, bool, np.ndarray, str]:
         # From the center of the map/from the prison that he's staying, he tells
         # you a direction that has the treasure (W, E, N, S or SE, SW, NE, NW)
         trueness = False
@@ -756,9 +756,9 @@ class Map:
         
         log = "The treasure is in the {} of the center of the map".format(direction[dir])
 
-        return trueness, masked_tiles, log
+        return "13", trueness, masked_tiles, log
 
-    def generate_hint_14(self) -> Tuple[bool, np.ndarray, str]: 
+    def generate_hint_14(self) -> Tuple[str, bool, np.ndarray, str]: 
         # 2 squares that are different in size, the small one is placed inside the
         # bigger one, the treasure is somewhere inside the gap between 2 squares
 
@@ -815,9 +815,9 @@ class Map:
 
         log = f"The treasure is somewhere in the gap between 2 squares: S1 = [{big_top_left}, {big_bottom_right}], S2 = [{small_top_left}, {small_bottom_right}]"
             
-        return trueness, masked_tiles, log
+        return "14", trueness, masked_tiles, log
 
-    def generate_hint_15(self) -> Tuple[bool, np.ndarray, str]:
+    def generate_hint_15(self) -> Tuple[str, bool, np.ndarray, str]:
         # The treasure is in a region that has mountain
 
         # trueness of this hint
@@ -835,7 +835,7 @@ class Map:
 
         log = f"The treasure is in a region that has mountain"
 
-        return trueness, masked_titles, log
+        return "15", trueness, masked_titles, log
     
     def scan(self, size: int):
         start_row = max(self.jacksparrow.coord[0] - size // 2, 0)
@@ -855,22 +855,16 @@ class Map:
 
     def gen_1st_hint(self):
         while True:
-            for key, gen_hint in self.hints.items():
-                trueness, masked_tiles, log = gen_hint()
+            for hint_type, gen_hint in self.hints.items():
+                _, trueness, masked_tiles, log = gen_hint()
 
                 if trueness:
                     self.logs.append("ADD HINT1 TO HINT LIST")
                     self.logs.append(log)
                     self.logs.append("HINT1: is_verified = TRUE, is_truth = TRUE")
 
-                    if key in self.veri_important:
-                        trueness = not trueness
-                    elif key == "12":
-                        if not trueness:
-                            masked_tiles = ~masked_tiles
-                        trueness = True
-                    
-                    self.apply_masked_tiles(trueness, masked_tiles)
+                    self.verify_hint(hint_type, trueness, masked_tiles)
+
                     break
                         
     def hint_generator(self, n_turn: int):
@@ -882,10 +876,16 @@ class Map:
 
         self.logs.append(f"HINT{n_turn}: The agent receives a hint:" + f"{log}")
         self.logs.append(f"ADD HINT{n_turn} TO HINT LIST")
-        pass
     
-    def verify_hint(self):
-        pass
+    def verify_hint(self, hint_type: str, trueness: bool, masked_tiles: np.ndarray):
+        if hint_type in self.veri_important:
+            trueness = not trueness
+        elif hint_type == "12":
+            if not trueness:
+                masked_tiles = ~masked_tiles
+            trueness = True
+        
+        self.apply_masked_tiles(trueness, masked_tiles)
 
     def operate(self) -> None:
         self.logs.append("Game start")
