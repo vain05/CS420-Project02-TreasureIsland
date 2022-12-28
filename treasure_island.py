@@ -389,9 +389,7 @@ class Map:
         # if one of them contain the treasure
         if np.any(overlap):
             trueness = False
-        else:
-            masked_tiles = ~masked_tiles
-        
+
         hinted_tiles = list(zip(tile_coords[0], tile_coords[1]))
 
         log = f"These tiles {hinted_tiles} do not contain the treasure"
