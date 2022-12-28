@@ -20,7 +20,8 @@ import copy
 # ### Set a Random Number Generator
 
 # %%
-rng = np.random.RandomState(42)
+
+rng = np.random.RandomState(random.randint(1,1000))
 
 # %%
 class UserInterface:
@@ -286,13 +287,13 @@ class Map:
         self.potential= np.ones((map.rows, map.cols), dtype=bool)
 
         self.jacksparrow = JackSparrow(map.place_agent())
-        self.value[self.jacksparrow.coord] = 'A'
+        # self.value[self.jacksparrow.coord] = 'A'
 
         self.pirate = Pirate(map.place_pirate())
-        self.value[self.pirate.coord] = 'Pi'
+        # self.value[self.pirate.coord] = 'Pi'
 
         self.treasure = map.place_treasure()
-        self.value[self.treasure] = 'T'
+        # self.value[self.treasure] = 'T'
 
         # Map generate hints function to string
         self.hints = {"1": self.generate_hint_1, "2": self.generate_hint_2, "3": self.generate_hint_3, "4": self.generate_hint_4,
@@ -867,27 +868,27 @@ class Map:
                 pass
 
 # %%
-map_gen = MapGenerator(16, 18)
-m = Map(map_gen)
+# map_gen = MapGenerator(16, 18)
+# m = Map(map_gen)
 
-# %%
-m.map_print()
-print(f"Agent coord: {m.jacksparrow.coord}")
-print(f"Pirate coord: {m.pirate}")
-print(f"Treasure coord: {m.treasure}")
-print(f"Treasure's region: {m.region[m.treasure]}")
-print()
+# # %%
+# m.map_print()
+# print(f"Agent coord: {m.jacksparrow.coord}")
+# print(f"Pirate coord: {m.pirate.coord}")
+# print(f"Treasure coord: {m.treasure}")
+# print(f"Treasure's region: {m.region[m.treasure]}")
+# print()
 
-trueness, data, log = m.generate_hint_10()
-print(trueness)
-print(data)
-print(log)
-print()
+# trueness, data, log = m.generate_hint_10()
+# print(trueness)
+# print(data)
+# print(log)
+# print()
 
-print(m.scanned.astype(int))
-print()
+# print(m.scanned.astype(int))
+# print()
 
-print(m.potential.astype(int))
-print()
+# print(m.potential.astype(int))
+# print()
 
 

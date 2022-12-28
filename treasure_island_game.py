@@ -1,10 +1,9 @@
 import pygame as pg
 from sys import exit
-from typing import Tuple
 import os
 import time
 
-import map_generator as mg
+import treasure_island as mg
 
 def get_center(surface, parent_surface):
     return (parent_surface.surface.get_width() - surface.width) // 2, (parent_surface.surface.get_height() - surface.height) // 2
@@ -244,7 +243,7 @@ class Button:
 
 ###########################################################################################
 
-map_gen = mg.MapGenerator(16, 16)
+map_gen = mg.MapGenerator(20, 20)
 m = mg.Map(map_gen)
 rows, cols = m.shape
 Map = m.value
@@ -263,7 +262,9 @@ tile_text_color = 'grey1'
 sea_color = 'SteelBlue1'
 land_color = 'forest green'
 mountain_color = 'dark slate gray'
-prison_color = 'khaki1'
+prison_color = 'indian red'
+scanned_color = 'DarkSeaGreen1'
+# potential_color = 'LightGoldenrod1'
 
 main_color = 'NavajoWhite2'
 secondary_color = 'burlywood2'
@@ -316,6 +317,7 @@ up_button = Button(80, 50, button_color, 'UP', 30, 'tan4')
 down_button = Button(80, 50, button_color, 'DOWN', 30, 'tan4')
 left_button = Button(80, 50, button_color, 'LEFT', 30, 'tan4')
 right_button = Button(80, 50, button_color, 'RIGHT', 30, 'tan4')
+hint_button = Button(80, 50, button_color, 'HINT', 30, 'tan4')
 
 stage = 0
 
@@ -355,9 +357,10 @@ while True:
         back_button.draw_center_horizontal(info_box, 875)
 
         up_button.draw(info_box, 25 ,650)
-        down_button.draw(info_box, 165,650)
-        left_button.draw(info_box, 305,650)
-        right_button.draw(info_box, 445 ,650)
+        down_button.draw(info_box, 130,650)
+        left_button.draw(info_box, 235,650)
+        right_button.draw(info_box, 340 ,650)
+        hint_button.draw(info_box, 445 ,650)
 
         if(play_button.is_clicked()):
             pass
@@ -376,6 +379,11 @@ while True:
             m.jacksparrow.coord = (m.jacksparrow.coord[0], m.jacksparrow.coord[1] - 1)
         if(right_button.is_clicked()):
             m.jacksparrow.coord = (m.jacksparrow.coord[0], m.jacksparrow.coord[1] + 1)
+        
+        if hint_button.is_clicked():
+            trueness, data, log = m.generate_hint_2()
+            m.verify_hint(trueness, data)
+            print(m.scanned)
 
         game_box.draw_center_vertical(screen, 25)
         game_inner_box.draw_center(game_box)        
@@ -388,7 +396,12 @@ while True:
                 if value == '0':
                     tile = Button(tile_size, tile_size, sea_color, '', tile_font_size, tile_text_color)
                 elif value == '_' or value in str_regions:
-                    tile = Button(tile_size, tile_size, land_color, str(value), tile_font_size, tile_text_color)
+                    if m.scanned[i][j] == 1:
+                        tile = Button(tile_size, tile_size, scanned_color, str(value), tile_font_size, tile_text_color)
+                    # if m.potential[i][j] == 1:
+                    #     tile = Button(tile_size, tile_size, potential_color, str(value), tile_font_size, tile_text_color)
+                    else: 
+                        tile = Button(tile_size, tile_size, land_color, str(value), tile_font_size, tile_text_color)
                 elif value == 'M':
                     tile = Button(tile_size, tile_size, mountain_color, str(value), tile_font_size, tile_text_color)
                 elif value == 'p':
