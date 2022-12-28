@@ -355,8 +355,19 @@ class Map:
     def generate_hint(self, value) -> None:
         self.hints[str(rng.randint(16))]()
     
+    def verify_hint(self, trueness: bool, masked_tiles: np.ndarray) -> None:
+        # The treasure is somewhere in a boundary of 2 regions 
+
+        if trueness:
+            self.potential &= masked_tiles
+            self.scanned[~masked_tiles] = True
+        else:
+            self.scanned[masked_tiles] = True
+
     def generate_hint_1(self) -> Tuple[bool, np.ndarray, str]:
         # A list of random tiles that doesn't contain the treasure (1 to 12)
+
+        # -----> VERY IMPORTANT (Not Trueness)!!!! <------
 
         # trueness of this hint
         trueness = True
@@ -371,33 +382,19 @@ class Map:
         # convert those tiles to tuple index
         tile_coords = np.unravel_index(rand_tiles, self.shape)
 
+        masked_tiles = np.zeros(self.shape, dtype=bool)
+
         # if one of them contain the treasure
         if np.any(overlap):
             trueness = False
+            masked_tiles[tile_coords] = True
         
         hinted_tiles = list(zip(tile_coords[0], tile_coords[1]))
 
         log = f"These tiles {hinted_tiles} do not contain the treasure"
                         
-        return trueness, rand_tiles, log
+        return trueness, masked_tiles, log
     
-    def verify_hint_1(self, trueness: bool, rand_tiles: np.ndarray) -> None:
-        # A list of random tiles that doesn't contain the treasure (1 to 12)
-
-        # convert those tiles to tuple index
-        tile_coords = np.unravel_index(rand_tiles, self.shape)
-
-        # if one of them contain the treasure
-        if not trueness:
-            masked_tiles = np.zeros(self.shape, dtype=bool)
-            masked_tiles[tile_coords] = True
-            self.potential &= masked_tiles
-            self.scanned[~masked_tiles] = True
-        
-        # if they are not contain the treasure
-        else:
-            self.scanned[tile_coords] = True
-        
     def generate_hint_2(self) -> Tuple[bool, np.ndarray, str]:
         # 2-5 regions that 1 of them has the treasure.
 
@@ -411,6 +408,8 @@ class Map:
         # get region that overlaps with the treasure's region
         overlap = rand_regions == self.region[self.treasure]
 
+        # get mask of titles of those regions
+        masked_tiles = np.isin(self.region, rand_regions).T
 
         # if random region consist of a region that has the treasure
         if np.any(overlap):
@@ -420,25 +419,12 @@ class Map:
         
         log = f"One of these regions contain the treasure: {hinted_regions}"
             
-        return trueness, rand_regions, log
+        return trueness, masked_tiles, log
 
-    def verify_hint_2(self, trueness: bool, rand_regions: np.ndarray) -> None:
-        # 2-5 regions that 1 of them has the treasure.
-
-        # get mask of titles of those regions
-        masked_tiles = np.isin(self.region, rand_regions).T
-
-        # if random region consist of a region that has the treasure
-        if trueness:
-            self.potential &= masked_tiles
-            self.scanned[~masked_tiles] = True
-
-        # if they are not contain the treasure
-        else:
-            self.scanned[masked_tiles] = True
-            
     def generate_hint_3(self) -> Tuple[bool, np.ndarray, str]:
         # 1-3 regions that do not contain the treasure.
+
+        # -----> VERY IMPORTANT (Not Trueness)!!!! <------
 
         # trueness of this hint
         trueness = True
@@ -450,6 +436,9 @@ class Map:
         # get region that overlaps with the treasure's region
         overlap = rand_regions == self.region[self.treasure]
 
+        # get mask of titles of those regions
+        masked_tiles = np.isin(self.region, rand_regions).T
+
         # if random region consist of a region that has the treasure
         if np.any(overlap):
             trueness = False
@@ -458,24 +447,9 @@ class Map:
         
         log = f"These regions do not contain the treasure: {hinted_regions}"
 
-        return trueness, rand_regions, log
+        return trueness, masked_tiles, log
 
-    def verify_hint_3(self, trueness: bool, rand_regions: np.ndarray) -> None:
-        # 1-3 regions that do not contain the treasure.
-
-        # get mask of titles of those regions
-        masked_tiles = np.isin(self.region, rand_regions).T
-
-        # if random region consist of a region that has the treasure
-        if not trueness:
-            self.potential &= masked_tiles
-            self.scanned[~masked_tiles] = True
-
-        # if they are not contain the treasure
-        else:
-            self.scanned[masked_tiles] = True
-            
-    def generate_hint_4(self) -> Tuple[bool, Tuple[Tuple[int, int], Tuple[int, int]], str]:
+    def generate_hint_4(self) -> Tuple[bool, np.ndarray, str]:
         # A large rectangle area that has the treasure
 
         trueness = False
@@ -489,26 +463,21 @@ class Map:
         end_point_x = start_point_x + h_size - 1
         end_point_y = start_point_y + w_size - 1
         
+        # get mask of those tiles
+        masked_tiles = np.zeros(self.shape, dtype=bool)
+        masked_tiles[start_point_x:end_point_x + 1, start_point_y:end_point_y + 1] = True
+
         if start_point_x <= self.treasure[0] <= end_point_x and start_point_y <= self.treasure[1] <= end_point_y:
             trueness = True
-            self.potential[start_point_x:end_point_x + 1, start_point_y:end_point_y + 1] = True
-            masked_tiles = np.ones(self.shape, dtype=bool)
-            masked_tiles[start_point_x:end_point_x + 1, start_point_y:end_point_y + 1] = False
-            self.scanned[masked_tiles] = True
-        else:
-            self.scanned[start_point_x:end_point_x + 1, start_point_y:end_point_y + 1] = True
-            
-        top_left = (start_point_x, start_point_y)
-        bottom_right = (end_point_x, end_point_y)
-        
-        hinted_coord = (top_left, bottom_right)
         
         log = f"Large rectangle area has the treasure. Top-Left-Bottom-Right = [{start_point_x}, {start_point_y}, {end_point_x}, {end_point_y}]"
-        
-        return trueness, hinted_coord, log
 
-    def generate_hint_5(self) -> Tuple[bool, Tuple[Tuple[int, int], Tuple[int, int]], str]:
+        return trueness, masked_tiles, log
+        
+    def generate_hint_5(self) -> Tuple[bool, np.ndarray, str]:
         # A small rectangle area that doesn't has the treasure.
+
+        # -----> VERY IMPORTANT (Not Trueness)!!!! <------
 
         trueness = False
         h_size = int(rng.uniform(0.2, 0.5) * self.shape[0])
@@ -520,23 +489,16 @@ class Map:
         end_point_x = start_point_x + h_size - 1
         end_point_y = start_point_y + w_size - 1
         
-        if start_point_x <= self.treasure[0] <= end_point_x and start_point_y <= self.treasure[1] <= end_point_y:
-            self.potential[start_point_x:end_point_x + 1, start_point_y:end_point_y + 1] = True
-            masked_tiles = np.ones(self.shape, dtype=bool)
-            masked_tiles[start_point_x:end_point_x + 1, start_point_y:end_point_y + 1] = False
-            self.scanned[masked_tiles] = True 
-        else:
+        if not (start_point_x <= self.treasure[0] <= end_point_x and start_point_y <= self.treasure[1] <= end_point_y):
             trueness = True
-            self.scanned[start_point_x:end_point_x + 1, start_point_y:end_point_y + 1] = True
             
-        top_left = (start_point_x, start_point_y)
-        bottom_right = (end_point_x, end_point_y)
-        
-        hinted_coord = (top_left, bottom_right)
+        # get mask of those tiles
+        masked_tiles = np.zeros(self.shape, dtype=bool)
+        masked_tiles[start_point_x:end_point_x + 1, start_point_y:end_point_y + 1] = True
         
         log = f"Small rectangle area doesn't the treasure. Top-Left-Bottom-Right = [{start_point_x}, {start_point_y}, {end_point_x}, {end_point_y}]"
         
-        return trueness, hinted_coord, log
+        return trueness, masked_tiles, log
 
     def generate_hint_6(self) -> Tuple[bool, None, str]:
         # You are the nearest person to the treasure
@@ -546,81 +508,75 @@ class Map:
         pirate_treasure = (self.pirate.coord[0] - self.treasure[0]) ** 2 + (self.pirate.coord[1] - self.treasure[1]) ** 2
 
         # trueness of this hint
-        trueness = agent_treasure > pirate_treasure
+        trueness = agent_treasure < pirate_treasure
 
         log = "You are the nearest person to the treasure"
 
         return trueness, None, log
 
-    def generate_hint_7(self):
+    def generate_hint_7(self) -> Tuple[bool, np.ndarray, str]:
         # A column and/or a row that contain the treasure (rare)
-        choice = rng.randint(0, 2)
-        # a row
-        if choice == 0:
-            row = rng.randint(0, self.shape[0])
-            trueness = row == self.treasure[0]
-            if trueness:
-                self.potential[row] = True
-                masked_tiles = np.ones(self.shape, dtype=bool)
-                masked_tiles[row] = False
-                self.scanned[masked_tiles] = True
-            else:
-                self.scanned[row] = True
+        trueness = False
 
-            log = f"Row {row} contains the treasure"
-            return trueness, (row, None), log
-            
-        # a column
+        no_row = rng.randint(self.shape[0])
+        no_col = rng.randint(self.shape[1])
+        no_type = rng.randint(3)
+        log = ""
+
+        masked_tiles = np.zeros(self.shape, dtype=bool)
+
+        if no_type in [0, 2]: 
+            masked_tiles[no_row, ] = True
+            if self.treasure[0] == no_row:
+                trueness = True
+
+        if no_type in [1, 2]: 
+            masked_tiles[:, no_col] = True
+            if self.treasure[1] == no_col:
+                trueness = True
+
+        if no_type == 0:
+            log = "Row {} contains the treasure".format(no_row)
+        elif no_type == 1:
+            log = "Column {} contains the treasure".format(no_col)
         else:
-            col = rng.randint(0, self.shape[1])
-            trueness = col == self.treasure[1]
-            if trueness:
-                self.potential[:, col] = True
-                masked_tiles = np.ones(self.shape, dtype=bool)
-                masked_tiles[:, col] = False
-                self.scanned[masked_tiles] = True
-            else:
-                self.scanned[:, col] = True
+            log = "Row {} or column {} contain the treasure".format(no_row, no_col)
 
-            log = f"Column {col} contains the treasure"
-            return trueness, (None, col), log
+        return trueness, masked_tiles, log
 
-    def generate_hint_8(self):
+    def generate_hint_8(self) -> Tuple[bool, np.ndarray, str]:
         # A column and/or a row that do not contain the treasure
-        choice = rng.randint(0, 2)
-        # a row
-        if choice == 0:
-            row = rng.randint(0, self.shape[0])
-            trueness = row != self.treasure[0]
-            if trueness:
-                self.scanned[row] = True
+        trueness = False
 
-            else:
-                self.potential[row] = True
-                masked_tiles = np.ones(self.shape, dtype=bool)
-                masked_tiles[row] = False
-                self.scanned[masked_tiles] = True
+        # -----> VERY IMPORTANT (Not Trueness)!!!! <------
 
-            log = f"Row {row} doesn't contain the treasure"
-            return trueness, (row, None), log
-            
-        # a column
+        no_row = rng.randint(self.shape[0])
+        no_col = rng.randint(self.shape[1])
+        no_type = rng.randint(3)
+        log = ""
+
+        masked_tiles = np.zeros(self.shape, dtype=bool)
+
+        if no_type in [0, 2]: 
+            masked_tiles[no_row, ] = True
+            if self.treasure[0] != no_row:
+                trueness = True
+
+        if no_type in [1, 2]:
+            masked_tiles[:, no_col] = True
+            if self.treasure[1] != no_col:
+                trueness = True
+
+        if no_type == 0:
+            log = "Row {} does not contain the treasure".format(no_row)
+        elif no_type == 1:
+            log = "Column {} does not contain the treasure".format(no_col)
         else:
-            col = rng.randint(0, self.shape[1])
-            trueness = col != self.treasure[1]
-            if trueness:
-                self.scanned[:, col] = True
-                
-            else:
-                self.potential[:, col] = True
-                masked_tiles = np.ones(self.shape, dtype=bool)
-                masked_tiles[:, col] = False
-                self.scanned[masked_tiles] = True
+            log = "Row {} or column {} do not contain the treasure".format(no_row, no_col)
 
-            log = f"Column {col} doesn't contain the treasure"
-            return trueness, (None, col), log
+        return trueness, masked_tiles, log
 
-    def generate_hint_9(self) -> Tuple[bool, List[Tuple[int, int]], str]:
+    def generate_hint_9(self) -> Tuple[bool, np.ndarray, str]:
         # 2 regions that the treasure is somewhere in their boundary
         trueness = False
 
@@ -631,58 +587,46 @@ class Map:
         overlap = rand_regions == self.region[self.treasure]
 
         # if random region consist of a region that has the treasure
-        hinted_map = np.zeros(self.shape, dtype=bool)
+        masked_tiles = np.zeros(self.shape, dtype=bool)
         if np.any(overlap):
-            hinted_map = self.get_boundary(rand_regions[0], rand_regions[1])
-            if hinted_map[self.treasure]:
+            masked_tiles = self.get_boundary(rand_regions[0], rand_regions[1])
+            if masked_tiles[self.treasure]:
                 trueness = True
-                self.scanned[~hinted_map] = True
-                self.potential[hinted_map] = True
-            else:
-                self.scanned[hinted_map] = True
         
         log = "The treasure is somewhere in the boundary of region {} and region {}".format(rand_regions[0], rand_regions[1])
-        hinted_map = list(hinted_map)
-        return trueness, hinted_map, log
-
-    def generate_hint_10(self) -> Tuple[bool, List[Tuple[int, int]], str]:
+        return trueness, masked_tiles, log
+    
+    def generate_hint_10(self) -> Tuple[bool, np.ndarray, str]:
         # The treasure is somewhere in a boundary of 2 regions 
         trueness = False
 
         #random two regions
         k = np.zeros((3,3),dtype=int); k[1] = 1; k[:,1] = 1 # for 8-connected
-        hinted_map = np.zeros(self.shape, dtype=bool)
+        masked_tiles = np.zeros(self.shape, dtype=bool)
 
         for i in range(self.total_region):
             bound = np.isin(self.region, i).T
             bound = binary_dilation(bound==0, k) & bound
-            hinted_map += bound
+            masked_tiles += bound
             
-        if hinted_map[self.treasure]:
+        if masked_tiles[self.treasure]:
             trueness = True
-            self.scanned[~hinted_map] = True
-            self.potential[hinted_map] = True
-        else:
-            self.scanned[hinted_map] = True
 
         log = "The treasure is somewhere in a boundary of 2 regions"
-        hinted_map = list(hinted_map)
-        return trueness, hinted_map, log
+        return trueness, masked_tiles, log
 
-
-    def generate_hint_11(self) -> Tuple[bool, List[Tuple[int, int]], str]:
+    def generate_hint_11(self) -> Tuple[bool, np.ndarray, str]:
         # The treasure is somewhere in an area bounded by 2-3 tiles from sea
         no_tiles = rng.randint(2, 3)
-        trueness = False
 
         # trueness of this hint
         trueness = False
 
         k = np.zeros((3,3),dtype=int); k[1] = 1; k[:,1] = 1 # for 8-connected
         bound = np.isin(self.region, 0).T
-        masked = ~bound
+        masked_sea = ~bound
 
-        res = np.zeros(self.shape, dtype=bool)
+        masked_titles = np.zeros(self.shape, dtype=bool)
         for _ in range(no_tiles):
             top = np.roll(bound, -1, axis=0)
             top[-1,] = 0
@@ -697,21 +641,20 @@ class Map:
             right[:,0] = 0
 
             bound = top + bottom + left + right
-            res += bound
+            masked_titles += bound
         
-        res *= masked
-        if res[self.treasure]:
+        masked_titles &= masked_sea
+        if masked_titles[self.treasure]:
             trueness = True
-            self.scanned[~res] = True
-            self.potential[res] = True
-        else:
-            self.scanned[res] = True
-        log = "The treasure is somewhere in an area bounded by {} tiles from sea".format(no_tiles)
-        hinted_map = list(res)
-        return trueness, hinted_map, log
 
-    def generate_hint_12(self) -> Tuple[bool, int, str]:
+        log = "The treasure is somewhere in an area bounded by {} tiles from sea".format(no_tiles)
+
+        return trueness, masked_titles, log
+
+    def generate_hint_12(self) -> Tuple[bool, np.ndarray, str]:
         # A half of the map without treasure
+
+        # -----> VERY IMPORTANT (True, False for negation)!!!! <------
 
         # trueness of this hint
         trueness = False
@@ -720,95 +663,50 @@ class Map:
         parts = ["left", "top", "bottom", "right"]
         part = rng.randint(4)
 
-        match part:
-            case 0:
-                vertical_middle_axis = (self.shape[1] - 1) // 2 + 1
-
-                # if the treasure is in the left part
-                if self.treasure[1] < vertical_middle_axis:
-                    trueness = True
-
-            case 1:
-                horizontal_middle_axis = (self.shape[0] - 1) // 2 + 1
-
-                # if the treasure is in the top part
-                if self.treasure[0] < horizontal_middle_axis:
-                    trueness = True
-
-            case 2:
-                horizontal_middle_axis = (self.shape[0] + 1) // 2
-
-                # if the treasure is in the bottom part
-                if self.treasure[0] >= horizontal_middle_axis:
-                    trueness = True
-
-            case 3:
-                vertical_middle_axis = (self.shape[1] - 1) // 2
-
-                # if the treasure is in the right part
-                if self.treasure[1] >= vertical_middle_axis:
-                    trueness = True
-        
-        log = f"{parts[part]} part of the map does not contain the treasure."
-
-        return trueness, part, log
-
-        
-    def verify_hint_12(self, trueness: bool, part: int) -> None:
-        # A half of the map without treasure
-
         masked_tiles = np.zeros(self.shape, dtype=bool)
 
         match part:
             case 0:
                 vertical_middle_axis = (self.shape[1] - 1) // 2 + 1
 
-                # if the treasure is not in the left part
-                if trueness and self.treasure[1] < vertical_middle_axis:
-                    self.scanned[:, :vertical_middle_axis] = True
+                masked_tiles[:, vertical_middle_axis:] = True
 
-                # if the treausure is in the left part
-                else:
-                    masked_tiles[:, :vertical_middle_axis] = True
-                    self.potential &= masked_tiles
-                    self.scanned[:, vertical_middle_axis:] = True
+                # if the treasure is not in the left part
+                if self.treasure[1] >= vertical_middle_axis:
+                    trueness = True
 
             case 1:
                 horizontal_middle_axis = (self.shape[0] - 1) // 2 + 1
 
-                # if the treasure is not in the top part
-                if trueness and self.treasure[0] < horizontal_middle_axis:
-                    self.scanned[:horizontal_middle_axis] = True
+                masked_tiles[horizontal_middle_axis:] = True
 
-                # if the treasure is in the top part
-                else:
-                    masked_tiles[:horizontal_middle_axis] = True
-                    self.potential &= masked_tiles
-                    self.scanned[horizontal_middle_axis:] = True
+                # if the treasure is not in the top part
+                if self.treasure[0] >= horizontal_middle_axis:
+                    trueness = True
 
             case 2:
                 horizontal_middle_axis = (self.shape[0] + 1) // 2
 
-                # if the treasure is in the bottom part
-                if trueness and self.treasure[0] >= horizontal_middle_axis:
-                    self.scanned[horizontal_middle_axis:] = True
-                else:
-                    masked_tiles[horizontal_middle_axis:] = True
-                    self.potential &= masked_tiles
-                    self.scanned[:horizontal_middle_axis] = True
+                masked_tiles[:horizontal_middle_axis] = True
+
+                # if the treasure is not in the bottom part
+                if self.treasure[0] < horizontal_middle_axis:
+                    trueness = True
 
             case 3:
                 vertical_middle_axis = (self.shape[1] - 1) // 2
 
-                # if the treasure is in the right part
-                if trueness and self.treasure[1] >= vertical_middle_axis:
-                    self.scanned[:, vertical_middle_axis:] = True
-                else:
-                    masked_tiles[:, vertical_middle_axis:] = True
-                    self.potential &= masked_tiles
-                    self.scanned[:, :vertical_middle_axis] = True
+                masked_tiles[:, :vertical_middle_axis] = True
 
-    def generate_hint_13(self) -> Tuple[bool, str, str]:
+                # if the treasure is in the right part
+                if self.treasure[1] < vertical_middle_axis:
+                    trueness = True
+        
+        log = f"{parts[part]} part of the map does not contain the treasure."
+
+        return trueness, masked_tiles, log
+
+    def generate_hint_13(self) -> Tuple[bool, np.ndarray, str]:
         # From the center of the map/from the prison that he's staying, he tells
         # you a direction that has the treasure (W, E, N, S or SE, SW, NE, NW)
         trueness = False
@@ -855,17 +753,11 @@ class Map:
                 if (pos_X < 0) and (pos_Y > 0):
                     trueness = True
         
-        if trueness:
-            self.potential[masked_tiles] = True
-            self.scanned[~masked_tiles] = True
-        else:
-            self.scanned[masked_tiles] = True
-
         log = "The treasure is in the {} of the center of the map".format(direction[dir])
 
-        return trueness, direction[dir], log
+        return trueness, masked_tiles, log
 
-    def generate_hint_14(self) -> Tuple[bool, Tuple[Tuple[Tuple[int, int], ...], ...], str]: 
+    def generate_hint_14(self) -> Tuple[bool, np.ndarray, str]: 
         # 2 squares that are different in size, the small one is placed inside the
         # bigger one, the treasure is somewhere inside the gap between 2 squares
 
@@ -910,6 +802,7 @@ class Map:
         small_bottom_right = small_end_x, small_end_y
 
         masked_tiles = np.zeros(self.shape, dtype=bool)
+
         # masked true for big square
         masked_tiles[big_start_x:big_end_x + 1, big_start_y:big_end_y + 1] = True
 
@@ -918,14 +811,12 @@ class Map:
 
         if masked_tiles[self.treasure]:
             trueness = True
-            self.potential[masked_tiles] = True
-            self.scanned[~masked_tiles] = True
 
         log = f"The treasure is somewhere in the gap between 2 squares: S1 = [{big_top_left}, {big_bottom_right}], S2 = [{small_top_left}, {small_bottom_right}]"
             
-        return trueness, ((big_top_left, big_bottom_right), (small_top_left, small_bottom_right)), log
+        return trueness, masked_tiles, log
 
-    def generate_hint_15(self) -> Tuple[bool, None, str]:
+    def generate_hint_15(self) -> Tuple[bool, np.ndarray, str]:
         # The treasure is in a region that has mountain
 
         # trueness of this hint
@@ -940,28 +831,11 @@ class Map:
         # if the treasure is in region mountain        
         if np.any(overlap):
             trueness = True
-            self.potential[masked_titles] = True
-            self.scanned[~masked_titles] = True
-        else:
-            self.scanned[masked_titles] = True
-        
+
         log = f"The treasure is in a region that has mountain"
 
         return trueness, masked_titles, log
     
-    def verify_hint_15(self, trueness: bool) -> None:
-        # The treasure is in a region that has mountain
-
-        # get all tiles that is in mountain region
-        masked_titles = np.isin(self.region, self.mountain).T
-
-        # if the treasure is in region mountain        
-        if trueness:
-            self.potential &= masked_titles
-            self.scanned[~masked_titles] = True
-        else:
-            self.scanned[masked_titles] = True
-
     def scan(self, size: int):
         start_row = max(self.jacksparrow.coord[0] - size // 2, 0)
 
@@ -991,25 +865,6 @@ class Map:
             print(f"START TURN {n_turn}")
             if n_turn == 1:
                 pass
-
-# %%
-def map_print(Map, number_of_region):
-    for coord_x, row in enumerate(Map):
-        for coord_y, terrain in enumerate(row):
-            cur = Map[coord_x][coord_y]
-            spaces = 3 - len(str(cur))
-            symbol = ' ' * spaces + str(cur)
-            if cur == '_' or cur in range(1, number_of_region + 1):                
-                print('\033[92m', symbol, end='')
-            elif cur == '~':                
-                print('\033[96m', symbol, end='')
-            elif cur == 'M':                
-                print('\033[91m', symbol, end='')
-            elif cur == 'p':                
-                print('\033[93m', symbol, end='')
-            else:
-                print('\033[97m', symbol, end='')
-        print()
 
 # %%
 map_gen = MapGenerator(16, 18)
