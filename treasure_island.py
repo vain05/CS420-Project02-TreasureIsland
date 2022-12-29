@@ -299,6 +299,7 @@ class Map:
         map.generate()
 
         self.value = np.array(map.Map, dtype=str)
+        self.value[self.value == '0'] = '~'
         self.region = np.array(map.region_map, dtype=int)
         self.mountain = np.array(map.mountain_map, dtype=int)
 
@@ -933,7 +934,7 @@ class Map:
         direction = np.array([north, west, south, east])
         return dir[direction.argmax()]
 
-    def kmeans_center(self, n_clusters) -> Tuple[int, int]:
+    def kmeans_center(self, n_clusters) -> List[Tuple[int, int]]:
         true_index = np.where(self.potential)
         points = list(zip(true_index[0], true_index[1]))
 
@@ -944,7 +945,7 @@ class Map:
         print("centers: ", kmeans.cluster_centers_)
         print("closest: ", closest)
 
-        return points[closest]
+        return [points[i] for i in closest]
 
     def shortest_path(self, source, dest):
         def isValid(row: int, col: int):
@@ -954,7 +955,8 @@ class Map:
             rowDir = [-1, 0, 0, 1]
             colDir = [0, -1, 1, 0]
 
-            if not (board[src[0]][src[1]].isdigit() and board[dest[0]][dest[1]].isdigit()):
+            if not ((board[src[0]][src[1]].isdigit() or board[src[0]][src[1]] == 'p')
+                    and (board[dest[0]][dest[1]].isdigit() or board[dest[0]][dest[1]]) == 'p'):
                 return [], -1
             
             visited = {}
@@ -972,7 +974,7 @@ class Map:
                 pt = front.pt
                 if pt == dest:
                     path = []
-                    while pt.x != -1:
+                    while pt[0] != -1:
                         path.append(pt)
                         pt = visited[pt]
                     path.reverse()
@@ -982,7 +984,7 @@ class Map:
                     row = pt[0] + rowDir[i]
                     col = pt[1] + colDir[i]
                     
-                    if isValid(row, col) and board[row][col].isdigit() and not (row, col) in visited:
+                    if isValid(row, col) and (board[row][col].isdigit() or board[row][col] == 'p') and not (row, col) in visited:
                         visited[(row, col)] = pt
                         neighbor = Node((row, col), front.step + 1)
                         q.append(neighbor)
@@ -1023,7 +1025,7 @@ class Map:
 
             return res
         
-        path, step = BFS(self.region, source,dest)
+        path, step = BFS(self.value, source,dest)
         
         if step!=-1:
             print("Shortest Path is", decode(path))
@@ -1046,6 +1048,8 @@ class Map:
         # start first turn 
         self.gen_1st_hint()
 
+        centers = self.kmeans_center(2)
+
         # first action
         if self.scan(5):
             self.logs.append("You win")
@@ -1053,7 +1057,6 @@ class Map:
         # second action
         self.scan(3)
 
-        centers = self.kmeans_center(2)
 
         while self.jacksparrow != self.treasure:
             self.logs.append(f"START TURN {n_turn}")

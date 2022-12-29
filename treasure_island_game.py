@@ -603,7 +603,9 @@ while True:
             if hint_button.rect.collidepoint(pg.mouse.get_pos()):
                 hint_type, trueness, data, log = m.generate_hint_2()
                 m.verify_hint(hint_type, trueness, data)
-                print("Kmeans center: ", m.kmeans_center())
+                centers = m.kmeans_center(2)
+                print("Kmeans center: ", centers)
+                m.shortest_path(m.jacksparrow.coord, centers[0]) 
                 print(log)
                 log_card = Button(480, 30, button_color, log , 16, 'grey10')
                 log_list.append(log_card)
