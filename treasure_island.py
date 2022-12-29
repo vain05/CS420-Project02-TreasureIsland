@@ -955,8 +955,8 @@ class Map:
             rowDir = [-1, 0, 0, 1]
             colDir = [0, -1, 1, 0]
 
-            if not ((board[src[0]][src[1]].isdigit() or board[src[0]][src[1]] == 'p')
-                    and (board[dest[0]][dest[1]].isdigit() or board[dest[0]][dest[1]]) == 'p'):
+            if not board[src[0]][src[1]].isdigit() and board[src[0]][src[1]] != 'p' \
+                or not board[dest[0]][dest[1]].isdigit() and board[dest[0]][dest[1]] != 'p':
                 return [], -1
             
             visited = {}
@@ -989,7 +989,7 @@ class Map:
                         neighbor = Node((row, col), front.step + 1)
                         q.append(neighbor)
             
-            return [], -1
+            return [], np.inf
 
         def decode(path):
             tmp = []
@@ -1026,12 +1026,11 @@ class Map:
             return res
         
         path, step = BFS(self.value, source,dest)
+
+        if step == np.inf:
+            path = []
         
-        if step!=-1:
-            print("Shortest Path is", decode(path))
-            print("Number of step is: ", step)
-        else:
-            print("Shortest Path doesn't exist")
+        return step, path
         
     def operate(self) -> None:
         self.logs.append("Game start")
@@ -1050,13 +1049,25 @@ class Map:
 
         centers = self.kmeans_center(2)
 
+        min_steps = np.inf
+        min_path = []
+
+        for center in centers:
+            n_steps, path = self.shortest_path(self.jacksparrow.coord, center)
+            if n_steps < min_steps:
+                min_steps = n_steps
+                min_path = path
+
+        direction, n_steps = min_path[0]
+
+        self.move(direction, n_steps)
+
         # first action
         if self.scan(5):
             self.logs.append("You win")
 
         # second action
         self.scan(3)
-
 
         while self.jacksparrow != self.treasure:
             self.logs.append(f"START TURN {n_turn}")
@@ -1067,4 +1078,3 @@ class Map:
             # actions of agent
             
             # actions of pirate
-# %%
