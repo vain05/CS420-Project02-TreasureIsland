@@ -11,6 +11,11 @@ from scipy.ndimage.morphology import binary_dilation
 
 from typing import List, Tuple
 
+from sklearn.cluster import KMeans
+from sklearn.metrics import pairwise_distances_argmin_min
+
+from collections import deque
+
 import random
 import math
 from string import digits
@@ -279,6 +284,11 @@ class Pirate(Agent):
     def take_action(self):
         pass
 
+class Node:
+    def __init__(self, pt: Tuple[int, int], step: int):
+        self.pt = pt
+        self.step = step
+
 # %%
 class Map:
     def __init__(self, map: MapGenerator):
@@ -292,8 +302,8 @@ class Map:
         self.region = np.array(map.region_map, dtype=int)
         self.mountain = np.array(map.mountain_map, dtype=int)
 
-        self.scanned = np.zeros((map.rows, map.cols), dtype=bool)
         self.potential= np.ones((map.rows, map.cols), dtype=bool)
+        self.potential[self.region == 0] = False
 
         self.jacksparrow = JackSparrow(map.place_agent())
         # self.value[self.jacksparrow.coord] = 'A'
@@ -308,7 +318,7 @@ class Map:
 
         self.hint_list = []
 
-        self.veri_important = ["1", "3", "5", "8"]
+        self.veri_important = {"1", "3", "5", "8"}
 
         # Map generate hints function to string
         self.hints = {"1": self.generate_hint_1, "2": self.generate_hint_2, "3": self.generate_hint_3, "4": self.generate_hint_4,
@@ -854,12 +864,13 @@ class Map:
         if start_row <= self.treasure[0] <= end_row and start_col <= self.treasure[1] <= end_col:
             return True
         else:
-            self.scanned[start_row: end_row + 1, start_col: end_col + 1] = True
+            self.potential[start_row: end_row + 1, start_col: end_col + 1] = False
 
         return False
 
     def gen_1st_hint(self):
-        while True:
+        trueness = False
+        while not trueness:
             for hint_type, gen_hint in self.hints.items():
                 _, trueness, masked_tiles, log = gen_hint()
 
@@ -903,6 +914,123 @@ class Map:
         
         self.apply_masked_tiles(trueness, masked_tiles)
 
+    def choose_direction(self) -> str:
+        x_coord, y_coord = self.jacksparrow.coord
+
+        # top_left = self.potential[0:x_coord + 1, 0:y_coord + 1]
+        # bottom_left = self.potential[x_coord:, 0:y_coord + 1]
+
+        # top_right = self.potential[0:x_coord + 1, y_coord:]
+        # bottom_right = self.potential[x_coord:, y_coord:]
+
+        dir = ["N", "W", "S", "E"]
+        
+        north = self.potential[:x_coord + 1, :].sum()
+        west = self.potential[:, :y_coord + 1].sum()
+        south = self.potential[x_coord:, :].sum()
+        east = self.potential[:, y_coord:].sum()
+
+        direction = np.array([north, west, south, east])
+        return dir[direction.argmax()]
+
+    def kmeans_center(self, n_clusters) -> Tuple[int, int]:
+        true_index = np.where(self.potential)
+        points = list(zip(true_index[0], true_index[1]))
+
+        kmeans = KMeans(n_clusters)
+        kmeans.fit(points)
+
+        closest, _ = pairwise_distances_argmin_min(kmeans.cluster_centers_, points)
+        print("centers: ", kmeans.cluster_centers_)
+        print("closest: ", closest)
+
+        return points[closest]
+
+    def shortest_path(self, source, dest):
+        def isValid(row: int, col: int):
+            return (row >= 0) and (row < self.shape[0]) and (col >= 0) and (col < self.shape[1])
+        
+        def BFS(board, src: Tuple[int, int], dest: Tuple[int, int]):
+            rowDir = [-1, 0, 0, 1]
+            colDir = [0, -1, 1, 0]
+
+            if not (board[src[0]][src[1]].isdigit() and board[dest[0]][dest[1]].isdigit()):
+                return [], -1
+            
+            visited = {}
+            
+            visited[src] = (-1, -1)
+            
+            q = deque()
+            
+            s = Node(src, 0)
+            q.append(s)
+
+            while q:
+                front = q.popleft()
+                
+                pt = front.pt
+                if pt == dest:
+                    path = []
+                    while pt.x != -1:
+                        path.append(pt)
+                        pt = visited[pt]
+                    path.reverse()
+                    return path, front.step
+                
+                for i in range(4):
+                    row = pt[0] + rowDir[i]
+                    col = pt[1] + colDir[i]
+                    
+                    if isValid(row, col) and board[row][col].isdigit() and not (row, col) in visited:
+                        visited[(row, col)] = pt
+                        neighbor = Node((row, col), front.step + 1)
+                        q.append(neighbor)
+            
+            return [], -1
+
+        def decode(path):
+            tmp = []
+            direction = {
+                (-1, 0): 'up',
+                (0, 1): 'right',
+                (0, -1): 'left',
+                (1, 0): 'down'
+            }
+            n = len(path)
+            for i in range(1, n):
+                tmp_x, tmp_y = path[i][0] - path[i-1][0], path[i][1] - path[i-1][1]
+                tmp.append(direction[(tmp_x, tmp_y)])
+
+            dirArray = []
+            countArray = []
+            count = 1
+            for j in range(len(tmp)-1):
+                if tmp[j] != tmp[j + 1]:
+                    dirArray.append(tmp[j])
+                    countArray.append(count)
+                    count = 1
+            
+                else:
+                    count += 1
+            
+            dirArray.append(tmp[-1])
+            countArray.append(count)
+
+            res = []
+            for x, y in zip(dirArray, countArray):
+                res.append((x, y))
+
+            return res
+        
+        path, step = BFS(self.region, source,dest)
+        
+        if step!=-1:
+            print("Shortest Path is", decode(path))
+            print("Number of step is: ", step)
+        else:
+            print("Shortest Path doesn't exist")
+        
     def operate(self) -> None:
         self.logs.append("Game start")
         self.logs.append(f"Agent appears at {self.jacksparrow.coord}")
@@ -918,6 +1046,15 @@ class Map:
         # start first turn 
         self.gen_1st_hint()
 
+        # first action
+        if self.scan(5):
+            self.logs.append("You win")
+
+        # second action
+        self.scan(3)
+
+        centers = self.kmeans_center(2)
+
         while self.jacksparrow != self.treasure:
             self.logs.append(f"START TURN {n_turn}")
 
@@ -927,28 +1064,4 @@ class Map:
             # actions of agent
             
             # actions of pirate
-
-
 # %%
-# map_gen = MapGenerator(16, 18)
-# m = Map(map_gen)
-
-# # %%
-# m.map_print()
-# print(f"Agent coord: {m.jacksparrow.coord}")
-# print(f"Pirate coord: {m.pirate}")
-# print(f"Treasure coord: {m.treasure}")
-# print(f"Treasure's region: {m.region[m.treasure]}")
-# print()
-
-# trueness, data, log = m.generate_hint_10()
-# print(trueness)
-# print(data)
-# print(log)
-# print()
-
-# print(m.scanned.astype(int))
-# print()
-
-# print(m.potential.astype(int))
-# print()

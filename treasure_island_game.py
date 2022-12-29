@@ -592,23 +592,18 @@ while True:
             if back_button.rect.collidepoint(pg.mouse.get_pos()):
                 stage = 0
                 init = 1
-
-            if scanned_button.rect.collidepoint(pg.mouse.get_pos()):
-                print(m.scanned)
-                print()
-            if potential_button.rect.collidepoint(pg.mouse.get_pos()):
                 print()
             if value_button.rect.collidepoint(pg.mouse.get_pos()):
                 print(m.value)
                 print()
             if region_button.rect.collidepoint(pg.mouse.get_pos()):
-                print(m.region)
+                print(m.potential)
                 print()
 
             if hint_button.rect.collidepoint(pg.mouse.get_pos()):
-                hint_type, trueness, data, log = m.generate_hint_1()
-                print()
+                hint_type, trueness, data, log = m.generate_hint_2()
                 m.verify_hint(hint_type, trueness, data)
+                print("Kmeans center: ", m.kmeans_center())
                 print(log)
                 log_card = Button(480, 30, button_color, log , 16, 'grey10')
                 log_list.append(log_card)
