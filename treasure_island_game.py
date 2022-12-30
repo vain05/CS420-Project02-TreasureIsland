@@ -459,6 +459,7 @@ while True:
             tile_size = 900*0.9/max(HEIGTH, WIDTH)        
             gap_size = 900*0.1/(max(HEIGTH, WIDTH) - 1)
             tile_font_size = int(360/max(HEIGTH, WIDTH))
+            font_list[0] = pg.font.Font('font/BlackRose.ttf', tile_font_size)
 
             map_gen = mg.MapGenerator(HEIGTH, WIDTH)
             m = mg.Map(map_gen)
@@ -635,7 +636,5 @@ while True:
                 n_turns += 1
                 
                 update = 1
-    print(frame)
-    frame += 1
     pg.display.update() 
     clock.tick(60)

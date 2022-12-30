@@ -837,11 +837,11 @@ class Map:
         
         coord = list(self.jacksparrow.coord)
 
-        if direction == 'right':
+        if direction == 'EAST':
             coord[1] += steps
-        elif direction == 'left':
+        elif direction == 'WEST':
             coord[1] -= steps
-        elif direction == 'up':
+        elif direction == 'NORTH':
             coord[0] -= steps
         else:
             coord[0] += steps
@@ -981,10 +981,10 @@ class Map:
 
         tmp = []
         direction = {
-            (-1, 0): 'up',
-            (0, 1): 'right',
-            (0, -1): 'left',
-            (1, 0): 'down'
+            (-1, 0): 'NORTH',
+            (0, 1): 'EAST',
+            (0, -1): 'WEST',
+            (1, 0): 'SOUTH'
         }
         n = len(path)
         for i in range(1, n):
