@@ -297,6 +297,7 @@ class Map:
     def __init__(self, map: MapGenerator):
         self.total_tile = map.rows * map.cols
         self.shape = (map.rows, map.cols)
+        self.avg_size = (map.rows + map.cols) / 2
         self.total_region = map.number_of_region
 
         map.generate()
@@ -865,28 +866,29 @@ class Map:
 
         end_col = min(self.jacksparrow.coord[1] + size // 2, self.shape[1] - 1)
 
+        self.potential[start_row: end_row + 1, start_col: end_col + 1] = False
+
         if start_row <= self.treasure[0] <= end_row and start_col <= self.treasure[1] <= end_col:
+            self.logs.append("YOU WIN")
             return True
-        else:
-            self.potential[start_row: end_row + 1, start_col: end_col + 1] = False
 
         return False
 
     def gen_1st_hint(self):
-        trueness = False
-        while not trueness:
-            for hint_type, gen_hint in self.hints.items():
-                _, trueness, masked_tiles, log = gen_hint()
+        while True:
+            hint_type = str(rng.randint(1, 16))
+            gen_hint = self.hints[hint_type]
+            _, trueness, masked_tiles, log = gen_hint()
 
-                if trueness:
-                    self.logs.append("ADD HINT1 TO HINT LIST")
-                    self.logs.append(log)
-                    self.logs.append("HINT1: is_verified = TRUE, is_truth = TRUE")
+            if trueness:
+                self.logs.append("ADD HINT1 TO HINT LIST")
+                self.logs.append(log)
+                self.logs.append("HINT1: is_verified = TRUE, is_truth = TRUE")
 
-                    self.verify_hint(hint_type, trueness, masked_tiles)
-                    print(hint_type, trueness, log)
+                self.verify_hint(hint_type, trueness, masked_tiles)
+                print(hint_type, trueness, log)
 
-                    break
+                break
                         
     def hint_generator(self, n_turn: int):
         key = str(rng.randint(1, 16))
@@ -961,7 +963,7 @@ class Map:
 
             if not board[src[0]][src[1]].isdigit() and board[src[0]][src[1]] != 'p' \
                 or not board[dest[0]][dest[1]].isdigit() and board[dest[0]][dest[1]] != 'p':
-                return [], -1
+                return [], np.inf
             
             visited = {}
             
@@ -996,6 +998,9 @@ class Map:
             return [], np.inf
 
         def decode(path):
+            if not path:
+                return []
+
             tmp = []
             direction = {
                 (-1, 0): 'up',
@@ -1011,7 +1016,11 @@ class Map:
             dirArray = []
             countArray = []
             count = 1
-            for j in range(len(tmp)-1):
+            
+            if not len(tmp):
+                return []
+
+            for j in range(len(tmp) - 1):
                 if tmp[j] != tmp[j + 1]:
                     dirArray.append(tmp[j])
                     countArray.append(count)
@@ -1043,7 +1052,11 @@ class Map:
         min_path = []
 
         for center in centers:
+            if center == self.jacksparrow.coord:
+                continue
+
             n_steps, path = self.shortest_path(self.jacksparrow.coord, center)
+            print(path)
             if n_steps < min_steps:
                 min_steps = n_steps
                 min_path = path
@@ -1056,20 +1069,22 @@ class Map:
         # start first turn 
         self.gen_1st_hint()
 
-        path = self.nearest_path(n_clusters=2)
+        n_clusters = int(self.potential.sum() ** (1/3))
+        path = self.nearest_path(n_clusters=max(2, n_clusters))
         print(path)
         direction, n_steps = path[0]
 
         # first action
+        if self.scan(5):
+            print("YOU WIN")
+
+        # second action
         if n_steps > 2:
             self.jacksparrow.move(direction, min(n_steps, 4))
         else:
             self.jacksparrow.move(direction, min(n_steps, 2))
-            self.scan(3)
-
-        # second action
-        if self.scan(5):
-            self.logs.append("YOU WIN")
+            if self.scan(3):
+                print("YOU WIN")
         
     def operate(self) -> None:
         self.logs.append("Game start")

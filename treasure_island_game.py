@@ -556,7 +556,7 @@ while True:
                     if (i,j) == m.pirate.coord:
                         pirate_icon = ImageSurface('asset/pirate.png', icon_size)
                         pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
-                    if (i,j) == m.treasure:
+                    if (i,j) == m.treasure and m.potential[i][j] == 0:
                         treasure_icon = ImageSurface('asset/treasure.png', icon_size)
                         treasure_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     if (i,j) == m.jacksparrow.coord:                    
@@ -603,8 +603,8 @@ while True:
             if hint_button.rect.collidepoint(pg.mouse.get_pos()):
                 m.first_turn()
 
-                log_card = Button(480, 30, button_color, self.logs, 16, 'grey10')
-                log_list.append(log_card)
+                # log_card = Button(480, 30, button_color, self.logs, 16, 'grey10')
+                # log_list.append(log_card)
                 update = 1
 
     pg.display.update() 
