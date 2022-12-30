@@ -1150,6 +1150,30 @@ class Map:
             else:
                 self.pirate_path[0] = direction, n_steps
 
+    def teleport(self, direction):
+        masked_tiles = np.ones(self.shape, dtype=bool)
+
+        match direction:
+            case "North":
+                masked_tiles[self.pirate.coord[0]:,] = False
+            case "West":
+                masked_tiles[:,self.pirate.coord[1]:] = False
+            case "South":
+                masked_tiles[:self.pirate.coord[0],] = False
+            case "East":
+                masked_tiles[:,:self.pirate.coord[1]] = False
+        
+        masked_tiles &= self.potential
+
+        idx_tiles = np.arange(self.total_tile, like=masked_tiles)
+        idx_array = idx_tiles.reshape(self.shape)
+        index = idx_array[idx_tiles]
+
+        coord = np.unravel_index(index, shape=self.shape)
+        coord = list(zip(*coord))
+        choices = np.random.choice(np.arange(len(coord)))
+
+        return coord[choices]
 
     def operate(self) -> None:
         # first turn
