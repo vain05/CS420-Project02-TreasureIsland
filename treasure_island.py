@@ -298,6 +298,7 @@ class Map:
         self.hint_list = []
 
         self.is_win = False
+        self.is_lose = False
 
         self.veri_important = {"1", "3", "5", "8"}
 
@@ -306,6 +307,8 @@ class Map:
 
         self.reveal_turn = rng.randint(2, 10)
         self.free_turn = rng.randint(self.reveal_turn + 1, self.reveal_turn + 6)
+
+        self.is_free = False
         
         self.logs.append(f"The pirate’s prison is going to reveal the at the beginning of turn number {self.reveal_turn}")
         self.logs.append(f"The pirate is free at the beginning of turn number {self.free_turn}")
