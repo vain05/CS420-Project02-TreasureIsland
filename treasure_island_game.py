@@ -487,7 +487,7 @@ while True:
                 for j, value in enumerate(r):
                     tile = Button(tile_size, tile_size, default_tile_color, '', tile_font_size, tile_text_color)
                     
-                    if value == '0':
+                    if value == '~':
                         tile = Button(tile_size, tile_size, sea_color, '', tile_font_size, tile_text_color)
                     elif value == '_' or value in str_regions:
                         # if m.scanned[i][j] == 1:

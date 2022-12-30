@@ -261,20 +261,23 @@ class JackSparrow(Agent):
     def take_action(self, potential: np.ndarray, scanned: np.ndarray, hints_list):
         pass
     
-    def move(self, steps: int, direction: str) -> None:
+    def move(self, direction: str, steps: int) -> None:
         
         coord = list(self.coord)
 
-        if direction == 'E':
+        if direction == 'right':
             coord[1] += steps
-        elif direction == 'W':
+        elif direction == 'left':
             coord[1] -= steps
-        elif direction == 'N':
+        elif direction == 'up':
             coord[0] -= steps
         else:
             coord[0] += steps
         
         self.coord = tuple(coord)
+    
+    def teleport(self, coord: Tuple[int, int]) -> None:
+        self.coord = coord
 
 # %%
 class Pirate(Agent):
@@ -1031,6 +1034,40 @@ class Map:
             path = []
         
         return step, path
+    
+    def nearest_path(self, n_clusters: int) -> List[Tuple[str, int]]:
+        centers = self.kmeans_center(n_clusters)
+
+        min_steps = np.inf
+        min_path = []
+
+        for center in centers:
+            n_steps, path = self.shortest_path(self.jacksparrow.coord, center)
+            if n_steps < min_steps:
+                min_steps = n_steps
+                min_path = path
+
+        return min_path
+
+    def first_turn(self) -> None:
+        self.logs.append("START TURN 1")
+
+        # start first turn 
+        self.gen_1st_hint()
+
+        path = self.nearest_path(n_clusters=2)
+        direction, n_steps = path[0]
+
+        # first action
+        if n_steps > 2:
+            self.jacksparrow.move(direction, min(n_steps, 4))
+        else:
+            self.jacksparrow.move(direction, min(n_steps, 2))
+            self.scan(3)
+
+        # second action
+        if self.scan(5):
+            self.logs.append("YOU WIN")
         
     def operate(self) -> None:
         self.logs.append("Game start")
@@ -1042,39 +1079,13 @@ class Map:
         self.logs.append(f"The pirate’s prison is going to reveal the at the beginning of turn number {reveal_turn}")
         self.logs.append(f"The pirate is free at the beginning of turn number {free_turn}")
         
+        # first turn
+        self.first_turn()
+
         n_turn = 1
-
-        # start first turn 
-        self.gen_1st_hint()
-
-        centers = self.kmeans_center(2)
-
-        min_steps = np.inf
-        min_path = []
-
-        for center in centers:
-            n_steps, path = self.shortest_path(self.jacksparrow.coord, center)
-            if n_steps < min_steps:
-                min_steps = n_steps
-                min_path = path
-
-        direction, n_steps = min_path[0]
-
-        self.move(direction, n_steps)
-
-        # first action
-        if self.scan(5):
-            self.logs.append("You win")
-
-        # second action
-        self.scan(3)
 
         while self.jacksparrow != self.treasure:
             self.logs.append(f"START TURN {n_turn}")
 
             # the first hint is supposed to be true
             self.hint_generator(n_turn)
-
-            # actions of agent
-            
-            # actions of pirate
