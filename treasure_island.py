@@ -305,7 +305,7 @@ class Map:
         self.logs.append(f"Agent appears at {self.jacksparrow.coord}")
 
         self.reveal_turn = rng.randint(2, 10)
-        self.free_turn = rng.randint(self.reveal_turn + 1, 5)
+        self.free_turn = rng.randint(self.reveal_turn + 1, self.reveal_turn + 6)
         
         self.logs.append(f"The pirate’s prison is going to reveal the at the beginning of turn number {self.reveal_turn}")
         self.logs.append(f"The pirate is free at the beginning of turn number {self.free_turn}")
