@@ -355,6 +355,7 @@ is_clicked = False
 frame = 0
 map_gen = mg.MapGenerator(HEIGTH, WIDTH)
 m = mg.Map(map_gen)
+n_turns = 1
 
 while True:
     is_clicked = False
@@ -450,10 +451,12 @@ while True:
 
     ########### GAME ###########
     elif stage == 2:
-        n_turns = 1
+        
         
         if init == 1:
             init = 0
+
+            n_turns = 1
 
             icon_size =  (760/max(HEIGTH, WIDTH))/512
             tile_size = 900*0.9/max(HEIGTH, WIDTH)        
@@ -461,10 +464,23 @@ while True:
             tile_font_size = int(360/max(HEIGTH, WIDTH))
             font_list[0] = pg.font.Font('font/BlackRose.ttf', tile_font_size)
 
+            background_loading.draw_center(screen)
             map_gen = mg.MapGenerator(HEIGTH, WIDTH)
             m = mg.Map(map_gen)
             rows, cols = m.shape
             Map = m.value
+
+            m.map_print()
+            print(f"Agent coord: {m.jacksparrow.coord}")
+            print(f"Pirate coord: {m.pirate.coord}")
+            print(f"Treasure coord: {m.treasure}")
+            print()
+            log_list = []
+            log_box = ColoredSurface(500, 600, 'wheat1')
+            log_title.draw(log_box, 12, 5)
+            log_box.draw_center_horizontal(info_box, 25)
+
+            # update = 1
 
             m.map_print()
             print(f"Agent coord: {m.jacksparrow.coord}")
@@ -604,6 +620,7 @@ while True:
                 m = mg.Map(map_gen)
                 rows, cols = m.shape
                 Map = m.value
+                n_turns = 1
 
                 m.map_print()
                 print(f"Agent coord: {m.jacksparrow.coord}")
@@ -621,6 +638,9 @@ while True:
                 stage = 0
                 init = 1
                 print()
+            if scanned_button.rect.collidepoint(pg.mouse.get_pos()):
+                print(m.potential)
+                print()
             if value_button.rect.collidepoint(pg.mouse.get_pos()):
                 print(m.value)
                 print()
@@ -628,13 +648,15 @@ while True:
                 m.first_turn()
                 n_turns += 1
                 print()
+                print('yomom')
                 
                 update = 1
 
             if hint_button.rect.collidepoint(pg.mouse.get_pos()):
+                print(n_turns)
                 m.normal_turn(n_turns)
                 n_turns += 1
-                
+                print(m.logs)
                 update = 1
     pg.display.update() 
     clock.tick(60)
