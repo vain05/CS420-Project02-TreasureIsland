@@ -537,7 +537,7 @@ while True:
                 for j, value in enumerate(r):
                     tile = Button(tile_size, tile_size, default_tile_color, '', tile_font_size, tile_text_color)
                     
-                    if value == '0':
+                    if value == '~':
                         tile = Button(tile_size, tile_size, sea_color, '', tile_font_size, tile_text_color)
                     elif value == '_' or value in str_regions:
                         # if m.scanned[i][j] == 1:
@@ -601,13 +601,9 @@ while True:
                 print()
 
             if hint_button.rect.collidepoint(pg.mouse.get_pos()):
-                hint_type, trueness, data, log = m.generate_hint_2()
-                m.verify_hint(hint_type, trueness, data)
-                centers = m.kmeans_center(2)
-                print("Kmeans center: ", centers)
-                m.shortest_path(m.jacksparrow.coord, centers[0]) 
-                print(log)
-                log_card = Button(480, 30, button_color, log , 16, 'grey10')
+                m.first_turn()
+
+                log_card = Button(480, 30, button_color, self.logs, 16, 'grey10')
                 log_list.append(log_card)
                 update = 1
 

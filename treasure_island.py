@@ -884,6 +884,7 @@ class Map:
                     self.logs.append("HINT1: is_verified = TRUE, is_truth = TRUE")
 
                     self.verify_hint(hint_type, trueness, masked_tiles)
+                    print(hint_type, trueness, log)
 
                     break
                         
@@ -1033,7 +1034,7 @@ class Map:
         if step == np.inf:
             path = []
         
-        return step, path
+        return step, decode(path)
     
     def nearest_path(self, n_clusters: int) -> List[Tuple[str, int]]:
         centers = self.kmeans_center(n_clusters)
@@ -1056,6 +1057,7 @@ class Map:
         self.gen_1st_hint()
 
         path = self.nearest_path(n_clusters=2)
+        print(path)
         direction, n_steps = path[0]
 
         # first action
