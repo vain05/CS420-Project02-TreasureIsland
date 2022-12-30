@@ -450,6 +450,7 @@ while True:
 
     ########### GAME ###########
     elif stage == 2:
+        n_turns = 1
         
         if init == 1:
             init = 0
@@ -623,16 +624,15 @@ while True:
                 print(m.value)
                 print()
             if region_button.rect.collidepoint(pg.mouse.get_pos()):
-                print(m.potential)
+                m.first_turn()
+                n_turns += 1
                 print()
+                
+                update = 1
 
             if hint_button.rect.collidepoint(pg.mouse.get_pos()):
-                # m.first_turn()
-                hint_type, trueness, data, log = m.generate_hint_15()
-                print(m.mountain)
-                print(trueness, log)
-                m.verify_hint(hint_type, trueness, data)
-
+                m.normal_turn(n_turns)
+                n_turns += 1
                 
                 update = 1
     print(frame)

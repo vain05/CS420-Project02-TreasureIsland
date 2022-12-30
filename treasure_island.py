@@ -249,43 +249,16 @@ class Agent:
     def __init__(self, coord: Tuple[int, int]) -> None:
         self.coord = coord
     
-    def take_action(self):
-        raise NotImplementedError()
-    
 
 # %%
 class JackSparrow(Agent):
     def __init__(self, coord: Tuple[int, int]) -> None:
         super().__init__(coord)
-    
-    def take_action(self, potential: np.ndarray, scanned: np.ndarray, hints_list):
-        pass
-    
-    def move(self, direction: str, steps: int) -> None:
-        
-        coord = list(self.coord)
-
-        if direction == 'right':
-            coord[1] += steps
-        elif direction == 'left':
-            coord[1] -= steps
-        elif direction == 'up':
-            coord[0] -= steps
-        else:
-            coord[0] += steps
-        
-        self.coord = tuple(coord)
-    
-    def teleport(self, coord: Tuple[int, int]) -> None:
-        self.coord = coord
 
 # %%
 class Pirate(Agent):
     def __init__(self, coord: Tuple[int, int]) -> None:
         super().__init__(coord)
-    
-    def take_action(self):
-        pass
 
 class Node:
     def __init__(self, pt: Tuple[int, int], step: int):
@@ -309,7 +282,7 @@ class Map:
         self.mountain = np.unique(self.region[is_mountain])
 
         self.potential= np.ones((map.rows, map.cols), dtype=bool)
-        self.potential[self.region == 0] = False
+        self.potential[self.region == 0 | is_mountain] = False
 
         self.jacksparrow = JackSparrow(map.place_agent())
         # self.value[self.jacksparrow.coord] = 'A'
@@ -859,7 +832,27 @@ class Map:
         log = f"The treasure is in a region that has mountain"
 
         return "15", trueness, masked_titles, log
+
+    def move_jack(self, direction: str, steps: int) -> None:
+        
+        coord = list(self.jacksparrow.coord)
+
+        if direction == 'right':
+            coord[1] += steps
+        elif direction == 'left':
+            coord[1] -= steps
+        elif direction == 'up':
+            coord[0] -= steps
+        else:
+            coord[0] += steps
+
+        self.logs.append(f"The agent move {steps} steps to the {direction}")
+
+        self.jacksparrow.coord = tuple(coord)
     
+    def teleport(self, coord: Tuple[int, int]) -> None:
+        self.coord = coord
+
     def scan(self, size: int):
         start_row = max(self.jacksparrow.coord[0] - size // 2, 0)
 
@@ -868,6 +861,8 @@ class Map:
         start_col = max(self.jacksparrow.coord[1] - size // 2, 0)
 
         end_col = min(self.jacksparrow.coord[1] + size // 2, self.shape[1] - 1)
+        
+        self.logs.append(f"AGENT PERFOMED A [{size} x {size}] SCAN")
 
         self.potential[start_row: end_row + 1, start_col: end_col + 1] = False
 
@@ -885,8 +880,8 @@ class Map:
             _, trueness, masked_tiles, log = gen_hint()
 
             if trueness:
-                self.logs.append("ADD HINT1 TO HINT LIST")
                 self.logs.append(log)
+                self.logs.append("ADD HINT1 TO HINT LIST")
                 self.logs.append("HINT1: is_verified = TRUE, is_truth = TRUE")
 
                 self.verify_hint(hint_type, trueness, masked_tiles)
@@ -897,7 +892,7 @@ class Map:
     def hint_generator(self, n_turn: int):
         hint_type = str(rng.randint(1, 16))
         
-        trueness, masked_tiles, log = self.hints[hint_type]()
+        hint_type, trueness, masked_tiles, log = self.hints[hint_type]()
 
         self.hint_list.append((hint_type, trueness, masked_tiles))
 
@@ -945,8 +940,7 @@ class Map:
         rowDir = [-1, 0, 0, 1]
         colDir = [0, -1, 1, 0]
 
-        if not board[src[0]][src[1]].isdigit() and board[src[0]][src[1]] != 'p' \
-            or not board[dest[0]][dest[1]].isdigit() and board[dest[0]][dest[1]] != 'p':
+        if not board[src[0]][src[1]].isdigit() and board[src[0]][src[1]] != 'p':
             return [], np.inf
         
         visited = {}
@@ -1078,9 +1072,9 @@ class Map:
 
         # second action
         if n_steps > 2:
-            self.jacksparrow.move(direction, min(n_steps, 4))
+            self.move_jack(direction, min(n_steps, 4))
         else:
-            self.jacksparrow.move(direction, min(n_steps, 2))
+            self.move_jack(direction, min(n_steps, 2))
             if self.scan(3):
                 print("YOU WIN")
 
@@ -1100,16 +1094,27 @@ class Map:
         
         n_clusters = int(self.potential.sum() ** (1/3))
         path = self.nearest_path(n_clusters=max(2, n_clusters))
-        print(path)
         direction, n_steps = path[0]
-        
-        action_choice = rng.choice(np.arange(2)) 
 
-        # if action_choice:
-        #     move
-            
-        
-        
+        if n_actions == 2:
+            self.scan(5)
+            self.move_jack(direction, min(n_steps, 2))
+            self.scan(3)
+        else:
+            action_choice = rng.choice(np.arange(3)) 
+
+            if action_choice == 0:
+                self.move_jack(direction, min(n_steps, 2))
+                self.scan(3)
+            elif action_choice == 1:
+                self.scan(5)
+            else:
+                move_steps = min(n_steps, 4)
+                self.move_jack(direction, min(n_steps, 4))
+                
+                if move_steps < 3:
+                    self.scan(3)
+
     def operate(self) -> None:
         self.logs.append("Game start")
         self.logs.append(f"Agent appears at {self.jacksparrow.coord}")
