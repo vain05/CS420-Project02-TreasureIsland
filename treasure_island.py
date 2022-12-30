@@ -305,7 +305,8 @@ class Map:
         self.value = np.array(map.Map, dtype=str)
         self.value[self.value == '0'] = '~'
         self.region = np.array(map.region_map, dtype=int)
-        self.mountain = np.array(map.mountain_map, dtype=int)
+        is_mountain = np.array(map.mountain_map, dtype=bool)
+        self.mountain = np.unique(self.region[is_mountain])
 
         self.potential= np.ones((map.rows, map.cols), dtype=bool)
         self.potential[self.region == 0] = False
@@ -322,6 +323,8 @@ class Map:
         self.logs = []
 
         self.hint_list = []
+
+        self.is_win = False
 
         self.veri_important = {"1", "3", "5", "8"}
 
@@ -870,6 +873,7 @@ class Map:
 
         if start_row <= self.treasure[0] <= end_row and start_col <= self.treasure[1] <= end_col:
             self.logs.append("YOU WIN")
+            self.is_win = True
             return True
 
         return False
@@ -891,11 +895,11 @@ class Map:
                 break
                         
     def hint_generator(self, n_turn: int):
-        key = str(rng.randint(1, 16))
+        hint_type = str(rng.randint(1, 16))
         
-        trueness, masked_tiles, log = self.hints[key]()
+        trueness, masked_tiles, log = self.hints[hint_type]()
 
-        self.hint_list.append((key, trueness, masked_tiles))
+        self.hint_list.append((hint_type, trueness, masked_tiles))
 
         self.logs.append(f"HINT{n_turn}: The agent receives a hint:" + f"{log}")
         self.logs.append(f"ADD HINT{n_turn} TO HINT LIST")
@@ -921,129 +925,110 @@ class Map:
         
         self.apply_masked_tiles(trueness, masked_tiles)
 
-    def choose_direction(self) -> str:
-        x_coord, y_coord = self.jacksparrow.coord
+    # def choose_direction(self) -> str:
+    #     x_coord, y_coord = self.jacksparrow.coord
 
-        # top_left = self.potential[0:x_coord + 1, 0:y_coord + 1]
-        # bottom_left = self.potential[x_coord:, 0:y_coord + 1]
-
-        # top_right = self.potential[0:x_coord + 1, y_coord:]
-        # bottom_right = self.potential[x_coord:, y_coord:]
-
-        dir = ["N", "W", "S", "E"]
+    #     dir = ["N", "W", "S", "E"]
         
-        north = self.potential[:x_coord + 1, :].sum()
-        west = self.potential[:, :y_coord + 1].sum()
-        south = self.potential[x_coord:, :].sum()
-        east = self.potential[:, y_coord:].sum()
+    #     north = self.potential[:x_coord + 1, :].sum()
+    #     west = self.potential[:, :y_coord + 1].sum()
+    #     south = self.potential[x_coord:, :].sum()
+    #     east = self.potential[:, y_coord:].sum()
 
-        direction = np.array([north, west, south, east])
-        return dir[direction.argmax()]
+    #     direction = np.array([north, west, south, east])
+    #     return dir[direction.argmax()]
 
-    def kmeans_center(self, n_clusters) -> List[Tuple[int, int]]:
-        true_index = np.where(self.potential)
-        points = list(zip(true_index[0], true_index[1]))
-
-        kmeans = KMeans(n_clusters)
-        kmeans.fit(points)
-
-        closest, _ = pairwise_distances_argmin_min(kmeans.cluster_centers_, points)
-        print("centers: ", kmeans.cluster_centers_)
-        print("closest: ", closest)
-
-        return [points[i] for i in closest]
-
-    def shortest_path(self, source, dest):
-        def isValid(row: int, col: int):
+    def isValid(self, row: int, col: int):
             return (row >= 0) and (row < self.shape[0]) and (col >= 0) and (col < self.shape[1])
         
-        def BFS(board, src: Tuple[int, int], dest: Tuple[int, int]):
-            rowDir = [-1, 0, 0, 1]
-            colDir = [0, -1, 1, 0]
+    def BFS(self, board, src: Tuple[int, int], dest: Tuple[int, int]):
+        rowDir = [-1, 0, 0, 1]
+        colDir = [0, -1, 1, 0]
 
-            if not board[src[0]][src[1]].isdigit() and board[src[0]][src[1]] != 'p' \
-                or not board[dest[0]][dest[1]].isdigit() and board[dest[0]][dest[1]] != 'p':
-                return [], np.inf
-            
-            visited = {}
-            
-            visited[src] = (-1, -1)
-            
-            q = deque()
-            
-            s = Node(src, 0)
-            q.append(s)
-
-            while q:
-                front = q.popleft()
-                
-                pt = front.pt
-                if pt == dest:
-                    path = []
-                    while pt[0] != -1:
-                        path.append(pt)
-                        pt = visited[pt]
-                    path.reverse()
-                    return path, front.step
-                
-                for i in range(4):
-                    row = pt[0] + rowDir[i]
-                    col = pt[1] + colDir[i]
-                    
-                    if isValid(row, col) and (board[row][col].isdigit() or board[row][col] == 'p') and not (row, col) in visited:
-                        visited[(row, col)] = pt
-                        neighbor = Node((row, col), front.step + 1)
-                        q.append(neighbor)
-            
+        if not board[src[0]][src[1]].isdigit() and board[src[0]][src[1]] != 'p' \
+            or not board[dest[0]][dest[1]].isdigit() and board[dest[0]][dest[1]] != 'p':
             return [], np.inf
-
-        def decode(path):
-            if not path:
-                return []
-
-            tmp = []
-            direction = {
-                (-1, 0): 'up',
-                (0, 1): 'right',
-                (0, -1): 'left',
-                (1, 0): 'down'
-            }
-            n = len(path)
-            for i in range(1, n):
-                tmp_x, tmp_y = path[i][0] - path[i-1][0], path[i][1] - path[i-1][1]
-                tmp.append(direction[(tmp_x, tmp_y)])
-
-            dirArray = []
-            countArray = []
-            count = 1
-            
-            if not len(tmp):
-                return []
-
-            for j in range(len(tmp) - 1):
-                if tmp[j] != tmp[j + 1]:
-                    dirArray.append(tmp[j])
-                    countArray.append(count)
-                    count = 1
-            
-                else:
-                    count += 1
-            
-            dirArray.append(tmp[-1])
-            countArray.append(count)
-
-            res = []
-            for x, y in zip(dirArray, countArray):
-                res.append((x, y))
-
-            return res
         
-        path, step = BFS(self.value, source,dest)
+        visited = {}
+        
+        visited[src] = (-1, -1)
+        
+        q = deque()
+        
+        s = Node(src, 0)
+        q.append(s)
+
+        while q:
+            front = q.popleft()
+            
+            pt = front.pt
+            if pt == dest:
+                path = []
+                while pt[0] != -1:
+                    path.append(pt)
+                    pt = visited[pt]
+                path.reverse()
+                return path, front.step
+            
+            for i in range(4):
+                row = pt[0] + rowDir[i]
+                col = pt[1] + colDir[i]
+                
+                if self.isValid(row, col) and (board[row][col].isdigit() or board[row][col] == 'p') and not (row, col) in visited:
+                    visited[(row, col)] = pt
+                    neighbor = Node((row, col), front.step + 1)
+                    q.append(neighbor)
+        
+        return [], np.inf
+
+    def decode(self, path):
+        if not path:
+            return []
+
+        tmp = []
+        direction = {
+            (-1, 0): 'up',
+            (0, 1): 'right',
+            (0, -1): 'left',
+            (1, 0): 'down'
+        }
+        n = len(path)
+        for i in range(1, n):
+            tmp_x, tmp_y = path[i][0] - path[i-1][0], path[i][1] - path[i-1][1]
+            tmp.append(direction[(tmp_x, tmp_y)])
+
+        dirArray = []
+        countArray = []
+        count = 1
+        
+        if not len(tmp):
+            return []
+
+        for j in range(len(tmp) - 1):
+            if tmp[j] != tmp[j + 1]:
+                dirArray.append(tmp[j])
+                countArray.append(count)
+                count = 1
+        
+            else:
+                count += 1
+        
+        dirArray.append(tmp[-1])
+        countArray.append(count)
+
+        res = []
+        for x, y in zip(dirArray, countArray):
+            res.append((x, y))
+
+        return res
+    
+    def shortest_path(self, source, dest):
+        path, step = self.BFS(self.value, source,dest)
 
         if step == np.inf:
             path = []
         
-        return step, decode(path)
+        return step, self.decode(path)
     
     def nearest_path(self, n_clusters: int) -> List[Tuple[str, int]]:
         centers = self.kmeans_center(n_clusters)
@@ -1063,10 +1048,23 @@ class Map:
 
         return min_path
 
+    def kmeans_center(self, n_clusters) -> List[Tuple[int, int]]:
+        true_index = np.where(self.potential)
+        points = list(zip(true_index[0], true_index[1]))
+
+        kmeans = KMeans(n_clusters)
+        kmeans.fit(points)
+
+        closest, _ = pairwise_distances_argmin_min(kmeans.cluster_centers_, points)
+        print("centers: ", kmeans.cluster_centers_)
+        print("closest: ", closest)
+
+        return [points[i] for i in closest]
+
     def first_turn(self) -> None:
         self.logs.append("START TURN 1")
 
-        # start first turn 
+        # generate first hint
         self.gen_1st_hint()
 
         n_clusters = int(self.potential.sum() ** (1/3))
@@ -1085,6 +1083,32 @@ class Map:
             self.jacksparrow.move(direction, min(n_steps, 2))
             if self.scan(3):
                 print("YOU WIN")
+
+    def normal_turn(self, n_turns) -> None:
+        self.logs.append(f"START TURN {n_turns}")
+
+        # generate a hint at the beginning of turn
+        self.hint_generator(n_turns)
+
+        n_actions = 2
+
+        if rng.rand() > 0.7:
+            number = rng.randint(len(self.hint_list)) 
+            hint_type, trueness, masked_tiles = self.hint_list[number]
+            self.verify_hint(hint_type, trueness, masked_tiles)
+            n_actions -= 1
+        
+        n_clusters = int(self.potential.sum() ** (1/3))
+        path = self.nearest_path(n_clusters=max(2, n_clusters))
+        print(path)
+        direction, n_steps = path[0]
+        
+        action_choice = rng.choice(np.arange(2)) 
+
+        # if action_choice:
+        #     move
+            
+        
         
     def operate(self) -> None:
         self.logs.append("Game start")
@@ -1106,3 +1130,7 @@ class Map:
 
             # the first hint is supposed to be true
             self.hint_generator(n_turn)
+            
+# %%
+np.random.rand()
+# %%

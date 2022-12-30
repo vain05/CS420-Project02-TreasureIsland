@@ -601,7 +601,11 @@ while True:
                 print()
 
             if hint_button.rect.collidepoint(pg.mouse.get_pos()):
-                m.first_turn()
+                # m.first_turn()
+                hint_type, trueness, data, log = m.generate_hint_15()
+                print(m.mountain)
+                print(trueness, log)
+                m.verify_hint(hint_type, trueness, data)
 
                 # log_card = Button(480, 30, button_color, self.logs, 16, 'grey10')
                 # log_list.append(log_card)
