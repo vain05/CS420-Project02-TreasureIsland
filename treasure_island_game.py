@@ -525,6 +525,10 @@ while True:
         if update == 1:
             update = 0
 
+            for log in m.logs:
+                log_card = Button(480, 30, button_color, log, 16, 'grey10')
+                log_list.append(log_card)
+
             if len(log_list) <= 14:
                 for i in range(0, len(log_list)):
                     log_list[i].draw_center_horizontal(log_box, 40 + 40*i)
@@ -607,8 +611,7 @@ while True:
                 print(trueness, log)
                 m.verify_hint(hint_type, trueness, data)
 
-                # log_card = Button(480, 30, button_color, self.logs, 16, 'grey10')
-                # log_list.append(log_card)
+                
                 update = 1
 
     pg.display.update() 
