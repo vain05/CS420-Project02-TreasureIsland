@@ -455,7 +455,7 @@ while True:
         
         if init == 1:
             init = 0
-
+            update = 1
             n_turns = 1
 
             icon_size =  (760/max(HEIGTH, WIDTH))/512
