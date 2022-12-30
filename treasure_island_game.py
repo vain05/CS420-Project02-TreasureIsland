@@ -566,10 +566,10 @@ while True:
                 log_list.append(log_card)
 
             if len(log_list) <= 14:
-                for i in range(0, len(log_list) - 1):
+                for i in range(0, len(log_list)):
                     log_list[i].draw_center_horizontal(log_box, 40 + 40*i)
             else:
-                for i in reversed(range(len(log_list) - 14, len(log_list) - 1)):     
+                for i in reversed(range(len(log_list) - 14, len(log_list))):     
                     log_list[i].draw_center_horizontal(log_box, 40 + 40*(i-(len(log_list) - 14)))    
 
             str_regions =  [str(i) for i in range(1, m.total_region + 1)]     
@@ -593,7 +593,7 @@ while True:
                     
                     tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     
-                    if (i,j) == m.pirate.coord and m.is_free:
+                    if (i,j) == m.pirate.coord and n_turns >= m.reveal_turn:
                         pirate_icon = ImageSurface('asset/pirate.png', icon_size)
                         pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     if (i,j) == m.treasure and m.potential[i][j] == 0:
@@ -651,10 +651,15 @@ while True:
 
             if hint_button.rect.collidepoint(pg.mouse.get_pos()):
                 print(n_turns)
-                
-                while not m.is_win:
+
+                if n_turns == 1:
+                    m.first_turn()
+                    n_turns += 1
+                    update = 1
+                else:
                     m.normal_turn(n_turns)
                     n_turns += 1
+                    update = 1
 
                 update = 1
     pg.display.update() 
