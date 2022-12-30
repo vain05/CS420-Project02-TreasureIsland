@@ -310,7 +310,8 @@ class Map:
 
         self.is_free = False
 
-        self.pirate_path = self.shortest_path(self.pirate.coord, self.treasure)
+        steps, pirate_path = self.shortest_path(self.pirate.coord, self.treasure)
+        self.pirate_path = deque(pirate_path)
 
         self.logs.append("The pirate’s prison is going to reveal the coordinate")
         self.logs.append(f"at the beginning of turn number {self.reveal_turn}")
@@ -412,7 +413,6 @@ class Map:
         # number of regions
         no_reg = rng.randint(2, 6)
         rand_regions = rng.choice(np.arange(1, self.total_region + 1), size=no_reg, replace=False)
-        print(rand_regions)
 
         # get region that overlaps with the treasure's region
         overlap = rand_regions == self.region[self.treasure]
@@ -441,7 +441,6 @@ class Map:
         # number of regions
         no_reg = rng.randint(1, 3)
         rand_regions = rng.choice(np.arange(1, self.total_region + 1), size=no_reg, replace=False)
-        print(rand_regions)
 
         # get region that overlaps with the treasure's region
         overlap = rand_regions == self.region[self.treasure]
@@ -519,7 +518,6 @@ class Map:
 
         # trueness of this hint
         trueness = agent_treasure < pirate_treasure
-        print(trueness)
 
         log = "You are the nearest person to the treasure"
 
@@ -593,7 +591,6 @@ class Map:
 
         #random two regions
         rand_regions = rng.choice(np.arange(1, self.total_region + 1), size=2, replace=False)
-        print(rand_regions)
                 
         # get region that overlaps with the treasure's region
         # overlap = rand_regions == self.region[self.treasure]
@@ -835,7 +832,6 @@ class Map:
 
         # if list of mountain region contain the region of the treasure
         overlap = self.mountain == self.region[self.treasure]
-        print(overlap)
 
         # get all tiles that is in mountain region
         masked_titles = np.isin(self.region, self.mountain)
@@ -867,6 +863,24 @@ class Map:
     
     def teleport(self, coord: Tuple[int, int]) -> None:
         self.coord = coord
+        self.logs.append(f"The agent teleport to {coord}")
+    
+    def move_pirate(self, direction: str, steps: int) -> None:
+        
+        coord = list(self.pirate.coord)
+
+        if direction == 'EAST':
+            coord[1] += steps
+        elif direction == 'WEST':
+            coord[1] -= steps
+        elif direction == 'NORTH':
+            coord[0] -= steps
+        else:
+            coord[0] += steps
+
+        self.logs.append(f"The pirate move {steps} steps to the {direction}")
+
+        self.pirate.coord = tuple(coord)
 
     def scan(self, size: int):
         start_row = max(self.jacksparrow.coord[0] - size // 2, 0)
@@ -899,7 +913,6 @@ class Map:
                 self.logs.append("ADD HINT1 TO HINT LIST")
 
                 self.verify_hint(1, hint_type, trueness, masked_tiles)
-                print(hint_type, trueness, log)
 
                 break
                         
@@ -1052,7 +1065,6 @@ class Map:
                 continue
 
             n_steps, path = self.shortest_path(self.jacksparrow.coord, center)
-            print(path)
             if n_steps < min_steps:
                 min_steps = n_steps
                 min_path = path
@@ -1067,8 +1079,6 @@ class Map:
         kmeans.fit(points)
 
         closest, _ = pairwise_distances_argmin_min(kmeans.cluster_centers_, points)
-        print("centers: ", kmeans.cluster_centers_)
-        print("closest: ", closest)
 
         return [points[i] for i in closest]
 
@@ -1080,27 +1090,19 @@ class Map:
 
         n_clusters = int(self.potential.sum() ** (1/3))
         path = self.nearest_path(n_clusters=max(2, n_clusters))
-        print(path)
         direction, n_steps = path[0]
 
         # first action
-        if self.scan(5):
-            print("YOU WIN")
+        self.scan(5)
 
         # second action
         if n_steps > 2:
             self.move_jack(direction, min(n_steps, 4))
         else:
             self.move_jack(direction, min(n_steps, 2))
-            if self.scan(3):
-                print("YOU WIN")
+            self.scan(3)
 
     def normal_turn(self, n_turns) -> None:
-        self.logs.append(f"START TURN {n_turns}")
-
-        # generate a hint at the beginning of turn
-        self.hint_generator(n_turns)
-
         n_actions = 2
 
         if rng.rand() > 0.7:
@@ -1130,6 +1132,24 @@ class Map:
                 
                 if move_steps < 3:
                     self.scan(3)
+
+    def pirate_action(self) -> None:
+        if self.pirate_path:
+            direction, n_steps = self.pirate_path[0]
+            steps = min(n_steps, 2)
+            self.move_pirate(direction, min(n_steps, 2))
+
+            if self.pirate.coord == self.treasure:
+                self.logs.append("YOU LOSE, THE PIRATE FOUND THE TREASURE")
+                self.is_lose = True
+
+            n_steps -= steps
+
+            if n_steps == 0:
+                self.pirate_path.popleft()
+            else:
+                self.pirate_path[0] = direction, n_steps
+
 
     def operate(self) -> None:
         # first turn

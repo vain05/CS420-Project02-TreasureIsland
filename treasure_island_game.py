@@ -545,9 +545,6 @@ while True:
                         agent_icon = ImageSurface('asset/agent.png', icon_size)
                         agent_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
 
-                    j += 1
-                i += 1
-        
         background.draw_center(screen)
         info_box.draw_center_vertical(screen, 1025)
         log_box.draw_center_horizontal(info_box, 25)
@@ -593,18 +590,16 @@ while True:
                     
                     tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     
-                    if (i,j) == m.pirate.coord and n_turns >= m.reveal_turn:
-                        pirate_icon = ImageSurface('asset/pirate.png', icon_size)
-                        pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
-                    if (i,j) == m.treasure and m.potential[i][j] == 0:
-                        treasure_icon = ImageSurface('asset/treasure.png', icon_size)
-                        treasure_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     if (i,j) == m.jacksparrow.coord:                    
                         agent_icon = ImageSurface('asset/agent.png', icon_size)
                         agent_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    if (i,j) == m.pirate.coord and n_turns >= m.reveal_turn:
+                        pirate_icon = ImageSurface('asset/pirate.png', icon_size)
+                        pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    if (i,j) == m.treasure and (m.potential[i][j] == 0 or m.treasure == m.pirate.coord):
+                        treasure_icon = ImageSurface('asset/treasure.png', icon_size)
+                        treasure_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
 
-                    j += 1
-                i += 1
         if is_clicked:
             if play_button.rect.collidepoint(pg.mouse.get_pos()):
                 pass
@@ -633,35 +628,66 @@ while True:
                 stage = 0
                 init = 1
                 print()
+
             if scanned_button.rect.collidepoint(pg.mouse.get_pos()):
                 print(m.potential)
                 print()
+
             if update_button.rect.collidepoint(pg.mouse.get_pos()):
                 update = 1
                 print('Updated\n')
+
             if value_button.rect.collidepoint(pg.mouse.get_pos()):
                 print(m.value)
                 print()
+
             if region_button.rect.collidepoint(pg.mouse.get_pos()):
-                while not m.is_win:
+                while not m.is_lose and not m.is_win:
+                    m.logs.append(f"START TURN {n_turns}")
+
+                    # generate a hint at the beginning of turn
+                    m.hint_generator(n_turns)
+                    if n_turns == m.reveal_turn:
+                        m.logs.append(f"The pirate is at the {m.pirate.coord} prison")
+                    
+                    if n_turns >= m.free_turn:
+                        if n_turns == m.free_turn:
+                            m.logs.append(f"The pirate is free")
+                        m.pirate_action()
+
                     if n_turns == 1:
                         m.first_turn()
                         n_turns += 1
-                        update = 1
                     else:
                         m.normal_turn(n_turns)
                         n_turns += 1
-                        update = 1
+
+                    update = 1
+                    print(m.logs, '\n')
 
             if hint_button.rect.collidepoint(pg.mouse.get_pos()):
-                if n_turns == 1:
-                    m.first_turn()
-                    n_turns += 1
+                if not m.is_lose and not m.is_win:
+                    m.logs.append(f"START TURN {n_turns}")
+
+                    # generate a hint at the beginning of turn
+                    m.hint_generator(n_turns)
+                    if n_turns == m.reveal_turn:
+                        m.logs.append(f"The pirate is at the {m.pirate.coord} prison")
+                    
+                    if n_turns >= m.free_turn:
+                        if n_turns == m.free_turn:
+                            m.logs.append(f"The pirate is free")
+                        m.pirate_action()
+
+                    if n_turns == 1:
+                        m.first_turn()
+                        n_turns += 1
+                    else:
+                        m.normal_turn(n_turns)
+                        n_turns += 1
+
                     update = 1
-                else:
-                    m.normal_turn(n_turns)
-                    n_turns += 1
-                    update = 1
+                    print(m.logs, '\n')
 
     pg.display.update() 
     clock.tick(60)
