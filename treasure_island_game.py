@@ -5,6 +5,32 @@ import time
 
 import treasure_island as mg
 
+###########################################################################################
+HEIGTH, WIDTH = 16, 16
+###########################################################################################
+
+#Colors
+default_tile_color = 'azure'
+tile_text_color = 'grey1'
+sea_color = 'SteelBlue1'
+land_color = 'forest green'
+mountain_color = 'dark slate gray'
+prison_color = 'indian red'
+scanned_color = 'DarkSeaGreen1'
+# potential_color = 'LightGoldenrod1'
+
+main_color = 'NavajoWhite2'
+secondary_color = 'burlywood2'
+button_color = 'burlywood3'
+button_text_color = 'tan4'
+#Sizes
+icon_size =  (760/max(HEIGTH, WIDTH))/512
+tile_size = 900*0.9/max(HEIGTH, WIDTH)        
+gap_size = 900*0.1/(max(HEIGTH, WIDTH) - 1)
+tile_font_size = int(360/max(HEIGTH, WIDTH))
+
+###########################################################################################
+
 def get_center(surface, parent_surface):
     return (parent_surface.surface.get_width() - surface.width) // 2, (parent_surface.surface.get_height() - surface.height) // 2
 
@@ -133,7 +159,9 @@ class ImageSurface:
     def draw(self, parent_surface, x, y):
         parent_surface.surface.blit(self.surface, (x,y))
         self.rect.topleft = (parent_surface.rect.left + x, parent_surface.rect.top + y)
-        
+
+font_list = []    
+
 class Text:
     def __init__(
         self,
@@ -141,8 +169,7 @@ class Text:
         size: int,
         color: str
     ) -> None:
-        self.font = pg.font.Font('font/BlackRose.ttf', size)
-        self.surface = self.font.render(text, True, color)
+        self.surface = font_list[size].render(text, True, color)
         self.rect = self.surface.get_rect()
         self.width, self.height = self.surface.get_size()
         self.parent_surface = None
@@ -242,35 +269,32 @@ class Button:
             if self.rect.collidepoint(pg.mouse.get_pos()):
                 return True
         return False
-
-###########################################################################################
-HEIGTH, WIDTH = 16, 16
-
-
 ###########################################################################################
 
-#Colors
-default_tile_color = 'azure'
-tile_text_color = 'grey1'
-sea_color = 'SteelBlue1'
-land_color = 'forest green'
-mountain_color = 'dark slate gray'
-prison_color = 'indian red'
-scanned_color = 'DarkSeaGreen1'
-# potential_color = 'LightGoldenrod1'
-
-main_color = 'NavajoWhite2'
-secondary_color = 'burlywood2'
-button_color = 'burlywood3'
-button_text_color = 'tan4'
-#Sizes
-icon_size =  (760/max(HEIGTH, WIDTH))/512
-tile_size = 900*0.9/max(HEIGTH, WIDTH)        
-gap_size = 900*0.1/(max(HEIGTH, WIDTH) - 1)
-tile_font_size = int(360/max(HEIGTH, WIDTH))
-
-###########################################################################################
 pg.init()
+
+###########################################################################################
+
+font1 = pg.font.Font('font/BlackRose.ttf', tile_font_size)
+font_list.append(font1)
+font1 = pg.font.Font('font/BlackRose.ttf', 30)
+font_list.append(font1)
+font1 = pg.font.Font('font/BlackRose.ttf', 35)
+font_list.append(font1)
+font1 = pg.font.Font('font/BlackRose.ttf', 45)
+font_list.append(font1)
+font1 = pg.font.Font('font/BlackRose.ttf', 55)
+font_list.append(font1)
+font1 = pg.font.Font('font/BlackRose.ttf', 80)
+font_list.append(font1)
+font1 = pg.font.Font('font/BlackRose.ttf', 100)
+font_list.append(font1)
+font1 = pg.font.Font('font/BlackRose.ttf', 220)
+font_list.append(font1)
+font1 = pg.font.Font('font/BlackRose.ttf', 16)
+font_list.append(font1)
+
+###########################################################################################
 
 
 pg.display.set_caption('Treasure Island')
@@ -286,44 +310,42 @@ background_loading = ImageSurface('asset/background.jpg',1.1848)
 ########### MENU ###########
 menu_box = ColoredSurface(550, 800, main_color)
 
-start_font = pg.font.Font('font/BlackRose.ttf', 80)
+start_button = Button(400, 100, button_color, 'Start', 5, button_text_color)
+setting_button = Button(400, 100, button_color, 'Setting', 5, button_text_color)
+quit_button = Button(400, 100, button_color, 'Quit', 5, button_text_color)
 
-start_button = Button(400, 100, button_color, 'Start', 80, button_text_color)
-setting_button = Button(400, 100, button_color, 'Setting', 80, button_text_color)
-quit_button = Button(400, 100, button_color, 'Quit', 80, button_text_color)
-
-loading = Button(1200, 750, button_color, 'Loading...', 220, button_text_color)
+loading = Button(1200, 750, button_color, 'Loading...', 6, button_text_color)
 loading.draw_center(background_loading)
 
 ########### SETTING ###########
 
 setting_box = ColoredSurface(550, 800, main_color)
-x16_button = Button(120,80, button_color, '16x16', 45, button_text_color)
-x32_button = Button(120,80, button_color, '32x32', 45, button_text_color)
-x64_button = Button(120,80, button_color, '64x64', 45, button_text_color)
-custom_height = Button(150,150, button_text_color, str(HEIGTH), 80, main_color)
-custom_width = Button(150,150, button_text_color, str(WIDTH), 80, main_color)
-h_minus_button = Button(150, 150, main_color, '<', 100, button_text_color)
-h_plus_button = Button(150, 150, main_color, '>', 100, button_text_color)
-w_minus_button = Button(150, 150, main_color, '<', 100, button_text_color)
-w_plus_button = Button(150, 150, main_color, '>', 100, button_text_color)
-back_setting_button = Button(400, 100, button_color, 'Back', 80, button_text_color)
+x16_button = Button(120,80, button_color, '16x16', 3, button_text_color)
+x32_button = Button(120,80, button_color, '32x32', 3, button_text_color)
+x64_button = Button(120,80, button_color, '64x64', 3, button_text_color)
+custom_height = Button(150,150, button_text_color, str(HEIGTH), 5, main_color)
+custom_width = Button(150,150, button_text_color, str(WIDTH), 5, main_color)
+h_minus_button = Button(150, 150, main_color, '<', 6, button_text_color)
+h_plus_button = Button(150, 150, main_color, '>', 6, button_text_color)
+w_minus_button = Button(150, 150, main_color, '<', 6, button_text_color)
+w_plus_button = Button(150, 150, main_color, '>', 6, button_text_color)
+back_setting_button = Button(400, 100, button_color, 'Back', 5, button_text_color)
 ########### GAME ###########
 game_box = ColoredSurface(950, 950, main_color)
 game_inner_box = ColoredSurface(925, 925, button_color)
 info_box = ColoredSurface(550, 950, secondary_color)
 log_box = ColoredSurface(500, 600, 'wheat1')
-log_title = Text('Log', 35, tile_text_color)
+log_title = Text('Log', 2, tile_text_color)
 
-play_button = Button(500, 50, button_color, 'Play', 55, button_text_color)
-regenerate_button = Button(500, 50, button_color, 'New Map', 55, button_text_color)
-back_button = Button(500, 50, button_color, 'Back', 55, button_text_color)
+play_button = Button(500, 50, button_color, 'Play', 4, button_text_color)
+regenerate_button = Button(500, 50, button_color, 'New Map', 4, button_text_color)
+back_button = Button(500, 50, button_color, 'Back', 4, button_text_color)
 
-scanned_button = Button(80, 50, button_color, 'Scan', 30, button_text_color)
-potential_button = Button(80, 50, button_color, 'Potential', 30, button_text_color)
-value_button = Button(80, 50, button_color, 'value', 30, button_text_color)
-region_button = Button(80, 50, button_color, 'region', 30, button_text_color)
-hint_button = Button(80, 50, button_color, 'HINT', 30, button_text_color)
+scanned_button = Button(80, 50, button_color, 'Scan', 1, button_text_color)
+potential_button = Button(80, 50, button_color, 'Potential', 1, button_text_color)
+value_button = Button(80, 50, button_color, 'value', 1, button_text_color)
+region_button = Button(80, 50, button_color, 'region', 1, button_text_color)
+hint_button = Button(80, 50, button_color, 'HINT', 1, button_text_color)
 
 stage = 0
 log_list = []
@@ -421,9 +443,9 @@ while True:
             if w_plus_button.rect.collidepoint(pg.mouse.get_pos()):
                 WIDTH += 1
 
-            custom_height = Button(150,150, button_text_color, str(HEIGTH), 80, main_color)
+            custom_height = Button(150,150, button_text_color, str(HEIGTH), 5, main_color)
             custom_height.draw(setting_box, 200, 250)
-            custom_width = Button(150,150, button_text_color, str(WIDTH), 80, main_color)
+            custom_width = Button(150,150, button_text_color, str(WIDTH), 5, main_color)
             custom_width.draw(setting_box, 200, 450)
 
     ########### GAME ###########
@@ -452,7 +474,7 @@ while True:
             game_inner_box = ColoredSurface(925, 925, button_color)
             info_box = ColoredSurface(550, 950, secondary_color)
             log_box = ColoredSurface(500, 600, 'wheat1')
-            log_title = Text('Log', 35, tile_text_color)
+            log_title = Text('Log', 2, tile_text_color)
 
             background.draw_center(screen)
             
@@ -485,21 +507,21 @@ while True:
             str_regions =  [str(i) for i in range(1, m.total_region + 1)]     
             for i, r in enumerate(Map):
                 for j, value in enumerate(r):
-                    tile = Button(tile_size, tile_size, default_tile_color, '', tile_font_size, tile_text_color)
+                    tile = Button(tile_size, tile_size, default_tile_color, '', 0, tile_text_color)
                     
                     if value == '~':
-                        tile = Button(tile_size, tile_size, sea_color, '', tile_font_size, tile_text_color)
+                        tile = Button(tile_size, tile_size, sea_color, '', 0, tile_text_color)
                     elif value == '_' or value in str_regions:
                         # if m.scanned[i][j] == 1:
-                        #     tile = Button(tile_size, tile_size, scanned_color, str(value), tile_font_size, tile_text_color)
+                        #     tile = Button(tile_size, tile_size, scanned_color, str(value), 0, tile_text_color)
                         if m.potential[i][j] == 0:
-                            tile = Button(tile_size, tile_size, scanned_color, str(value), tile_font_size, tile_text_color)
+                            tile = Button(tile_size, tile_size, scanned_color, str(value), 0, tile_text_color)
                         else: 
-                            tile = Button(tile_size, tile_size, land_color, str(value), tile_font_size, tile_text_color)
+                            tile = Button(tile_size, tile_size, land_color, str(value), 0, tile_text_color)
                     elif value == 'M':
-                        tile = Button(tile_size, tile_size, mountain_color, str(value), tile_font_size, tile_text_color)
+                        tile = Button(tile_size, tile_size, mountain_color, str(value), 0, tile_text_color)
                     elif value == 'p':
-                        tile = Button(tile_size, tile_size, prison_color, str(value), tile_font_size, tile_text_color)
+                        tile = Button(tile_size, tile_size, prison_color, str(value), 0, tile_text_color)
                     
                     tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     
@@ -525,8 +547,9 @@ while True:
         if update == 1:
             update = 0
 
+
             for log in m.logs:
-                log_card = Button(480, 30, button_color, log, 16, 'grey10')
+                log_card = Button(480, 30, button_color, log, 8, 'grey10')
                 log_list.append(log_card)
 
             if len(log_list) <= 14:
@@ -539,21 +562,21 @@ while True:
             str_regions =  [str(i) for i in range(1, m.total_region + 1)]     
             for i, r in enumerate(Map):
                 for j, value in enumerate(r):
-                    tile = Button(tile_size, tile_size, default_tile_color, '', tile_font_size, tile_text_color)
+                    tile = Button(tile_size, tile_size, default_tile_color, '', 0, tile_text_color)
                     
                     if value == '~':
-                        tile = Button(tile_size, tile_size, sea_color, '', tile_font_size, tile_text_color)
+                        tile = Button(tile_size, tile_size, sea_color, '', 0, tile_text_color)
                     elif value == '_' or value in str_regions:
                         # if m.scanned[i][j] == 1:
-                        #     tile = Button(tile_size, tile_size, scanned_color, str(value), tile_font_size, tile_text_color)
+                        #     tile = Button(tile_size, tile_size, scanned_color, str(value), 0, tile_text_color)
                         if m.potential[i][j] == 0:
-                            tile = Button(tile_size, tile_size, scanned_color, str(value), tile_font_size, tile_text_color)
+                            tile = Button(tile_size, tile_size, scanned_color, str(value), 0, tile_text_color)
                         else: 
-                            tile = Button(tile_size, tile_size, land_color, str(value), tile_font_size, tile_text_color)
+                            tile = Button(tile_size, tile_size, land_color, str(value), 0, tile_text_color)
                     elif value == 'M':
-                        tile = Button(tile_size, tile_size, mountain_color, str(value), tile_font_size, tile_text_color)
+                        tile = Button(tile_size, tile_size, mountain_color, str(value), 0, tile_text_color)
                     elif value == 'p':
-                        tile = Button(tile_size, tile_size, prison_color, str(value), tile_font_size, tile_text_color)
+                        tile = Button(tile_size, tile_size, prison_color, str(value), 0, tile_text_color)
                     
                     tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     
@@ -569,7 +592,6 @@ while True:
 
                     j += 1
                 i += 1
-
         if is_clicked:
             if play_button.rect.collidepoint(pg.mouse.get_pos()):
                 pass
@@ -613,6 +635,7 @@ while True:
 
                 
                 update = 1
-
+    print(frame)
+    frame += 1
     pg.display.update() 
     clock.tick(60)
