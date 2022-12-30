@@ -342,7 +342,7 @@ regenerate_button = Button(500, 50, button_color, 'New Map', 4, button_text_colo
 back_button = Button(500, 50, button_color, 'Back', 4, button_text_color)
 
 scanned_button = Button(80, 50, button_color, 'Scan', 1, button_text_color)
-potential_button = Button(80, 50, button_color, 'Potential', 1, button_text_color)
+update_button = Button(80, 50, button_color, 'Update', 1, button_text_color)
 value_button = Button(80, 50, button_color, 'value', 1, button_text_color)
 region_button = Button(80, 50, button_color, 'region', 1, button_text_color)
 hint_button = Button(80, 50, button_color, 'HINT', 1, button_text_color)
@@ -506,21 +506,13 @@ while True:
             back_button.draw_center_horizontal(info_box, 875)
 
             scanned_button.draw(info_box, 25 ,650)
-            scanned_button.draw(info_box, 130,650)
+            update_button.draw(info_box, 130,650)
             value_button.draw(info_box, 235,650)
             region_button.draw(info_box, 340 ,650)
             hint_button.draw(info_box, 445 ,650)
 
             game_box.draw_center_vertical(screen, 25)
             game_inner_box.draw_center(game_box)    
-
-            
-            if len(log_list) <= 14:
-                for i in range(0, len(log_list)):
-                    log_list[i].draw_center_horizontal(log_box, 40 + 40*i)
-            else:
-                for i in reversed(range(len(log_list) - 14, len(log_list))):
-                    log_list[i].draw_center_horizontal(log_box, 40 + 40*(i-(len(log_list) - 14)))    
 
             str_regions =  [str(i) for i in range(1, m.total_region + 1)]     
             for i, r in enumerate(Map):
@@ -565,16 +557,19 @@ while True:
         if update == 1:
             update = 0
 
+            log_box = ColoredSurface(500, 600, 'wheat1')
+            log_box.draw_center_horizontal(info_box, 25)
+            log_title.draw(log_box, 12, 5)
 
             for log in m.logs:
                 log_card = Button(480, 30, button_color, log, 8, 'grey10')
                 log_list.append(log_card)
 
             if len(log_list) <= 14:
-                for i in range(0, len(log_list)):
+                for i in range(0, len(log_list) - 1):
                     log_list[i].draw_center_horizontal(log_box, 40 + 40*i)
             else:
-                for i in reversed(range(len(log_list) - 14, len(log_list))):
+                for i in reversed(range(len(log_list) - 14, len(log_list) - 1)):     
                     log_list[i].draw_center_horizontal(log_box, 40 + 40*(i-(len(log_list) - 14)))    
 
             str_regions =  [str(i) for i in range(1, m.total_region + 1)]     
@@ -615,24 +610,24 @@ while True:
                 pass
 
             if regenerate_button.rect.collidepoint(pg.mouse.get_pos()):
-                background_loading.draw_center(screen)
-                map_gen = mg.MapGenerator(HEIGTH, WIDTH)
-                m = mg.Map(map_gen)
-                rows, cols = m.shape
-                Map = m.value
-                n_turns = 1
+                # background_loading.draw_center(screen)
+                # map_gen = mg.MapGenerator(HEIGTH, WIDTH)
+                # m = mg.Map(map_gen)
+                # rows, cols = m.shape
+                # Map = m.value
+                # n_turns = 1
 
-                m.map_print()
-                print(f"Agent coord: {m.jacksparrow.coord}")
-                print(f"Pirate coord: {m.pirate.coord}")
-                print(f"Treasure coord: {m.treasure}")
-                print()
-                log_list = []
-                log_box = ColoredSurface(500, 600, 'wheat1')
-                log_box.draw_center_horizontal(info_box, 25)
-                log_title.draw(log_box, 12, 5)
-
-                update = 1
+                # m.map_print()
+                # print(f"Agent coord: {m.jacksparrow.coord}")
+                # print(f"Pirate coord: {m.pirate.coord}")
+                # print(f"Treasure coord: {m.treasure}")
+                # print()
+                # log_list = []
+                # log_box = ColoredSurface(500, 600, 'wheat1')
+                # log_box.draw_center_horizontal(info_box, 25)
+                # log_title.draw(log_box, 12, 5)
+                init = 1
+                # update = 1
 
             if back_button.rect.collidepoint(pg.mouse.get_pos()):
                 stage = 0
@@ -641,6 +636,9 @@ while True:
             if scanned_button.rect.collidepoint(pg.mouse.get_pos()):
                 print(m.potential)
                 print()
+            if update_button.rect.collidepoint(pg.mouse.get_pos()):
+                update = 1
+                print('Updated\n')
             if value_button.rect.collidepoint(pg.mouse.get_pos()):
                 print(m.value)
                 print()
@@ -648,7 +646,6 @@ while True:
                 m.first_turn()
                 n_turns += 1
                 print()
-                print('yomom')
                 
                 update = 1
 
