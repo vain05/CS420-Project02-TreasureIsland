@@ -309,7 +309,9 @@ class Map:
         self.free_turn = 4
 
         self.is_free = False
-        
+
+        self.pirate_path = self.shortest_path(self.pirate.coord, self.treasure)
+
         self.logs.append("The pirate’s prison is going to reveal the coordinate")
         self.logs.append(f"at the beginning of turn number {self.reveal_turn}")
         self.logs.append(f"The pirate is free at the beginning of turn number {self.free_turn}")
