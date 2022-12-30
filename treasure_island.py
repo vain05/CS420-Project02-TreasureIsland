@@ -882,22 +882,22 @@ class Map:
             if trueness:
                 self.logs.append(log)
                 self.logs.append("ADD HINT1 TO HINT LIST")
-                self.logs.append("HINT1: is_verified = TRUE, is_truth = TRUE")
 
-                self.verify_hint(hint_type, trueness, masked_tiles)
+                self.verify_hint(1, hint_type, trueness, masked_tiles)
                 print(hint_type, trueness, log)
 
                 break
                         
-    def hint_generator(self, n_turn: int):
+    def hint_generator(self, n_turns: int):
         hint_type = str(rng.randint(1, 16))
         
         hint_type, trueness, masked_tiles, log = self.hints[hint_type]()
 
-        self.hint_list.append((hint_type, trueness, masked_tiles))
+        self.hint_list.append((n_turns, hint_type, trueness, masked_tiles))
 
-        self.logs.append(f"HINT{n_turn}: The agent receives a hint:" + f"{log}")
-        self.logs.append(f"ADD HINT{n_turn} TO HINT LIST")
+        self.logs.append(f"HINT{n_turns}: The agent receives a hint:")
+        self.logs.append(log)
+        self.logs.append(f"ADD HINT{n_turns} TO HINT LIST")
 
     def apply_masked_tiles(self, trueness: bool, masked_tiles: np.ndarray) -> None:
         # The treasure is somewhere in a boundary of 2 regions 
@@ -907,10 +907,12 @@ class Map:
         else:
             self.potential[masked_tiles] = False
 
-    def verify_hint(self, hint_type: str, trueness: bool, masked_tiles: np.ndarray):
+    def verify_hint(self, hint_number, hint_type: str, trueness: bool, masked_tiles: np.ndarray):
         if hint_type == "6":
             return
 
+        self.logs.append(f"HINT{hint_number}: is_verified = TRUE, is_truth = {trueness}")
+        
         if hint_type in self.veri_important:
             trueness = not trueness
         elif hint_type == "12":
@@ -1087,9 +1089,8 @@ class Map:
         n_actions = 2
 
         if rng.rand() > 0.7:
-            number = rng.randint(len(self.hint_list)) 
-            hint_type, trueness, masked_tiles = self.hint_list[number]
-            self.verify_hint(hint_type, trueness, masked_tiles)
+            rand_hint = rng.randint(len(self.hint_list)) 
+            self.verify_hint(*self.hint_list[rand_hint])
             n_actions -= 1
         
         n_clusters = int(self.potential.sum() ** (1/3))
