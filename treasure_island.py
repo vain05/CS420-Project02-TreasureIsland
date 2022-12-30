@@ -301,6 +301,15 @@ class Map:
 
         self.veri_important = {"1", "3", "5", "8"}
 
+        self.logs.append("Game start")
+        self.logs.append(f"Agent appears at {self.jacksparrow.coord}")
+
+        self.reveal_turn = rng.randint(2, 10)
+        self.free_turn = rng.randint(self.reveal_turn + 1, 5)
+        
+        self.logs.append(f"The pirate’s prison is going to reveal the at the beginning of turn number {self.reveal_turn}")
+        self.logs.append(f"The pirate is free at the beginning of turn number {self.free_turn}")
+
         # Map generate hints function to string
         self.hints = {"1": self.generate_hint_1, "2": self.generate_hint_2, "3": self.generate_hint_3, "4": self.generate_hint_4,
                       "5": self.generate_hint_5, "6": self.generate_hint_6, "7": self.generate_hint_7, "8": self.generate_hint_8,
@@ -1117,15 +1126,6 @@ class Map:
                     self.scan(3)
 
     def operate(self) -> None:
-        self.logs.append("Game start")
-        self.logs.append(f"Agent appears at {self.jacksparrow.coord}")
-
-        reveal_turn = rng.randint(2, 10)
-        free_turn = rng.randint(reveal_turn + 1, 5)
-        
-        self.logs.append(f"The pirate’s prison is going to reveal the at the beginning of turn number {reveal_turn}")
-        self.logs.append(f"The pirate is free at the beginning of turn number {free_turn}")
-        
         # first turn
         self.first_turn()
 
@@ -1136,7 +1136,3 @@ class Map:
 
             # the first hint is supposed to be true
             self.hint_generator(n_turn)
-            
-# %%
-np.random.rand()
-# %%

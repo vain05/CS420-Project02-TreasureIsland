@@ -651,9 +651,11 @@ while True:
 
             if hint_button.rect.collidepoint(pg.mouse.get_pos()):
                 print(n_turns)
-                m.normal_turn(n_turns)
-                n_turns += 1
-                print(m.logs)
+                
+                while not m.is_win:
+                    m.normal_turn(n_turns)
+                    n_turns += 1
+
                 update = 1
     pg.display.update() 
     clock.tick(60)
