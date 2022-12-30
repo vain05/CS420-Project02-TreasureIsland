@@ -593,7 +593,7 @@ while True:
                     
                     tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     
-                    if (i,j) == m.pirate.coord:
+                    if (i,j) == m.pirate.coord and m.is_free:
                         pirate_icon = ImageSurface('asset/pirate.png', icon_size)
                         pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     if (i,j) == m.treasure and m.potential[i][j] == 0:
