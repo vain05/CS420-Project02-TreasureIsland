@@ -355,7 +355,7 @@ pirate_positions = []
 state_index = 0
 
 stage = 0
-log_list = []
+
 update = 1
 init = 1
 is_clicked = False
@@ -489,7 +489,7 @@ while True:
             print(f"Pirate coord: {m.pirate.coord}")
             print(f"Treasure coord: {m.treasure}")
             print()
-            log_list = []
+
             log_box = ColoredSurface(500, 600, 'wheat1')
             log_title.draw(log_box, 12, 5)
             log_box.draw_center_horizontal(info_box, 25)
@@ -572,16 +572,10 @@ while True:
             log_box.draw_center_horizontal(info_box, 25)
             log_title.draw(log_box, 12, 5)
 
-            # for log in m.logs:
-            #     log_card = Button(480, 30, button_color, log, 8, 'grey10')
-            #     log_list.append(log_card)
-            #
-            # if len(log_list) <= 14:
-            #     for i in range(0, len(log_list)):
-            #         log_list[i].draw_center_horizontal(log_box, 40 + 40*i)
-            # else:
-            #     for i in reversed(range(len(log_list) - 14, len(log_list))):     
-            #         log_list[i].draw_center_horizontal(log_box, 40 + 40*(i-(len(log_list) - 14)))    
+            if state_index - 1 >= 0:
+                for i, log in  enumerate(m.logs[state_index - 1]):
+                    log_card = Button(480, 30, button_color, log, 8, 'grey10')
+                    log_card.draw_center_horizontal(log_box, 40 + 40*i)    
 
             str_regions =  [str(i) for i in range(1, m.total_region + 1)]     
             for i, r in enumerate(Map):
