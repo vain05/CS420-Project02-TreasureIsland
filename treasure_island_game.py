@@ -368,7 +368,7 @@ m = mg.Map(map_gen)
 running = 0
 
 def output_log(folder_path, logs):
-    with open(folder_path + f'/log_{str(datetime.now()).replace(" ", "_")}', mode='w') as f:
+    with open(folder_path + f'log_{str(datetime.now()).replace(" ", "_")}', mode='w') as f:
         total_lines = 0
         for log in logs:
             total_lines += len(log)
@@ -731,15 +731,13 @@ while True:
                     m.pirate.coord = pirate_positions[state_index - 1]
 
 
-            if value_button.rect.collidepoint(pg.mouse.get_pos()):
+            if import_button.rect.collidepoint(pg.mouse.get_pos()):
                 m.import_map('./input.txt')
                 update = 1
 
-            if region_button.rect.collidepoint(pg.mouse.get_pos()):
-                pass
-
             if export_button.rect.collidepoint(pg.mouse.get_pos()):
-                m.export_map()
+                m.export_map('./exported_maps/')
+                update = 1
                     
             if next_step_button.rect.collidepoint(pg.mouse.get_pos()):
                 if not m.is_lose and not m.is_win:
@@ -786,7 +784,7 @@ while True:
                     if m.is_lose or m.is_win:
                         running = 0
 
-                        output_log('outputs', m.logs)
+                        output_log('./outputs/', m.logs)
 
                     print(m.n_turns)
 

@@ -1,0 +1,38 @@
+37
+Game start
+Agent appears at (4, 4)
+The pirate’s prison is going to reveal the coordinate
+at the beginning of turn number 2
+The pirate is free at the beginning of turn number 4
+START TURN 1
+These regions do not contain the treasure: [3]
+ADD HINT1 TO HINT LIST
+HINT1: is_verified = TRUE, is_truth = True
+These regions do not contain the treasure: [3]
+AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the WEST
+AGENT PERFOMED A [3 x 3] SCAN
+START TURN 2
+HINT2: The agent receives a hint:
+These regions do not contain the treasure: [2, 1]
+ADD HINT2 TO HINT LIST
+The pirate is at the (14, 8) prison
+AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the SOUTH
+AGENT PERFOMED A [3 x 3] SCAN
+START TURN 3
+HINT3: The agent receives a hint:
+The treasure is in between 2 squares: S1=[(1, 3),(9, 11)], S2=[(3, 4),(5, 6)]
+ADD HINT3 TO HINT LIST
+AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+AGENT PERFOMED A [3 x 3] SCAN
+START TURN 4
+HINT4: The agent receives a hint:
+The treasure is in between 2 squares: S1=[(0, 5),(8, 13)], S2=[(7, 5),(14, 12)]
+ADD HINT4 TO HINT LIST
+The pirate is free
+The pirate move 2 steps to the NORTH
+The agent teleports to (10, 2)
+AGENT PERFOMED A [5 x 5] SCAN
+AGENT WIN

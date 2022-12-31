@@ -331,7 +331,6 @@ class Map:
                       "13": self.generate_hint_13, "14": self.generate_hint_14, "15": self.generate_hint_15}
 
     def place_pirate(self):
-        
         while(True):
             for coord_x, row in enumerate(self.value):
                 for coord_y, terrain in enumerate(row):
@@ -339,17 +338,11 @@ class Map:
                         return coord_x, coord_y
 
     def place_agent(self):
+        str_idx = [str(i) for i in range(1, self.total_region + 1)]
         while(True):
             for coord_x, row in enumerate(self.value):
                 for coord_y, terrain in enumerate(row):
-                    if self.value[coord_x][coord_y] in range(1, self.total_region + 1) and rng.uniform(0,1) <= 0.001:
-                        return coord_x, coord_y
-
-    def place_treasure(self):
-        while(True):
-            for coord_x, row in enumerate(self.value):
-                for coord_y, terrain in enumerate(row):
-                    if self.value[coord_x][coord_y] in range(1, self.total_region + 1) and rng.uniform(0,1) <= 0.001:
+                    if self.value[coord_x][coord_y] in str_idx and rng.uniform(0,1) <= 0.001:
                         return coord_x, coord_y
 
     def import_map(self, path: str):
@@ -387,6 +380,7 @@ class Map:
             for j, value in enumerate(rows):
                 if len(value) == 1:
                     self.value[i, j] = value 
+                    self.region[i, j] = int(value)
                 else:
                     region = int(value[:-1])
                     self.value[i, j] = value[-1]
@@ -394,6 +388,7 @@ class Map:
                     if value[-1] == 'M':
                         self.mountain.add(region)
                     elif value[-1] == 'P':
+                        self.value[i, j] = value[-1].lower()
                         self.total_prison += 1
 
                     self.region[i, j] = region
@@ -405,14 +400,16 @@ class Map:
         self.potential= np.ones(self.shape, dtype=bool)
         self.potential[(self.region == 0) | (is_mountain)] = False
 
+        print("value ", self.value)
+        print("region ", self.region)
+        print(self.total_region)
+        print(self.total_prison)
+
         self.jacksparrow = JackSparrow(self.place_agent())
-        # self.value[self.jacksparrow.coord] = 'A'
 
         self.pirate = Pirate(self.place_pirate())
-        # self.value[self.pirate.coord] = 'Pi'
 
-        self.treasure = (read_map[4][0],read_map[4][1])
-        # self.value[self.treasure] = 'T'
+        self.treasure = (int(read_map[4][0][0]), int(read_map[4][0][2]))
 
         self.n_turns = 1
 
@@ -435,8 +432,19 @@ class Map:
 
     def export_map(self, export_folder: str):
         with open(export_folder + f'map_export_{str(datetime.now()).replace(" ", "")}.txt', 'w') as f:
-            pass
-            
+            f.write(f"{self.shape[0]} {self.shape[1]}\n")
+            f.write(f"{self.reveal_turn}\n")
+            f.write(f"{self.free_turn}\n")
+            f.write(f"{self.total_region + 1}\n")
+            f.write(f"{self.treasure[0]} {self.treasure[1]}\n")
+            for i in range(self.shape[0]):
+                for j in range(self.shape[1]):
+                    if self.value[i, j] in ['p', 'M']:
+                        f.write(f'{self.region[i, j]}{self.value[i, j].upper()}; ')
+                    else:
+                        f.write(f'{self.region[i, j]}; ')
+                f.write('\n')
+
     def map_print(self):
         str_regions =  [str(i) for i in range(1, self.total_region + 1)]
         for coord_x, row in enumerate(self.value):
