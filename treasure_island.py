@@ -22,6 +22,8 @@ from string import digits
 import copy
 import csv
 
+from datetime import datetime
+
 # %%
 # ### Set a Random Number Generator
 
@@ -350,12 +352,12 @@ class Map:
                     if self.value[coord_x][coord_y] in range(1, self.total_region + 1) and rng.uniform(0,1) <= 0.001:
                         return coord_x, coord_y
 
-    # def import_map(self, path: str):
-    #     with open(path, 'r') as f:
-    #         reader = csv.reader(f, delimiter=';')
-    #         read_map = []
-    #         for row in reader:
-    #             read_map.append(row)
+    def import_map(self, path: str):
+        with open(path, 'r') as f:
+            reader = csv.reader(f, delimiter=';')
+            read_map = []
+            for row in reader:
+                read_map.append(row)
 
             print(read_map)
 
@@ -409,33 +411,31 @@ class Map:
         self.pirate = Pirate(self.place_pirate())
         # self.value[self.pirate.coord] = 'Pi'
 
-    #     self.treasure = (read_map[4][0],read_map[4][1])
-    #     # self.value[self.treasure] = 'T'
+        self.treasure = (read_map[4][0],read_map[4][1])
+        # self.value[self.treasure] = 'T'
 
-    #     self.n_turns = 1
+        self.n_turns = 1
 
-    #     self.logs = []
 
-    #     self.hint_list = []
+        self.logs = []
+        self.hint_list = []
+   
+        self.is_win = False
+        self.is_lose = False
+        self.is_teleported = False
+   
+        self.veri_important = {"1", "3", "5", "8"}
+  
+        self.reveal_turn = read_map[1]
+        self.free_turn = read_map[2]
+        self.is_free = False
+   
+        steps, pirate_path = self.shortest_path(self.pirate.coord, self.treasure)
+        self.pirate_path = deque(pirate_path)
 
-    #     self.is_win = False
-    #     self.is_lose = False
-    #     self.is_teleported = False
-
-    #     self.veri_important = {"1", "3", "5", "8"}
-
-    #     self.reveal_turn = read_map[1]
-    #     self.free_turn = read_map[2]
-
-    #     self.is_free = False
-
-    #     steps, pirate_path = self.shortest_path(self.pirate.coord, self.treasure)
-    #     self.pirate_path = deque(pirate_path)
-
-    def export_map(self):
-        with open('map_export.txt', 'w') as f:
-            f.write(self.shape[0])
-            f.write(self.shape[0])
+    def export_map(self, export_folder: str):
+        with open(export_folder + f'map_export_{str(datetime.now()).replace(" ", "")}.txt', 'w') as f:
+            pass
             
     def map_print(self):
         str_regions =  [str(i) for i in range(1, self.total_region + 1)]
