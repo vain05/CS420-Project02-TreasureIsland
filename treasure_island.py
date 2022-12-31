@@ -299,14 +299,15 @@ class Map:
 
         self.is_win = False
         self.is_lose = False
+        self.is_teleported = False
 
         self.veri_important = {"1", "3", "5", "8"}
 
         self.logs.append("Game start")
         self.logs.append(f"Agent appears at {self.jacksparrow.coord}")
 
-        self.reveal_turn = 2
-        self.free_turn = 4
+        self.reveal_turn = int(self.avg_size ** (1 / 4))
+        self.free_turn = rng.randint(self.reveal_turn + 1, self.reveal_turn * 3)
 
         self.is_free = False
 
@@ -862,8 +863,8 @@ class Map:
         self.jacksparrow.coord = tuple(coord)
     
     def teleport(self, coord: Tuple[int, int]) -> None:
-        self.coord = coord
-        self.logs.append(f"The agent teleport to {coord}")
+        self.jacksparrow.coord = coord
+        self.logs.append(f"The agent teleports to {coord}")
     
     def move_pirate(self, direction: str, steps: int) -> None:
         
@@ -1065,6 +1066,9 @@ class Map:
                 continue
 
             n_steps, path = self.shortest_path(self.jacksparrow.coord, center)
+            print("center", center)
+            print("jacksparrow", self.jacksparrow.coord)
+            print(path)
             if n_steps < min_steps:
                 min_steps = n_steps
                 min_path = path
@@ -1075,12 +1079,15 @@ class Map:
         true_index = np.where(self.potential)
         points = list(zip(true_index[0], true_index[1]))
 
-        kmeans = KMeans(n_clusters)
-        kmeans.fit(points)
+        if len(points) > n_clusters:
+            kmeans = KMeans(n_clusters)
+            kmeans.fit(points)
 
-        closest, _ = pairwise_distances_argmin_min(kmeans.cluster_centers_, points)
+            closest, _ = pairwise_distances_argmin_min(kmeans.cluster_centers_, points)
 
-        return [points[i] for i in closest]
+            return [points[i] for i in closest]
+
+        return points
 
     def first_turn(self) -> None:
         self.logs.append("START TURN 1")
@@ -1134,6 +1141,7 @@ class Map:
                     self.scan(3)
 
     def pirate_action(self) -> None:
+        direction = None
         if self.pirate_path:
             direction, n_steps = self.pirate_path[0]
             steps = min(n_steps, 2)
@@ -1150,27 +1158,29 @@ class Map:
             else:
                 self.pirate_path[0] = direction, n_steps
 
-    def teleport(self, direction):
+        if not self.is_teleported:
+            if rng.rand() > 0.6:
+                self.is_teleported = True
+                self.teleport(self.teleport_coord(direction))
+
+    def teleport_coord(self, direction):
         masked_tiles = np.ones(self.shape, dtype=bool)
 
         match direction:
             case "North":
                 masked_tiles[self.pirate.coord[0]:,] = False
             case "West":
-                masked_tiles[:,self.pirate.coord[1]:] = False
+                masked_tiles[:, self.pirate.coord[1]:] = False
             case "South":
-                masked_tiles[:self.pirate.coord[0],] = False
+                masked_tiles[: self.pirate.coord[0],] = False
             case "East":
-                masked_tiles[:,:self.pirate.coord[1]] = False
+                masked_tiles[:, :self.pirate.coord[1]] = False
         
         masked_tiles &= self.potential
 
-        idx_tiles = np.arange(self.total_tile, like=masked_tiles)
-        idx_array = idx_tiles.reshape(self.shape)
-        index = idx_array[idx_tiles]
+        idx_tiles = np.where(masked_tiles)
 
-        coord = np.unravel_index(index, shape=self.shape)
-        coord = list(zip(*coord))
+        coord = list(zip(*idx_tiles))
         choices = np.random.choice(np.arange(len(coord)))
 
         return coord[choices]

@@ -695,7 +695,6 @@ while True:
 
                 pass
                     
-
             if next_step_button.rect.collidepoint(pg.mouse.get_pos()):
                 state_index = n_turns - 1
                 if not m.is_lose and not m.is_win:
@@ -714,7 +713,7 @@ while True:
                     if n_turns == 1:
                         m.first_turn()
                         n_turns += 1
-                    else:
+                    elif not m.is_lose:
                         m.normal_turn(n_turns)
                         n_turns += 1
 
