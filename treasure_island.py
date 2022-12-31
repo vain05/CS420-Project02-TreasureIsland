@@ -352,19 +352,14 @@ class Map:
             for row in reader:
                 read_map.append(row)
 
-            print(read_map)
-
-        self.shape = int(read_map[0][0][0]), int(read_map[0][0][2])
+        shape = read_map[0][0].split()
+        self.shape = tuple([int(i) for i in shape])
         self.total_tile = self.shape[0] * self.shape[1]
-
-        print("shape:", self.shape)
 
         self.avg_size = (self.shape[0] * self.shape[1]) / 2
         self.total_region = int(read_map[3][0]) - 1
 
-        rows = int(read_map[0][0][0])
-
-        raw_map = read_map[5:5 + rows]
+        raw_map = read_map[5:5 + self.shape[0]]
         for rows in raw_map:
             for i, value in enumerate(rows):
                 rows[i] = value.replace(' ','')
@@ -400,19 +395,14 @@ class Map:
         self.potential= np.ones(self.shape, dtype=bool)
         self.potential[(self.region == 0) | (is_mountain)] = False
 
-        print("value ", self.value)
-        print("region ", self.region)
-        print(self.total_region)
-        print(self.total_prison)
-
         self.jacksparrow = JackSparrow(self.place_agent())
 
         self.pirate = Pirate(self.place_pirate())
 
-        self.treasure = (int(read_map[4][0][0]), int(read_map[4][0][2]))
+        treasure = read_map[4][0].split()
+        self.treasure = tuple([int(i) for i in treasure])
 
         self.n_turns = 1
-
 
         self.logs = [[]]
         self.hint_list = []
@@ -439,10 +429,16 @@ class Map:
             f.write(f"{self.treasure[0]} {self.treasure[1]}\n")
             for i in range(self.shape[0]):
                 for j in range(self.shape[1]):
-                    if self.value[i, j] in ['p', 'M']:
-                        f.write(f'{self.region[i, j]}{self.value[i, j].upper()}; ')
+                    if j == self.shape[1] - 1:
+                        if self.value[i, j] in ['p', 'M']:
+                            f.write(f'{self.region[i, j]}{self.value[i, j].upper()}')
+                        else:
+                            f.write(f'{self.region[i, j]}')
                     else:
-                        f.write(f'{self.region[i, j]}; ')
+                        if self.value[i, j] in ['p', 'M']:
+                            f.write(f'{self.region[i, j]}{self.value[i, j].upper()}; ')
+                        else:
+                            f.write(f'{self.region[i, j]}; ')
                 f.write('\n')
 
     def map_print(self):
