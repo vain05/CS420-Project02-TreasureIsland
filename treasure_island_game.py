@@ -3,7 +3,7 @@ from sys import exit
 import os
 import time
 import numpy as np
-
+from copy import deepcopy
 
 import treasure_island as mg
 
@@ -362,7 +362,6 @@ is_clicked = False
 frame = 0
 map_gen = mg.MapGenerator(HEIGTH, WIDTH)
 m = mg.Map(map_gen)
-n_turns = 1
 running = 0
 while True:
     is_clicked = False
@@ -459,11 +458,9 @@ while True:
     ########### GAME ###########
     elif stage == 2:
         
-        
         if init == 1:
             init = 0
             update = 1
-            n_turns = 1
 
             icon_size =  (760/max(HEIGTH, WIDTH))/512
             tile_size = 900*0.9/max(HEIGTH, WIDTH)        
@@ -482,10 +479,10 @@ while True:
             pirate_positions = []
             state_index = 0
 
-            new_potential = m.potential.copy()
-            potential_states.append(new_potential)
+            potential_states.append(m.potential.copy())
             agent_positions.append(m.jacksparrow.coord)
             pirate_positions.append(m.pirate.coord)
+            update = 1
 
             m.map_print()
             print(f"Agent coord: {m.jacksparrow.coord}")
@@ -571,22 +568,20 @@ while True:
         if update == 1:
             update = 0
 
-            print('\nAAAAAAAAAAAAAAAAA',potential_states)
-            
             log_box = ColoredSurface(500, 600, 'wheat1')
             log_box.draw_center_horizontal(info_box, 25)
             log_title.draw(log_box, 12, 5)
 
-            for log in m.logs:
-                log_card = Button(480, 30, button_color, log, 8, 'grey10')
-                log_list.append(log_card)
-
-            if len(log_list) <= 14:
-                for i in range(0, len(log_list)):
-                    log_list[i].draw_center_horizontal(log_box, 40 + 40*i)
-            else:
-                for i in reversed(range(len(log_list) - 14, len(log_list))):     
-                    log_list[i].draw_center_horizontal(log_box, 40 + 40*(i-(len(log_list) - 14)))    
+            # for log in m.logs:
+            #     log_card = Button(480, 30, button_color, log, 8, 'grey10')
+            #     log_list.append(log_card)
+            #
+            # if len(log_list) <= 14:
+            #     for i in range(0, len(log_list)):
+            #         log_list[i].draw_center_horizontal(log_box, 40 + 40*i)
+            # else:
+            #     for i in reversed(range(len(log_list) - 14, len(log_list))):     
+            #         log_list[i].draw_center_horizontal(log_box, 40 + 40*(i-(len(log_list) - 14)))    
 
             str_regions =  [str(i) for i in range(1, m.total_region + 1)]     
             for i, r in enumerate(Map):
@@ -612,38 +607,39 @@ while True:
                     if (i,j) == m.jacksparrow.coord:                    
                         agent_icon = ImageSurface('asset/agent.png', icon_size)
                         agent_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
-                    if (i,j) == m.pirate.coord and n_turns >= m.reveal_turn:
+                    if (i,j) == m.pirate.coord and m.n_turns >= m.reveal_turn:
                         pirate_icon = ImageSurface('asset/pirate.png', icon_size)
                         pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     if (i,j) == m.treasure and (m.potential[i][j] == 0 or m.treasure == m.pirate.coord):
                         treasure_icon = ImageSurface('asset/treasure.png', icon_size)
                         treasure_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
 
-                    j += 1
-                i += 1
-
-        if running == 1:              
-            state_index = n_turns - 1
-            m.logs.append(f"START TURN {n_turns}")
-
-                # generate a hint at the beginning of turn
-            m.hint_generator(n_turns)
-            if n_turns == m.reveal_turn:
-                m.logs.append(f"The pirate is at the {m.pirate.coord} prison")
-            
-            if n_turns >= m.free_turn:
-                if n_turns == m.free_turn:
-                    m.logs.append(f"The pirate is free")
-                m.pirate_action()
-
-            if m.is_lose or m.is_win:
-                running = 0
-            
-            new_potential = m.potential.copy()
-            potential_states.append(new_potential)
-            agent_positions.append(m.jacksparrow.coord)
-            pirate_positions.append(m.pirate.coord)
-            state_index += 1
+        # if running == 1:              
+        #     state_index = n_turns - 1
+        #     m.logs.append(f"START TURN {n_turns}")
+        #
+        #     # generate a hint at the beginning of turn
+        #     m.hint_generator(n_turns)
+        #     if n_turns == m.reveal_turn:
+        #         m.logs.append(f"The pirate is at the {m.pirate.coord} prison")
+        #     
+        #     if n_turns >= m.free_turn:
+        #         if n_turns == m.free_turn:
+        #             m.logs.append(f"The pirate is free")
+        #         m.pirate_action()
+        #
+        #     if m.is_lose or m.is_win:
+        #         running = 0
+        #     
+        #     potential_states.append(m.potential.copy())
+        #     agent_positions.append(m.jacksparrow.coord)
+        #     pirate_positions.append(m.pirate.coord)
+        #     update = 1
+        #     state_index += 1
+        #
+        #     # m.potential = potential_states[state_index]
+        #     # m.jacksparrow.coord = agent_positions[state_index]
+        #     # m.pirate.coord = pirate_positions[state_index]
 
         if is_clicked:
             if play_button.rect.collidepoint(pg.mouse.get_pos()):
@@ -677,58 +673,85 @@ while True:
                 stage = 0
                 init = 1
                 print()
+
             if previous_button.rect.collidepoint(pg.mouse.get_pos()):
                 if state_index > 0:
                     state_index -= 1
                     update = 1
+
+                    m.potential = potential_states[state_index]
+                    m.jacksparrow.coord = agent_positions[state_index]
+                    m.pirate.coord = pirate_positions[state_index]
                     
             if next_button.rect.collidepoint(pg.mouse.get_pos()):
-                if state_index < n_turns - 1:
+                if state_index < m.n_turns - 1:
                     state_index += 1
                     update = 1
+
+                    m.potential = potential_states[state_index]
+                    m.jacksparrow.coord = agent_positions[state_index]
+                    m.pirate.coord = pirate_positions[state_index]
+
+
             if value_button.rect.collidepoint(pg.mouse.get_pos()):
-                print(m.value)
+                print(m.potential)
                 print()
 
             if region_button.rect.collidepoint(pg.mouse.get_pos()):
-               
-
                 pass
                     
             if next_step_button.rect.collidepoint(pg.mouse.get_pos()):
-                state_index = n_turns - 1
                 if not m.is_lose and not m.is_win:
-                    m.logs.append(f"START TURN {n_turns}")
+                    m.logs.append([])
 
-                    # generate a hint at the beginning of turn
-                    m.hint_generator(n_turns)
-                    if n_turns == m.reveal_turn:
-                        m.logs.append(f"The pirate is at the {m.pirate.coord} prison")
+                    if state_index != m.n_turns - 1:
+                        state_index = m.n_turns - 1
+
+                        m.potential = potential_states[state_index]
+                        m.jacksparrow.coord = agent_positions[state_index]
+                        m.pirate.coord = pirate_positions[state_index]
+
+                    if m.n_turns != 1:
+                        m.logs[m.n_turns - 1].append(f"START TURN {m.n_turns}")
+
+                        # generate a hint at the beginning of turn
+                        m.hint_generator()
+
+                    if m.n_turns == m.reveal_turn:
+                        m.logs[m.n_turns - 1].append(f"The pirate is at the {m.pirate.coord} prison")
                     
-                    if n_turns >= m.free_turn:
-                        if n_turns == m.free_turn:
-                            m.logs.append(f"The pirate is free")
+                    if m.n_turns >= m.free_turn:
+                        if m.n_turns == m.free_turn:
+                            m.logs[m.n_turns - 1].append(f"The pirate is free")
                         m.pirate_action()
 
-                    if n_turns == 1:
+                    if m.n_turns == 1:
+                        m.logs[m.n_turns - 1].append("Game start")
+                        m.logs[m.n_turns - 1].append(f"Agent appears at {m.jacksparrow.coord}")
+
+                        m.logs[m.n_turns - 1].append("The pirate’s prison is going to reveal the coordinate")
+                        m.logs[m.n_turns - 1].append(f"at the beginning of turn number {m.reveal_turn}")
+                        m.logs[m.n_turns - 1].append(f"The pirate is free at the beginning of turn number {m.free_turn}")
+
                         m.first_turn()
-                        n_turns += 1
+                        m.n_turns += 1
+
                     elif not m.is_lose:
-                        m.normal_turn(n_turns)
-                        n_turns += 1
+                        m.normal_turn()
+                        m.n_turns += 1
 
                     update = 1
-                    print(m.logs, '\n')
+                    print(m.logs[m.n_turns - 2], '\n')
                 
-                new_potential = m.potential.copy()
-                potential_states.append(new_potential)
-                agent_positions.append(m.jacksparrow.coord)
-                pirate_positions.append(m.pirate.coord)
-                state_index += 1
-                print(agent_positions)
-                print('turn:', n_turns, state_index, len(agent_positions))
-        m.potential = potential_states[state_index]
-        m.jacksparrow.coord = agent_positions[state_index]
-        m.pirate.coord = pirate_positions[state_index]
+                    potential_states.append(m.potential.copy())
+                    agent_positions.append(m.jacksparrow.coord)
+                    pirate_positions.append(m.pirate.coord)
+                    state_index += 1
+
+                    print(agent_positions)
+                    print('turn:', m.n_turns, state_index, len(agent_positions))
+
+                update = 1
+
     pg.display.update() 
     clock.tick(60)

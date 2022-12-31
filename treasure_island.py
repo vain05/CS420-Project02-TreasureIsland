@@ -282,7 +282,7 @@ class Map:
         self.mountain = np.unique(self.region[is_mountain])
 
         self.potential= np.ones((map.rows, map.cols), dtype=bool)
-        self.potential[self.region == 0 | is_mountain] = False
+        self.potential[(self.region == 0) | (is_mountain)] = False
 
         self.jacksparrow = JackSparrow(map.place_agent())
         # self.value[self.jacksparrow.coord] = 'A'
@@ -292,6 +292,8 @@ class Map:
 
         self.treasure = map.place_treasure()
         # self.value[self.treasure] = 'T'
+
+        self.n_turns = 1
 
         self.logs = []
 
@@ -303,9 +305,6 @@ class Map:
 
         self.veri_important = {"1", "3", "5", "8"}
 
-        self.logs.append("Game start")
-        self.logs.append(f"Agent appears at {self.jacksparrow.coord}")
-
         self.reveal_turn = int(self.avg_size ** (1 / 4))
         self.free_turn = rng.randint(self.reveal_turn + 1, self.reveal_turn * 3)
 
@@ -313,10 +312,6 @@ class Map:
 
         steps, pirate_path = self.shortest_path(self.pirate.coord, self.treasure)
         self.pirate_path = deque(pirate_path)
-
-        self.logs.append("The pirate’s prison is going to reveal the coordinate")
-        self.logs.append(f"at the beginning of turn number {self.reveal_turn}")
-        self.logs.append(f"The pirate is free at the beginning of turn number {self.free_turn}")
 
         # Map generate hints function to string
         self.hints = {"1": self.generate_hint_1, "2": self.generate_hint_2, "3": self.generate_hint_3, "4": self.generate_hint_4,
@@ -858,13 +853,13 @@ class Map:
         else:
             coord[0] += steps
 
-        self.logs.append(f"The agent move {steps} steps to the {direction}")
+        self.logs[self.n_turns - 1].append(f"The agent move {steps} steps to the {direction}")
 
         self.jacksparrow.coord = tuple(coord)
     
     def teleport(self, coord: Tuple[int, int]) -> None:
         self.jacksparrow.coord = coord
-        self.logs.append(f"The agent teleports to {coord}")
+        self.logs[self.n_turns - 1].append(f"The agent teleports to {coord}")
     
     def move_pirate(self, direction: str, steps: int) -> None:
         
@@ -879,7 +874,7 @@ class Map:
         else:
             coord[0] += steps
 
-        self.logs.append(f"The pirate move {steps} steps to the {direction}")
+        self.logs[self.n_turns - 1].append(f"The pirate move {steps} steps to the {direction}")
 
         self.pirate.coord = tuple(coord)
 
@@ -892,12 +887,12 @@ class Map:
 
         end_col = min(self.jacksparrow.coord[1] + size // 2, self.shape[1] - 1)
         
-        self.logs.append(f"AGENT PERFOMED A [{size} x {size}] SCAN")
+        self.logs[self.n_turns - 1].append(f"AGENT PERFOMED A [{size} x {size}] SCAN")
 
         self.potential[start_row: end_row + 1, start_col: end_col + 1] = False
 
         if start_row <= self.treasure[0] <= end_row and start_col <= self.treasure[1] <= end_col:
-            self.logs.append("YOU WIN")
+            self.logs[self.n_turns - 1].append("YOU WIN")
             self.is_win = True
             return True
 
@@ -910,23 +905,23 @@ class Map:
             _, trueness, masked_tiles, log = gen_hint()
 
             if trueness:
-                self.logs.append(log)
-                self.logs.append("ADD HINT1 TO HINT LIST")
+                self.logs[self.n_turns - 1].append(log)
+                self.logs[self.n_turns - 1].append("ADD HINT1 TO HINT LIST")
 
                 self.verify_hint(1, hint_type, trueness, masked_tiles)
 
                 break
                         
-    def hint_generator(self, n_turns: int):
+    def hint_generator(self):
         hint_type = str(rng.randint(1, 16))
         
         hint_type, trueness, masked_tiles, log = self.hints[hint_type]()
 
-        self.hint_list.append((n_turns, hint_type, trueness, masked_tiles))
+        self.hint_list.append((self.n_turns, hint_type, trueness, masked_tiles))
 
-        self.logs.append(f"HINT{n_turns}: The agent receives a hint:")
-        self.logs.append(log)
-        self.logs.append(f"ADD HINT{n_turns} TO HINT LIST")
+        self.logs[self.n_turns - 1].append(f"HINT{self.n_turns}: The agent receives a hint:")
+        self.logs[self.n_turns - 1].append(log)
+        self.logs[self.n_turns - 1].append(f"ADD HINT{self.n_turns} TO HINT LIST")
 
     def apply_masked_tiles(self, trueness: bool, masked_tiles: np.ndarray) -> None:
         # The treasure is somewhere in a boundary of 2 regions 
@@ -940,7 +935,7 @@ class Map:
         if hint_type == "6":
             return
 
-        self.logs.append(f"HINT{hint_number}: is_verified = TRUE, is_truth = {trueness}")
+        self.logs[self.n_turns - 1].append(f"HINT{hint_number}: is_verified = TRUE, is_truth = {trueness}")
         
         if hint_type in self.veri_important:
             trueness = not trueness
@@ -1066,12 +1061,24 @@ class Map:
                 continue
 
             n_steps, path = self.shortest_path(self.jacksparrow.coord, center)
-            print("center", center)
-            print("jacksparrow", self.jacksparrow.coord)
+            print("center: ", center)
+            print("value: ", self.value[center])
             print(path)
             if n_steps < min_steps:
                 min_steps = n_steps
                 min_path = path
+
+        if not min_path:
+            idx_tiles = np.where(self.potential)
+            coords = list(zip(*idx_tiles))
+
+            rand_idx = rng.randint(len(coords), size=len(coords))
+
+            for i in rand_idx:
+                n_steps, path = self.shortest_path(self.jacksparrow.coord, coords[i])
+
+                if path:
+                    return path
 
         return min_path
 
@@ -1090,12 +1097,12 @@ class Map:
         return points
 
     def first_turn(self) -> None:
-        self.logs.append("START TURN 1")
+        self.logs[0].append("START TURN 1")
 
         # generate first hint
         self.gen_1st_hint()
 
-        n_clusters = int(self.potential.sum() ** (1/3))
+        n_clusters = int(self.potential.sum() ** (1/5))
         path = self.nearest_path(n_clusters=max(2, n_clusters))
         direction, n_steps = path[0]
 
@@ -1109,7 +1116,7 @@ class Map:
             self.move_jack(direction, min(n_steps, 2))
             self.scan(3)
 
-    def normal_turn(self, n_turns) -> None:
+    def normal_turn(self) -> None:
         n_actions = 2
 
         if rng.rand() > 0.7:
@@ -1148,7 +1155,7 @@ class Map:
             self.move_pirate(direction, min(n_steps, 2))
 
             if self.pirate.coord == self.treasure:
-                self.logs.append("YOU LOSE, THE PIRATE FOUND THE TREASURE")
+                self.logs[self.n_turns - 1].append("YOU LOSE, THE PIRATE FOUND THE TREASURE")
                 self.is_lose = True
 
             n_steps -= steps
@@ -1159,7 +1166,7 @@ class Map:
                 self.pirate_path[0] = direction, n_steps
 
         if not self.is_teleported:
-            if rng.rand() > 0.6:
+            if rng.rand() > self.avg_size / (self.avg_size + 20):
                 self.is_teleported = True
                 self.teleport(self.teleport_coord(direction))
 
@@ -1180,19 +1187,7 @@ class Map:
 
         idx_tiles = np.where(masked_tiles)
 
-        coord = list(zip(*idx_tiles))
-        choices = np.random.choice(np.arange(len(coord)))
+        coords = list(zip(*idx_tiles))
+        choices = np.random.choice(np.arange(len(coords)))
 
-        return coord[choices]
-
-    def operate(self) -> None:
-        # first turn
-        self.first_turn()
-
-        n_turn = 1
-
-        while self.jacksparrow != self.treasure:
-            self.logs.append(f"START TURN {n_turn}")
-
-            # the first hint is supposed to be true
-            self.hint_generator(n_turn)
+        return coords[choices]
