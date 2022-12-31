@@ -282,7 +282,7 @@ pg.init()
 
 font1 = pg.font.Font('font/BlackRose.ttf', tile_font_size)
 font_list.append(font1)
-font1 = pg.font.Font('font/BlackRose.ttf', 30)
+font1 = pg.font.Font('font/BlackRose.ttf', 25)
 font_list.append(font1)
 font1 = pg.font.Font('font/BlackRose.ttf', 35)
 font_list.append(font1)
@@ -348,8 +348,8 @@ back_button = Button(500, 50, button_color, 'Back', 4, button_text_color)
 
 previous_button = Button(80, 50, button_color, '<<', 1, button_text_color)
 next_button = Button(80, 50, button_color, '>>', 1, button_text_color)
-value_button = Button(80, 50, button_color, 'value', 1, button_text_color)
-region_button = Button(80, 50, button_color, 'region', 1, button_text_color)
+import_button = Button(80, 50, button_color, 'Import', 1, button_text_color)
+export_button = Button(80, 50, button_color, 'Export', 1, button_text_color)
 next_step_button = Button(80, 50, button_color, 'Next', 1, button_text_color)
 
 potential_states = []
@@ -537,8 +537,8 @@ while True:
 
             previous_button.draw(info_box, 25 ,650)
             next_button.draw(info_box, 130,650)
-            value_button.draw(info_box, 235,650)
-            region_button.draw(info_box, 340 ,650)
+            import_button.draw(info_box, 235,650)
+            export_button.draw(info_box, 340 ,650)
             next_step_button.draw(info_box, 445 ,650)
 
             game_box.draw_center_vertical(screen, 25)
@@ -731,12 +731,11 @@ while True:
                     m.pirate.coord = pirate_positions[state_index - 1]
 
 
-            if value_button.rect.collidepoint(pg.mouse.get_pos()):
-                print(m.potential)
-                print()
-
-            if region_button.rect.collidepoint(pg.mouse.get_pos()):
+            if import_button.rect.collidepoint(pg.mouse.get_pos()):
                 pass
+
+            if export_button.rect.collidepoint(pg.mouse.get_pos()):
+                m.export_map()
                     
             if next_step_button.rect.collidepoint(pg.mouse.get_pos()):
                 if not m.is_lose and not m.is_win:
@@ -774,7 +773,7 @@ while True:
 
                     update = 1
                     print(m.logs[m.n_turns - 1], '\n')
-                
+
                     potential_states.append(m.potential.copy())
                     agent_positions.append(m.jacksparrow.coord)
                     pirate_positions.append(m.pirate.coord)

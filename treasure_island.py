@@ -329,64 +329,69 @@ class Map:
                       "13": self.generate_hint_13, "14": self.generate_hint_14, "15": self.generate_hint_15}
     
 
-    def import_map(self, path: str):
-        with open(path, 'r') as f:
-            reader = csv.reader(f, delimiter=';')
-            read_map = []
-            for row in reader:
-                read_map.append(row)
+    # def import_map(self, path: str):
+    #     with open(path, 'r') as f:
+    #         reader = csv.reader(f, delimiter=';')
+    #         read_map = []
+    #         for row in reader:
+    #             read_map.append(row)
 
-            print(read_map)
+    #         print(read_map)
         
-        self.total_tile = read_map[0][0] * read_map[0][1]
-        self.shape = (read_map[0][0], read_map[0][1])
-        self.avg_size = (read_map[0][0] + read_map[0][1]) / 2
-        self.total_region = read_map[3] - 1
+    #     self.total_tile = read_map[0][0] * read_map[0][1]
+    #     self.shape = (read_map[0][0], read_map[0][1])
+    #     self.avg_size = (read_map[0][0] + read_map[0][1]) / 2
+    #     self.total_region = read_map[3] - 1
 
-        rows = int(read_map[0][0][0])
-        self.raw_map = read_map[5:5 + rows]
-        for rows in raw_map:
-            for i, value in enumerate(rows):
-                rows[i] = value.replace(' ','')
+    #     rows = int(read_map[0][0][0])
+    #     self.raw_map = read_map[5:5 + rows]
+    #     for rows in raw_map:
+    #         for i, value in enumerate(rows):
+    #             rows[i] = value.replace(' ','')
 
-        self.value = np.array(map.Map, dtype=str)
-        self.value[self.value == '0'] = '~'
-        self.region = np.array(map.region_map, dtype=int)
-        is_mountain = np.array(map.mountain_map, dtype=bool)
-        self.mountain = np.unique(self.region[is_mountain])
+    #     self.value = np.array(map.Map, dtype=str)
+    #     self.value[self.value == '0'] = '~'
+    #     self.region = np.array(map.region_map, dtype=int)
+    #     is_mountain = np.array(map.mountain_map, dtype=bool)
+    #     self.mountain = np.unique(self.region[is_mountain])
 
-        self.potential= np.ones((map.rows, map.cols), dtype=bool)
-        self.potential[(self.region == 0) | (is_mountain)] = False
+    #     self.potential= np.ones((map.rows, map.cols), dtype=bool)
+    #     self.potential[(self.region == 0) | (is_mountain)] = False
 
-        self.jacksparrow = 
-        # self.value[self.jacksparrow.coord] = 'A'
+    #     self.jacksparrow = 
+    #     # self.value[self.jacksparrow.coord] = 'A'
 
-        self.pirate = 
-        # self.value[self.pirate.coord] = 'Pi'
+    #     self.pirate = 
+    #     # self.value[self.pirate.coord] = 'Pi'
 
-        self.treasure = (read_map[4][0],read_map[4][1])
-        # self.value[self.treasure] = 'T'
+    #     self.treasure = (read_map[4][0],read_map[4][1])
+    #     # self.value[self.treasure] = 'T'
 
-        self.n_turns = 1
+    #     self.n_turns = 1
 
-        self.logs = []
+    #     self.logs = []
 
-        self.hint_list = []
+    #     self.hint_list = []
 
-        self.is_win = False
-        self.is_lose = False
-        self.is_teleported = False
+    #     self.is_win = False
+    #     self.is_lose = False
+    #     self.is_teleported = False
 
-        self.veri_important = {"1", "3", "5", "8"}
+    #     self.veri_important = {"1", "3", "5", "8"}
 
-        self.reveal_turn = read_map[1]
-        self.free_turn = read_map[2]
+    #     self.reveal_turn = read_map[1]
+    #     self.free_turn = read_map[2]
 
-        self.is_free = False
+    #     self.is_free = False
 
-        steps, pirate_path = self.shortest_path(self.pirate.coord, self.treasure)
-        self.pirate_path = deque(pirate_path)
+    #     steps, pirate_path = self.shortest_path(self.pirate.coord, self.treasure)
+    #     self.pirate_path = deque(pirate_path)
 
+    def export_map(self):
+        with open('map_export.txt', 'w') as f:
+            f.write(self.shape[0])
+            f.write(self.shape[0])
+            
     def map_print(self):
         str_regions =  [str(i) for i in range(1, self.total_region + 1)]
         for coord_x, row in enumerate(self.value):
