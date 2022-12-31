@@ -414,7 +414,7 @@ class Map:
         self.n_turns = 1
 
 
-        self.logs = []
+        self.logs = [[]]
         self.hint_list = []
    
         self.is_win = False
@@ -423,8 +423,8 @@ class Map:
    
         self.veri_important = {"1", "3", "5", "8"}
   
-        self.reveal_turn = read_map[1]
-        self.free_turn = read_map[2]
+        self.reveal_turn = read_map[1][0]
+        self.free_turn = read_map[2][0]
         self.is_free = False
    
         steps, pirate_path = self.shortest_path(self.pirate.coord, self.treasure)
