@@ -296,7 +296,7 @@ class Map:
 
         self.n_turns = 1
 
-        self.logs = []
+        self.logs = [[]]
 
         self.hint_list = []
 
@@ -306,10 +306,18 @@ class Map:
 
         self.veri_important = {"1", "3", "5", "8"}
 
-        self.reveal_turn = int(self.avg_size ** (1 / 4))
-        self.free_turn = rng.randint(self.reveal_turn + 1, self.reveal_turn * 3)
+        free_turn = int(0.0032552083 * self.avg_size**2 + 0.15625 * self.avg_size + 0.68)
+        self.free_turn = rng.randint(free_turn, free_turn + int(0.5 * free_turn))
+
+        self.reveal_turn = self.free_turn // 2
 
         self.is_free = False
+        self.logs[0].append("Game start")
+        self.logs[0].append(f"Agent appears at {self.jacksparrow.coord}")
+
+        self.logs[0].append("The pirate’s prison is going to reveal the coordinate")
+        self.logs[0].append(f"at the beginning of turn number {self.reveal_turn}")
+        self.logs[0].append(f"The pirate is free at the beginning of turn number {self.free_turn}")
 
         steps, pirate_path = self.shortest_path(self.pirate.coord, self.treasure)
         self.pirate_path = deque(pirate_path)
@@ -438,7 +446,7 @@ class Map:
         trueness = True
 
         # get random tiles doest not contain the treasure
-        no_tiles = rng.randint(1, 13)
+        no_tiles = rng.randint(2, int(self.avg_size * 0.75))
         rand_tiles = rng.choice(np.arange(self.total_tile), size=no_tiles, replace=False)
 
         # get tile that overlaps with the treasure
@@ -467,7 +475,7 @@ class Map:
         trueness = False
 
         # number of regions
-        no_reg = rng.randint(2, 6)
+        no_reg = rng.randint(2, int(self.avg_size * 0.375))
         rand_regions = rng.choice(np.arange(1, self.total_region + 1), size=no_reg, replace=False)
 
         # get region that overlaps with the treasure's region
@@ -495,7 +503,7 @@ class Map:
         trueness = True
 
         # number of regions
-        no_reg = rng.randint(1, 3)
+        no_reg = rng.randint(1, int(self.avg_size * 0.1875))
         rand_regions = rng.choice(np.arange(1, self.total_region + 1), size=no_reg, replace=False)
 
         # get region that overlaps with the treasure's region
@@ -535,7 +543,7 @@ class Map:
         if start_point_x <= self.treasure[0] <= end_point_x and start_point_y <= self.treasure[1] <= end_point_y:
             trueness = True
         
-        log = f"Large rectangle area has the treasure. Top-Left-Bottom-Right = [{start_point_x}, {start_point_y}, {end_point_x}, {end_point_y}]"
+        log = f"Large rectangle area has the treasure: [{start_point_x}, {start_point_y}, {end_point_x}, {end_point_y}]"
 
         return "4", trueness, masked_tiles, log
         
@@ -561,7 +569,7 @@ class Map:
         masked_tiles = np.zeros(self.shape, dtype=bool)
         masked_tiles[start_point_x:end_point_x + 1, start_point_y:end_point_y + 1] = True
         
-        log = f"Small rectangle area doesn't the treasure. Top-Left-Bottom-Right = [{start_point_x}, {start_point_y}, {end_point_x}, {end_point_y}]"
+        log = f"Small rectangle area has no treasure: [{start_point_x}, {start_point_y}, {end_point_x}, {end_point_y}]"
         
         return "5", trueness, masked_tiles, log
 
@@ -876,7 +884,7 @@ class Map:
         if masked_tiles[self.treasure]:
             trueness = True
 
-        log = f"The treasure is somewhere in the gap between 2 squares: S1 = [{big_top_left}, {big_bottom_right}], S2 = [{small_top_left}, {small_bottom_right}]"
+        log = f"The treasure is in between 2 squares: S1=[{big_top_left},{big_bottom_right}], S2=[{small_top_left},{small_bottom_right}]"
             
         return "14", trueness, masked_tiles, log
 
@@ -913,13 +921,13 @@ class Map:
         else:
             coord[0] += steps
 
-        self.logs[self.n_turns - 1].append(f"The agent move {steps} steps to the {direction}")
+        self.logs[self.n_turns].append(f"The agent move {steps} steps to the {direction}")
 
         self.jacksparrow.coord = tuple(coord)
     
     def teleport(self, coord: Tuple[int, int]) -> None:
         self.jacksparrow.coord = coord
-        self.logs[self.n_turns - 1].append(f"The agent teleports to {coord}")
+        self.logs[self.n_turns].append(f"The agent teleports to {coord}")
     
     def move_pirate(self, direction: str, steps: int) -> None:
         
@@ -934,7 +942,7 @@ class Map:
         else:
             coord[0] += steps
 
-        self.logs[self.n_turns - 1].append(f"The pirate move {steps} steps to the {direction}")
+        self.logs[self.n_turns].append(f"The pirate move {steps} steps to the {direction}")
 
         self.pirate.coord = tuple(coord)
 
@@ -947,12 +955,12 @@ class Map:
 
         end_col = min(self.jacksparrow.coord[1] + size // 2, self.shape[1] - 1)
         
-        self.logs[self.n_turns - 1].append(f"AGENT PERFOMED A [{size} x {size}] SCAN")
+        self.logs[self.n_turns].append(f"AGENT PERFOMED A [{size} x {size}] SCAN")
 
         self.potential[start_row: end_row + 1, start_col: end_col + 1] = False
 
         if start_row <= self.treasure[0] <= end_row and start_col <= self.treasure[1] <= end_col:
-            self.logs[self.n_turns - 1].append("YOU WIN")
+            self.logs[self.n_turns].append("AGENT WIN")
             self.is_win = True
             return True
 
@@ -965,10 +973,10 @@ class Map:
             _, trueness, masked_tiles, log = gen_hint()
 
             if trueness:
-                self.logs[self.n_turns - 1].append(log)
-                self.logs[self.n_turns - 1].append("ADD HINT1 TO HINT LIST")
+                self.logs[self.n_turns].append(log)
+                self.logs[self.n_turns].append("ADD HINT1 TO HINT LIST")
 
-                self.verify_hint(1, hint_type, trueness, masked_tiles)
+                self.verify_hint(1, hint_type, trueness, masked_tiles, log)
 
                 break
                         
@@ -977,11 +985,11 @@ class Map:
         
         hint_type, trueness, masked_tiles, log = self.hints[hint_type]()
 
-        self.hint_list.append((self.n_turns, hint_type, trueness, masked_tiles))
+        self.hint_list.append((self.n_turns, hint_type, trueness, masked_tiles, log))
 
-        self.logs[self.n_turns - 1].append(f"HINT{self.n_turns}: The agent receives a hint:")
-        self.logs[self.n_turns - 1].append(log)
-        self.logs[self.n_turns - 1].append(f"ADD HINT{self.n_turns} TO HINT LIST")
+        self.logs[self.n_turns].append(f"HINT{self.n_turns}: The agent receives a hint:")
+        self.logs[self.n_turns].append(log)
+        self.logs[self.n_turns].append(f"ADD HINT{self.n_turns} TO HINT LIST")
 
     def apply_masked_tiles(self, trueness: bool, masked_tiles: np.ndarray) -> None:
         # The treasure is somewhere in a boundary of 2 regions 
@@ -991,11 +999,12 @@ class Map:
         else:
             self.potential[masked_tiles] = False
 
-    def verify_hint(self, hint_number, hint_type: str, trueness: bool, masked_tiles: np.ndarray):
+    def verify_hint(self, hint_number, hint_type: str, trueness: bool, masked_tiles: np.ndarray, log: str):
         if hint_type == "6":
             return
 
-        self.logs[self.n_turns - 1].append(f"HINT{hint_number}: is_verified = TRUE, is_truth = {trueness}")
+        self.logs[self.n_turns].append(f"HINT{hint_number}: is_verified = TRUE, is_truth = {trueness}")
+        self.logs[self.n_turns].append(log)
         
         if hint_type in self.veri_important:
             trueness = not trueness
@@ -1121,9 +1130,6 @@ class Map:
                 continue
 
             n_steps, path = self.shortest_path(self.jacksparrow.coord, center)
-            print("center: ", center)
-            print("value: ", self.value[center])
-            print(path)
             if n_steps < min_steps:
                 min_steps = n_steps
                 min_path = path
@@ -1157,24 +1163,37 @@ class Map:
         return points
 
     def first_turn(self) -> None:
-        self.logs[0].append("START TURN 1")
+        self.logs[self.n_turns].append("START TURN 1")
 
         # generate first hint
         self.gen_1st_hint()
 
         n_clusters = int(self.potential.sum() ** (1/5))
         path = self.nearest_path(n_clusters=max(2, n_clusters))
-        direction, n_steps = path[0]
+        direction = ''
+        n_steps = 0
+
+        if path:
+            direction, n_steps = path[0]
+        else:        
+            direction = rng.choice(['NORTH', 'EAST', 'WEST', 'SOUTH'])
+            n_steps = rng.randint(1, 5)
 
         # first action
         self.scan(5)
 
+        if self.is_win:
+            return
+
         # second action
-        if n_steps > 2:
-            self.move_jack(direction, min(n_steps, 4))
-        else:
-            self.move_jack(direction, min(n_steps, 2))
+        move_steps = min(n_steps, 4)
+        self.move_jack(direction, move_steps)
+        
+        if move_steps < 3:
             self.scan(3)
+
+            if self.is_win:
+                return
 
     def normal_turn(self) -> None:
         n_actions = 2
@@ -1186,26 +1205,49 @@ class Map:
         
         n_clusters = int(self.potential.sum() ** (1/3))
         path = self.nearest_path(n_clusters=max(2, n_clusters))
-        direction, n_steps = path[0]
+        direction = ''
+        n_steps = 0
+
+        if path:
+            direction, n_steps = path[0]
+        else:        
+            direction = rng.choice(['NORTH', 'EAST', 'WEST', 'SOUTH'])
+            n_steps = rng.randint(1, 5)
 
         if n_actions == 2:
             self.scan(5)
+
+            if self.is_win:
+                return
+
             self.move_jack(direction, min(n_steps, 2))
             self.scan(3)
+
+            if self.is_win:
+                return
         else:
             action_choice = rng.choice(np.arange(3)) 
 
             if action_choice == 0:
                 self.move_jack(direction, min(n_steps, 2))
                 self.scan(3)
+
+                if self.is_win:
+                    return
             elif action_choice == 1:
                 self.scan(5)
+
+                if self.is_win:
+                    return
             else:
                 move_steps = min(n_steps, 4)
-                self.move_jack(direction, min(n_steps, 4))
+                self.move_jack(direction, move_steps)
                 
                 if move_steps < 3:
                     self.scan(3)
+
+                    if self.is_win:
+                        return
 
     def pirate_action(self) -> None:
         direction = None
@@ -1215,8 +1257,9 @@ class Map:
             self.move_pirate(direction, min(n_steps, 2))
 
             if self.pirate.coord == self.treasure:
-                self.logs[self.n_turns - 1].append("YOU LOSE, THE PIRATE FOUND THE TREASURE")
+                self.logs[self.n_turns].append("AGENT LOSE, THE PIRATE FOUND THE TREASURE")
                 self.is_lose = True
+                self.n_turns += 1
 
             n_steps -= steps
 
@@ -1225,8 +1268,8 @@ class Map:
             else:
                 self.pirate_path[0] = direction, n_steps
 
-        if not self.is_teleported:
-            if rng.rand() > self.avg_size / (self.avg_size + 20):
+        if not self.is_lose and not self.is_teleported:
+            if rng.rand() > self.avg_size / (self.avg_size + 5):
                 self.is_teleported = True
                 self.teleport(self.teleport_coord(direction))
 
