@@ -1,0 +1,107 @@
+106
+Game start
+Agent appears at (30, 23)
+The pirate’s prison is going to reveal the coordinate
+at the beginning of turn number 4
+The pirate is free at the beginning of turn number 9
+START TURN 1
+[(7, 17), (21, 5), (26, 23)] do not contain treasure
+ADD HINT1 TO HINT LIST
+HINT1: is_verified = TRUE, is_truth = True
+[(7, 17), (21, 5), (26, 23)] do not contain treasure
+AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the NORTH
+AGENT PERFOMED A [3 x 3] SCAN
+START TURN 2
+HINT2: The agent receives a hint:
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT2 TO HINT LIST
+AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the EAST
+AGENT PERFOMED A [3 x 3] SCAN
+START TURN 3
+HINT3: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT3 TO HINT LIST
+AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the NORTH
+AGENT PERFOMED A [3 x 3] SCAN
+START TURN 4
+HINT4: The agent receives a hint:
+Row 16 or column 14 contain the treasure
+ADD HINT4 TO HINT LIST
+The pirate is at the (28, 1) prison
+HINT4: is_verified = TRUE, is_truth = False
+Row 16 or column 14 contain the treasure
+AGENT PERFOMED A [5 x 5] SCAN
+START TURN 5
+HINT5: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT5 TO HINT LIST
+AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the EAST
+AGENT PERFOMED A [3 x 3] SCAN
+START TURN 6
+HINT6: The agent receives a hint:
+Large rectangle area has the treasure: [9, 14, 27, 29]
+ADD HINT6 TO HINT LIST
+HINT3: is_verified = TRUE, is_truth = False
+The treasure is in a region that has mountain
+AGENT PERFOMED A [5 x 5] SCAN
+START TURN 7
+HINT7: The agent receives a hint:
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT7 TO HINT LIST
+HINT6: is_verified = TRUE, is_truth = True
+Large rectangle area has the treasure: [9, 14, 27, 29]
+The agent move 2 steps to the EAST
+AGENT PERFOMED A [3 x 3] SCAN
+START TURN 8
+HINT8: The agent receives a hint:
+[(8, 9), (23, 24), (4, 1), (7, 20), (4, 29), (20, 6), (15, 11), (19, 17), (6, 19), (4, 26), (17, 11), (3, 18), (10, 26)] do not contain treasure
+ADD HINT8 TO HINT LIST
+HINT2: is_verified = TRUE, is_truth = False
+The treasure is somewhere in an area bounded by 2 tiles from sea
+The agent move 2 steps to the NORTH
+AGENT PERFOMED A [3 x 3] SCAN
+START TURN 9
+HINT9: The agent receives a hint:
+The treasure is in between 2 squares: S1=[(11, 1),(27, 17)], S2=[(18, 27),(22, 31)]
+ADD HINT9 TO HINT LIST
+The pirate is free
+The pirate move 2 steps to the NORTH
+AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the NORTH
+AGENT PERFOMED A [3 x 3] SCAN
+START TURN 10
+HINT10: The agent receives a hint:
+These regions do not contain the treasure: [6]
+ADD HINT10 TO HINT LIST
+The pirate move 2 steps to the NORTH
+AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the WEST
+AGENT PERFOMED A [3 x 3] SCAN
+START TURN 11
+HINT11: The agent receives a hint:
+top part of the map does not contain the treasure.
+ADD HINT11 TO HINT LIST
+The pirate move 1 steps to the NORTH
+The agent teleports to (18, 24)
+HINT8: is_verified = TRUE, is_truth = True
+[(8, 9), (23, 24), (4, 1), (7, 20), (4, 29), (20, 6), (15, 11), (19, 17), (6, 19), (4, 26), (17, 11), (3, 18), (10, 26)] do not contain treasure
+AGENT PERFOMED A [5 x 5] SCAN
+START TURN 12
+HINT12: The agent receives a hint:
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT12 TO HINT LIST
+The pirate move 2 steps to the EAST
+HINT3: is_verified = TRUE, is_truth = False
+The treasure is in a region that has mountain
+The agent move 4 steps to the NORTH
+START TURN 13
+HINT13: The agent receives a hint:
+The treasure is somewhere in the boundary of region 7 and region 10
+ADD HINT13 TO HINT LIST
+The pirate move 2 steps to the NORTH
+AGENT PERFOMED A [5 x 5] SCAN
+AGENT WIN

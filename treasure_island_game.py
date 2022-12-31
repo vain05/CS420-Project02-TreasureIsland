@@ -482,7 +482,7 @@ while True:
     elif stage == 2:
         if import_init == 1:
             import_init = 0
-            m.import_map('./input.txt')
+            m.import_map('./input_map.txt')
 
             HEIGTH, WIDTH = m.shape
             icon_size =  (760/max(HEIGTH, WIDTH))/512
@@ -718,68 +718,61 @@ while True:
                         treasure_icon = ImageSurface('asset/treasure.png', icon_size)
                         treasure_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
 
-        # if running == 1:              
-        #     if not m.is_lose and not m.is_win:
-        #         m.logs.append([])
-        #
-        #         if state_index != m.n_turns:
-        #             state_index = m.n_turns
-        #
-        #             m.potential = potential_states[state_index - 1]
-        #             m.jacksparrow.coord = agent_positions[state_index - 1]
-        #             m.pirate.coord = pirate_positions[state_index - 1]
-        #
-        #         if m.n_turns != 1:
-        #             m.logs[m.n_turns].append(f"START TURN {m.n_turns}")
-        #
-        #             # generate a hint at the beginning of turn
-        #             m.hint_generator()
-        #
-        #         if m.n_turns == m.reveal_turn:
-        #             m.logs[m.n_turns].append(f"The pirate is at the {m.pirate.coord} prison")
-        #         
-        #         if m.n_turns >= m.free_turn:
-        #             if m.n_turns == m.free_turn:
-        #                 m.logs[m.n_turns].append(f"The pirate is free")
-        #             m.pirate_action()
-        #
-        #         if m.n_turns == 1:
-        #             m.logs[m.n_turns].append("Game start")
-        #             m.logs[m.n_turns].append(f"Agent appears at {m.jacksparrow.coord}")
-        #
-        #             m.logs[m.n_turns].append("The pirate’s prison is going to reveal the coordinate")
-        #             m.logs[m.n_turns].append(f"at the beginning of turn number {m.reveal_turn}")
-        #             m.logs[m.n_turns].append(f"The pirate is free at the beginning of turn number {m.free_turn}")
-        #
-        #             m.first_turn()
-        #             m.n_turns += 1
-        #
-        #         elif not m.is_lose:
-        #             m.normal_turn()
-        #             m.n_turns += 1
-        #
-        #         update = 1
-        #         print(m.logs[m.n_turns - 2], '\n')
-        #     
-        #         potential_states.append(m.potential.copy())
-        #         agent_positions.append(m.jacksparrow.coord)
-        #         pirate_positions.append(m.pirate.coord)
-        #         state_index += 1
-        #
-        #         print(agent_positions)
-        #         print('turn:', m.n_turns, state_index, len(agent_positions))
-        #
-        #         if m.is_lose or m.is_win:
-        #             running = 0
-        #
-        #             output_log('outputs/', m.logs)
+        if running == 1:              
+            if m.is_lose or m.is_win:
+                running = 0
+            else:
+                m.logs.append([])
+
+                if state_index != m.n_turns:
+                    state_index = m.n_turns
+
+                    m.potential = potential_states[state_index - 1]
+                    m.jacksparrow.coord = agent_positions[state_index - 1]
+                    m.pirate.coord = pirate_positions[state_index - 1]
+
+                if m.n_turns != 1:
+                    m.logs[m.n_turns].append(f"START TURN {m.n_turns}")
+
+                    # generate a hint at the beginning of turn
+                    m.hint_generator()
+
+                if m.n_turns == m.reveal_turn:
+                    m.logs[m.n_turns].append(f"The pirate is at the {m.pirate.coord} prison")
+                
+                if m.n_turns >= m.free_turn:
+                    if m.n_turns == m.free_turn:
+                        m.logs[m.n_turns].append(f"The pirate is free")
+                    m.pirate_action()
+
+                if m.n_turns == 1:
+                    print(m.logs[0], '\n')
+                    m.first_turn()
+                    m.n_turns += 1
+
+                elif not m.is_lose:
+                    m.normal_turn()
+                    m.n_turns += 1
+
+                update = 1
+                print(m.logs[m.n_turns - 1], '\n')
+
+                potential_states.append(m.potential.copy())
+                agent_positions.append(m.jacksparrow.coord)
+                pirate_positions.append(m.pirate.coord)
+                state_index += 1
+
+                if m.is_lose or m.is_win:
+                    running = 0
+
+                    output_log('./outputs_logs/', m.logs)
+
+            update = 1
 
         if is_clicked:
             if play_button.rect.collidepoint(pg.mouse.get_pos()):
-                if running == 0:
-                    running = 1
-                else:
-                    running = 0
+                running = 1
+
             if regenerate_button.rect.collidepoint(pg.mouse.get_pos()):
                 background_loading.draw_center(screen)
                 init = 1
@@ -875,9 +868,7 @@ while True:
                     if m.is_lose or m.is_win:
                         running = 0
 
-                        output_log('./outputs/', m.logs)
-
-                    print(m.n_turns)
+                        output_log('./outputs_logs/', m.logs)
 
                 update = 1
 
