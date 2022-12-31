@@ -731,7 +731,11 @@ while True:
                     m.pirate.coord = pirate_positions[state_index - 1]
 
 
-            if import_button.rect.collidepoint(pg.mouse.get_pos()):
+            if value_button.rect.collidepoint(pg.mouse.get_pos()):
+                m.import_map('./input.txt')
+                update = 1
+
+            if region_button.rect.collidepoint(pg.mouse.get_pos()):
                 pass
 
             if export_button.rect.collidepoint(pg.mouse.get_pos()):
