@@ -2,6 +2,8 @@ import pygame as pg
 from sys import exit
 import os
 import time
+import numpy as np
+
 
 import treasure_island as mg
 
@@ -341,11 +343,16 @@ play_button = Button(500, 50, button_color, 'Play', 4, button_text_color)
 regenerate_button = Button(500, 50, button_color, 'New Map', 4, button_text_color)
 back_button = Button(500, 50, button_color, 'Back', 4, button_text_color)
 
-scanned_button = Button(80, 50, button_color, 'Scan', 1, button_text_color)
-update_button = Button(80, 50, button_color, 'Update', 1, button_text_color)
+previous_button = Button(80, 50, button_color, '<<', 1, button_text_color)
+next_button = Button(80, 50, button_color, '>>', 1, button_text_color)
 value_button = Button(80, 50, button_color, 'value', 1, button_text_color)
 region_button = Button(80, 50, button_color, 'region', 1, button_text_color)
-hint_button = Button(80, 50, button_color, 'HINT', 1, button_text_color)
+next_step_button = Button(80, 50, button_color, 'Next', 1, button_text_color)
+
+potential_states = []
+agent_positions = []
+pirate_positions = []
+state_index = 0
 
 stage = 0
 log_list = []
@@ -356,7 +363,7 @@ frame = 0
 map_gen = mg.MapGenerator(HEIGTH, WIDTH)
 m = mg.Map(map_gen)
 n_turns = 1
-
+running = 0
 while True:
     is_clicked = False
     for event in pg.event.get():
@@ -470,6 +477,16 @@ while True:
             rows, cols = m.shape
             Map = m.value
 
+            potential_states = []
+            agent_positions = []
+            pirate_positions = []
+            state_index = 0
+
+            new_potential = m.potential.copy()
+            potential_states.append(new_potential)
+            agent_positions.append(m.jacksparrow.coord)
+            pirate_positions.append(m.pirate.coord)
+
             m.map_print()
             print(f"Agent coord: {m.jacksparrow.coord}")
             print(f"Pirate coord: {m.pirate.coord}")
@@ -505,11 +522,11 @@ while True:
             regenerate_button.draw_center_horizontal(info_box, 800)
             back_button.draw_center_horizontal(info_box, 875)
 
-            scanned_button.draw(info_box, 25 ,650)
-            update_button.draw(info_box, 130,650)
+            previous_button.draw(info_box, 25 ,650)
+            next_button.draw(info_box, 130,650)
             value_button.draw(info_box, 235,650)
             region_button.draw(info_box, 340 ,650)
-            hint_button.draw(info_box, 445 ,650)
+            next_step_button.draw(info_box, 445 ,650)
 
             game_box.draw_center_vertical(screen, 25)
             game_inner_box.draw_center(game_box)    
@@ -554,6 +571,8 @@ while True:
         if update == 1:
             update = 0
 
+            print('\nAAAAAAAAAAAAAAAAA',potential_states)
+            
             log_box = ColoredSurface(500, 600, 'wheat1')
             log_box.draw_center_horizontal(info_box, 25)
             log_title.draw(log_box, 12, 5)
@@ -600,11 +619,41 @@ while True:
                         treasure_icon = ImageSurface('asset/treasure.png', icon_size)
                         treasure_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
 
+                    j += 1
+                i += 1
+
+        if running == 1:              
+            state_index = n_turns - 1
+            m.logs.append(f"START TURN {n_turns}")
+
+                # generate a hint at the beginning of turn
+            m.hint_generator(n_turns)
+            if n_turns == m.reveal_turn:
+                m.logs.append(f"The pirate is at the {m.pirate.coord} prison")
+            
+            if n_turns >= m.free_turn:
+                if n_turns == m.free_turn:
+                    m.logs.append(f"The pirate is free")
+                m.pirate_action()
+
+            if m.is_lose or m.is_win:
+                running = 0
+            
+            new_potential = m.potential.copy()
+            potential_states.append(new_potential)
+            agent_positions.append(m.jacksparrow.coord)
+            pirate_positions.append(m.pirate.coord)
+            state_index += 1
+
         if is_clicked:
             if play_button.rect.collidepoint(pg.mouse.get_pos()):
-                pass
-
+                if running == 0:
+                    running = 1
+                else:
+                    running = 0
             if regenerate_button.rect.collidepoint(pg.mouse.get_pos()):
+                background_loading.draw_center(screen)
+                init = 1
                 # background_loading.draw_center(screen)
                 # map_gen = mg.MapGenerator(HEIGTH, WIDTH)
                 # m = mg.Map(map_gen)
@@ -621,51 +670,34 @@ while True:
                 # log_box = ColoredSurface(500, 600, 'wheat1')
                 # log_box.draw_center_horizontal(info_box, 25)
                 # log_title.draw(log_box, 12, 5)
-                init = 1
+                
                 # update = 1
 
             if back_button.rect.collidepoint(pg.mouse.get_pos()):
                 stage = 0
                 init = 1
                 print()
-
-            if scanned_button.rect.collidepoint(pg.mouse.get_pos()):
-                print(m.potential)
-                print()
-
-            if update_button.rect.collidepoint(pg.mouse.get_pos()):
-                update = 1
-                print('Updated\n')
-
+            if previous_button.rect.collidepoint(pg.mouse.get_pos()):
+                if state_index > 0:
+                    state_index -= 1
+                    update = 1
+                    
+            if next_button.rect.collidepoint(pg.mouse.get_pos()):
+                if state_index < n_turns - 1:
+                    state_index += 1
+                    update = 1
             if value_button.rect.collidepoint(pg.mouse.get_pos()):
                 print(m.value)
                 print()
 
             if region_button.rect.collidepoint(pg.mouse.get_pos()):
-                while not m.is_lose and not m.is_win:
-                    m.logs.append(f"START TURN {n_turns}")
+               
 
-                    # generate a hint at the beginning of turn
-                    m.hint_generator(n_turns)
-                    if n_turns == m.reveal_turn:
-                        m.logs.append(f"The pirate is at the {m.pirate.coord} prison")
+                pass
                     
-                    if n_turns >= m.free_turn:
-                        if n_turns == m.free_turn:
-                            m.logs.append(f"The pirate is free")
-                        m.pirate_action()
 
-                    if n_turns == 1:
-                        m.first_turn()
-                        n_turns += 1
-                    else:
-                        m.normal_turn(n_turns)
-                        n_turns += 1
-
-                    update = 1
-                    print(m.logs, '\n')
-
-            if hint_button.rect.collidepoint(pg.mouse.get_pos()):
+            if next_step_button.rect.collidepoint(pg.mouse.get_pos()):
+                state_index = n_turns - 1
                 if not m.is_lose and not m.is_win:
                     m.logs.append(f"START TURN {n_turns}")
 
@@ -688,6 +720,16 @@ while True:
 
                     update = 1
                     print(m.logs, '\n')
-
+                
+                new_potential = m.potential.copy()
+                potential_states.append(new_potential)
+                agent_positions.append(m.jacksparrow.coord)
+                pirate_positions.append(m.pirate.coord)
+                state_index += 1
+                print(agent_positions)
+                print('turn:', n_turns, state_index, len(agent_positions))
+        m.potential = potential_states[state_index]
+        m.jacksparrow.coord = agent_positions[state_index]
+        m.pirate.coord = pirate_positions[state_index]
     pg.display.update() 
     clock.tick(60)

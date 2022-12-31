@@ -21,7 +21,7 @@ import math
 from string import digits
 import copy
 
-# %% [markdown]
+# %%
 # ### Set a Random Number Generator
 
 # %%
