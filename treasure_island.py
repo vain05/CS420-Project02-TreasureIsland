@@ -327,7 +327,28 @@ class Map:
                       "5": self.generate_hint_5, "6": self.generate_hint_6, "7": self.generate_hint_7, "8": self.generate_hint_8,
                       "9": self.generate_hint_9, "10": self.generate_hint_10, "11": self.generate_hint_11, "12": self.generate_hint_12,
                       "13": self.generate_hint_13, "14": self.generate_hint_14, "15": self.generate_hint_15}
-    
+
+    def place_pirate(self):
+        
+        while(True):
+            for coord_x, row in enumerate(self.value):
+                for coord_y, terrain in enumerate(row):
+                    if self.value[coord_x][coord_y] == 'p' and rng.uniform(0,1) <= 1/self.total_prison:
+                        return coord_x, coord_y
+
+    def place_agent(self):
+        while(True):
+            for coord_x, row in enumerate(self.value):
+                for coord_y, terrain in enumerate(row):
+                    if self.value[coord_x][coord_y] in range(1, self.total_region + 1) and rng.uniform(0,1) <= 0.001:
+                        return coord_x, coord_y
+
+    def place_treasure(self):
+        while(True):
+            for coord_x, row in enumerate(self.value):
+                for coord_y, terrain in enumerate(row):
+                    if self.value[coord_x][coord_y] in range(1, self.total_region + 1) and rng.uniform(0,1) <= 0.001:
+                        return coord_x, coord_y
 
     def import_map(self, path: str):
         with open(path, 'r') as f:
@@ -337,31 +358,55 @@ class Map:
                 read_map.append(row)
 
             print(read_map)
-        
-        self.total_tile = read_map[0][0] * read_map[0][1]
-        self.shape = (read_map[0][0], read_map[0][1])
-        self.avg_size = (read_map[0][0] + read_map[0][1]) / 2
-        self.total_region = read_map[3] - 1
+
+        self.shape = int(read_map[0][0][0]), int(read_map[0][0][2])
+        self.total_tile = self.shape[0] * self.shape[1]
+
+        print("shape:", self.shape)
+
+        self.avg_size = (self.shape[0] * self.shape[1]) / 2
+        self.total_region = int(read_map[3][0]) - 1
 
         rows = int(read_map[0][0][0])
-        self.raw_map = read_map[5:5 + rows]
+
+        raw_map = read_map[5:5 + rows]
         for rows in raw_map:
             for i, value in enumerate(rows):
                 rows[i] = value.replace(' ','')
 
-        self.value = np.array(map.Map, dtype=str)
-        self.value[self.value == '0'] = '~'
-        self.region = np.array(map.region_map, dtype=int)
-        is_mountain = np.array(map.mountain_map, dtype=bool)
-        self.mountain = np.unique(self.region[is_mountain])
+        self.value = np.empty(self.shape, dtype=str)
+        self.region = np.empty(self.shape, dtype=int)
+        self.mountain = np.empty(self.shape, dtype=int)
+        
+        self.mountain = set()
+        self.total_prison = 0
 
-        self.potential= np.ones((map.rows, map.cols), dtype=bool)
+        for i, rows in enumerate(raw_map):
+            for j, value in enumerate(rows):
+                if len(value) == 1:
+                    self.value[i, j] = value 
+                else:
+                    region = int(value[:-1])
+                    self.value[i, j] = value[-1]
+
+                    if value[-1] == 'M':
+                        self.mountain.add(region)
+                    elif value[-1] == 'P':
+                        self.total_prison += 1
+
+                    self.region[i, j] = region
+
+
+        self.value[self.value == '0'] = '~'
+        is_mountain = self.value == 'M'
+
+        self.potential= np.ones(self.shape, dtype=bool)
         self.potential[(self.region == 0) | (is_mountain)] = False
 
-        self.jacksparrow = 
+        self.jacksparrow = JackSparrow(self.place_agent())
         # self.value[self.jacksparrow.coord] = 'A'
 
-        self.pirate = 
+        self.pirate = Pirate(self.place_pirate())
         # self.value[self.pirate.coord] = 'Pi'
 
         self.treasure = (read_map[4][0],read_map[4][1])

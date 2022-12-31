@@ -732,8 +732,8 @@ while True:
 
 
             if value_button.rect.collidepoint(pg.mouse.get_pos()):
-                print(m.potential)
-                print()
+                m.import_map('./input.txt')
+                update = 1
 
             if region_button.rect.collidepoint(pg.mouse.get_pos()):
                 pass
