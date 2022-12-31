@@ -368,7 +368,7 @@ m = mg.Map(map_gen)
 running = 0
 
 def output_log(folder_path, logs):
-    with open(folder_path + f'log_{str(datetime.now()).replace(" ", "_")}', mode='w') as f:
+    with open(folder_path + f'log_{str(datetime.now()).replace(":", "")}', mode='w') as f:
         total_lines = 0
         for log in logs:
             total_lines += len(log)

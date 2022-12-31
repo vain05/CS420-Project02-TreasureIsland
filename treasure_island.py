@@ -431,7 +431,7 @@ class Map:
         self.pirate_path = deque(pirate_path)
 
     def export_map(self, export_folder: str):
-        with open(export_folder + f'map_export_{str(datetime.now()).replace(" ", "")}.txt', 'w') as f:
+        with open(export_folder + f'map_export_{str(datetime.now()).replace(":", "")}.txt', 'w') as f:
             f.write(f"{self.shape[0]} {self.shape[1]}\n")
             f.write(f"{self.reveal_turn}\n")
             f.write(f"{self.free_turn}\n")
