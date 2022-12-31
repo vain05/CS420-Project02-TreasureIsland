@@ -784,6 +784,8 @@ while True:
 
                         output_log('outputs', m.logs)
 
+                    print(m.n_turns)
+
                 update = 1
 
     pg.display.update() 

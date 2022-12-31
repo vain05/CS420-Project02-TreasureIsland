@@ -305,8 +305,10 @@ class Map:
 
         self.veri_important = {"1", "3", "5", "8"}
 
-        self.reveal_turn = int(self.avg_size ** (1 / 4))
-        self.free_turn = rng.randint(self.reveal_turn + 1, self.reveal_turn * 3)
+        free_turn = int(0.0032552083 * self.avg_size**2 + 0.15625 * self.avg_size + 0.68)
+        self.free_turn = rng.randint(free_turn, free_turn + int(0.5 * free_turn))
+
+        self.reveal_turn = self.free_turn // 2
 
         self.is_free = False
         self.logs[0].append("Game start")
@@ -1108,7 +1110,14 @@ class Map:
 
         n_clusters = int(self.potential.sum() ** (1/5))
         path = self.nearest_path(n_clusters=max(2, n_clusters))
-        direction, n_steps = path[0]
+        direction = ''
+        n_steps = 0
+
+        if path:
+            direction, n_steps = path[0]
+        else:        
+            direction = rng.choice(['NORTH', 'EAST', 'WEST', 'SOUTH'])
+            n_steps = rng.randint(1, 5)
 
         # first action
         self.scan(5)
@@ -1136,7 +1145,14 @@ class Map:
         
         n_clusters = int(self.potential.sum() ** (1/3))
         path = self.nearest_path(n_clusters=max(2, n_clusters))
-        direction, n_steps = path[0]
+        direction = ''
+        n_steps = 0
+
+        if path:
+            direction, n_steps = path[0]
+        else:        
+            direction = rng.choice(['NORTH', 'EAST', 'WEST', 'SOUTH'])
+            n_steps = rng.randint(1, 5)
 
         if n_actions == 2:
             self.scan(5)
@@ -1181,8 +1197,9 @@ class Map:
             self.move_pirate(direction, min(n_steps, 2))
 
             if self.pirate.coord == self.treasure:
-                self.logs[self.n_turns].append("YOU LOSE, THE PIRATE FOUND THE TREASURE")
+                self.logs[self.n_turns].append("AGENT LOSE, THE PIRATE FOUND THE TREASURE")
                 self.is_lose = True
+                self.n_turns += 1
 
             n_steps -= steps
 
@@ -1191,7 +1208,7 @@ class Map:
             else:
                 self.pirate_path[0] = direction, n_steps
 
-        if not self.is_teleported:
+        if not self.is_lose and not self.is_teleported:
             if rng.rand() > self.avg_size / (self.avg_size + 5):
                 self.is_teleported = True
                 self.teleport(self.teleport_coord(direction))
