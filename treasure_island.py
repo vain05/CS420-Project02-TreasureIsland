@@ -309,7 +309,7 @@ class Map:
         self.veri_important = {"1", "3", "5", "8"}
 
         free_turn = int(0.0032552083 * self.avg_size**2 + 0.15625 * self.avg_size + 0.68)
-        self.free_turn = rng.randint(free_turn, free_turn + int(0.5 * free_turn))
+        self.free_turn = rng.randint(free_turn, free_turn + 3)
 
         self.reveal_turn = self.free_turn // 2
 
@@ -423,8 +423,8 @@ class Map:
    
         self.veri_important = {"1", "3", "5", "8"}
   
-        self.reveal_turn = read_map[1][0]
-        self.free_turn = read_map[2][0]
+        self.reveal_turn = int(read_map[1][0])
+        self.free_turn = int(read_map[2][0])
         self.is_free = False
    
         steps, pirate_path = self.shortest_path(self.pirate.coord, self.treasure)

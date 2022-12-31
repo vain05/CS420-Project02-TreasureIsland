@@ -316,6 +316,7 @@ background_loading = ImageSurface('asset/background.jpg',1.1848)
 menu_box = ColoredSurface(550, 800, main_color)
 
 start_button = Button(400, 100, button_color, 'Start', 5, button_text_color)
+import_button = Button(400, 100, button_color, 'Import', 5, button_text_color)
 setting_button = Button(400, 100, button_color, 'Setting', 5, button_text_color)
 quit_button = Button(400, 100, button_color, 'Quit', 5, button_text_color)
 
@@ -348,7 +349,7 @@ back_button = Button(500, 50, button_color, 'Back', 4, button_text_color)
 
 previous_button = Button(80, 50, button_color, '<<', 1, button_text_color)
 next_button = Button(80, 50, button_color, '>>', 1, button_text_color)
-import_button = Button(80, 50, button_color, 'Import', 1, button_text_color)
+
 export_button = Button(80, 50, button_color, 'Export', 1, button_text_color)
 next_step_button = Button(80, 50, button_color, 'Next', 1, button_text_color)
 
@@ -358,7 +359,7 @@ pirate_positions = []
 state_index = 1
 
 stage = 0
-
+import_init = 0
 update = 1
 init = 1
 is_clicked = False
@@ -398,9 +399,10 @@ while True:
 
             menu_box.draw_center(screen)
 
-            start_button.draw_center_horizontal(menu_box,150)    
-            setting_button.draw_center_horizontal(menu_box,350)  
-            quit_button.draw_center_horizontal(menu_box,550)
+            start_button.draw_center_horizontal(menu_box,80)    
+            import_button.draw_center_horizontal(menu_box,260)  
+            setting_button.draw_center_horizontal(menu_box,440)
+            quit_button.draw_center_horizontal(menu_box,620)
 
         menu_box.draw_center(screen)
         
@@ -417,6 +419,11 @@ while True:
                 stage = 2
                 init = 1
                 background_loading.draw_center(screen)
+            
+            if import_button.rect.collidepoint(pg.mouse.get_pos()):
+                stage = 2
+                import_init = 1
+                
 
     ########### SETTING ###########
     elif stage == 1:
@@ -456,12 +463,12 @@ while True:
                 HEIGTH = 64
                 WIDTH = 64
             if h_minus_button.rect.collidepoint(pg.mouse.get_pos()):
-                if HEIGTH > 8:
+                if HEIGTH > 5:
                     HEIGTH -= 1
             if h_plus_button.rect.collidepoint(pg.mouse.get_pos()):
                 HEIGTH += 1
             if w_minus_button.rect.collidepoint(pg.mouse.get_pos()):
-                if WIDTH > 8:
+                if WIDTH > 5:
                     WIDTH -= 1
             if w_plus_button.rect.collidepoint(pg.mouse.get_pos()):
                 WIDTH += 1
@@ -473,6 +480,102 @@ while True:
 
     ########### GAME ###########
     elif stage == 2:
+        if import_init == 1:
+            import_init = 0
+            m.import_map('./input.txt')
+
+            HEIGTH, WIDTH = m.shape
+            icon_size =  (760/max(HEIGTH, WIDTH))/512
+            tile_size = 900*0.9/max(HEIGTH, WIDTH)        
+            gap_size = 900*0.1/(max(HEIGTH, WIDTH) - 1)
+            tile_font_size = int(360/max(HEIGTH, WIDTH))
+            font_list[0] = pg.font.Font('font/BlackRose.ttf', tile_font_size)
+
+        
+            update = 1
+            background_loading.draw_center(screen)
+            rows, cols = m.shape
+            Map = m.value
+
+            potential_states = []
+            agent_positions = []
+            pirate_positions = []
+            state_index = 1
+
+            potential_states.append(m.potential.copy())
+            agent_positions.append(m.jacksparrow.coord)
+            pirate_positions.append(m.pirate.coord)
+            update = 1
+
+            m.map_print()
+            print(f"Agent coord: {m.jacksparrow.coord}")
+            print(f"Pirate coord: {m.pirate.coord}")
+            print(f"Treasure coord: {m.treasure}")
+            print()
+
+            log_box = ColoredSurface(500, 600, 'wheat1')
+            log_title.draw(log_box, 12, 5)
+            log_box.draw_center_horizontal(info_box, 25)
+
+            game_box = ColoredSurface(950, 950, main_color)
+            game_inner_box = ColoredSurface(925, 925, button_color)
+            info_box = ColoredSurface(550, 950, secondary_color)
+            log_box = ColoredSurface(500, 600, 'wheat1')
+            log_title = Text('Log', 2, tile_text_color)
+
+            background.draw_center(screen)
+            
+            info_box.draw_center_vertical(screen, 1025)
+
+            log_box.draw_center_horizontal(info_box, 25)
+            log_title.draw(log_box, 12, 5)
+
+            play_button.draw_center_horizontal(info_box, 725)
+            regenerate_button.draw_center_horizontal(info_box, 800)
+            back_button.draw_center_horizontal(info_box, 875)
+
+            previous_button.draw(info_box, 25 ,650)
+            next_button.draw(info_box, 130,650)
+
+            export_button.draw(info_box, 340 ,650)
+            next_step_button.draw(info_box, 445 ,650)
+
+            game_box.draw_center_vertical(screen, 25)
+            game_inner_box.draw_center(game_box)    
+
+            str_regions =  [str(i) for i in range(1, m.total_region + 1)]     
+            for i, r in enumerate(Map):
+                for j, value in enumerate(r):
+                    tile = Button(tile_size, tile_size, default_tile_color, '', 0, tile_text_color)
+                    
+                    if value == '~':
+                        tile = Button(tile_size, tile_size, sea_color, '', 0, tile_text_color)
+                    elif value == '_' or value in str_regions:
+                        # if m.scanned[i][j] == 1:
+                        #     tile = Button(tile_size, tile_size, scanned_color, str(value), 0, tile_text_color)
+                        if m.potential[i][j] == 0:
+                            tile = Button(tile_size, tile_size, scanned_color, str(value), 0, tile_text_color)
+                        else: 
+                            tile = Button(tile_size, tile_size, land_color, str(value), 0, tile_text_color)
+                    elif value == 'M':
+                        tile = Button(tile_size, tile_size, mountain_color, str(value), 0, tile_text_color)
+                    elif value == 'p':
+                        tile = Button(tile_size, tile_size, prison_color, str(value), 0, tile_text_color)
+                    
+                    tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    
+                    if (i,j) == m.pirate.coord:
+                        pirate_icon = ImageSurface('asset/pirate.png', icon_size)
+                        pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    if (i,j) == m.treasure:
+                        treasure_icon = ImageSurface('asset/treasure.png', icon_size)
+                        treasure_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    if (i,j) == m.jacksparrow.coord:                    
+                        agent_icon = ImageSurface('asset/agent.png', icon_size)
+                        agent_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+
+            
+
         
         if init == 1:
             init = 0
@@ -510,14 +613,6 @@ while True:
             log_title.draw(log_box, 12, 5)
             log_box.draw_center_horizontal(info_box, 25)
 
-            # update = 1
-
-            m.map_print()
-            print(f"Agent coord: {m.jacksparrow.coord}")
-            print(f"Pirate coord: {m.pirate.coord}")
-            print(f"Treasure coord: {m.treasure}")
-            print()
-
             game_box = ColoredSurface(950, 950, main_color)
             game_inner_box = ColoredSurface(925, 925, button_color)
             info_box = ColoredSurface(550, 950, secondary_color)
@@ -537,7 +632,7 @@ while True:
 
             previous_button.draw(info_box, 25 ,650)
             next_button.draw(info_box, 130,650)
-            import_button.draw(info_box, 235,650)
+
             export_button.draw(info_box, 340 ,650)
             next_step_button.draw(info_box, 445 ,650)
 
@@ -730,10 +825,6 @@ while True:
                     m.jacksparrow.coord = agent_positions[state_index - 1]
                     m.pirate.coord = pirate_positions[state_index - 1]
 
-
-            if import_button.rect.collidepoint(pg.mouse.get_pos()):
-                m.import_map('./input.txt')
-                update = 1
 
             if export_button.rect.collidepoint(pg.mouse.get_pos()):
                 m.export_map('./exported_maps/')
