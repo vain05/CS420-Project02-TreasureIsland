@@ -369,6 +369,11 @@ next_button = Button(80, 50, button_color, '>>', 1, button_text_color)
 export_button = Button(80, 50, button_color, 'Export', 1, button_text_color)
 next_step_button = Button(80, 50, button_color, 'Next', 1, button_text_color)
 
+agent_icon = ImageSurface('asset/agent.png', icon_size)
+pirate_icon = ImageSurface('asset/pirate.png', icon_size)
+treasure_icon = ImageSurface('asset/treasure.png', icon_size)
+both_icon = ImageSurface('asset/both.png', icon_size)
+
 potential_states = []
 agent_positions = []
 pirate_positions = []
@@ -591,15 +596,16 @@ while True:
                     
                     tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     
-                    if (i,j) == m.pirate.coord:
-                        pirate_icon = ImageSurface('asset/pirate.png', icon_size)
-                        pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    if (i,j) == m.jacksparrow.coord and (i,j) == m.pirate.coord and state_index >= m.reveal_turn:
+                        both_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    else:
+                        if (i,j) == m.jacksparrow.coord:                    
+                            agent_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                        if (i,j) == m.pirate.coord:
+                            pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     if (i,j) == m.treasure:
-                        treasure_icon = ImageSurface('asset/treasure.png', icon_size)
                         treasure_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
-                    if (i,j) == m.jacksparrow.coord:                    
-                        agent_icon = ImageSurface('asset/agent.png', icon_size)
-                        agent_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    
 
             
 
@@ -687,15 +693,16 @@ while True:
                     
                     tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     
-                    if (i,j) == m.pirate.coord:
-                        pirate_icon = ImageSurface('asset/pirate.png', icon_size)
-                        pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    if (i,j) == m.jacksparrow.coord and (i,j) == m.pirate.coord and state_index >= m.reveal_turn:
+                        both_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    else:
+                        if (i,j) == m.jacksparrow.coord:                    
+                            agent_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                        if (i,j) == m.pirate.coord:
+                            pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     if (i,j) == m.treasure:
-                        treasure_icon = ImageSurface('asset/treasure.png', icon_size)
                         treasure_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
-                    if (i,j) == m.jacksparrow.coord:                    
-                        agent_icon = ImageSurface('asset/agent.png', icon_size)
-                        agent_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    
 
         background.draw_center(screen)
         info_box.draw_center_vertical(screen, 1025)
@@ -735,14 +742,14 @@ while True:
                     
                     tile.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     
-                    if (i,j) == m.jacksparrow.coord:                    
-                        agent_icon = ImageSurface('asset/agent.png', icon_size)
-                        agent_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
-                    if (i,j) == m.pirate.coord and state_index >= m.reveal_turn:
-                        pirate_icon = ImageSurface('asset/pirate.png', icon_size)
-                        pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    if (i,j) == m.jacksparrow.coord == m.pirate.coord and state_index >= m.reveal_turn:
+                        both_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                    else:
+                        if (i,j) == m.jacksparrow.coord:                    
+                            agent_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
+                        if (i,j) == m.pirate.coord and state_index >= m.reveal_turn:
+                            pirate_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
                     if (i,j) == m.treasure and (m.potential[i][j] == 0 or m.treasure == m.pirate.coord):
-                        treasure_icon = ImageSurface('asset/treasure.png', icon_size)
                         treasure_icon.draw(game_inner_box, 12.5 + j * (tile_size+gap_size), 12.5 + i * (tile_size+gap_size))
 
         if running == 1:              
@@ -895,7 +902,7 @@ while True:
                     if m.is_lose or m.is_win:
                         running = 0
 
-                        output_log('./outputs_logs/', m.logs)
+                        output_log('./outputs_logs/', m.is_win, m.is_lose, m.n_turns, m.logs)
 
                 update = 1
 
