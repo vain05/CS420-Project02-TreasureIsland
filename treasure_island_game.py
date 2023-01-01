@@ -385,7 +385,8 @@ m = mg.Map(map_gen)
 running = 0
 
 def output_log(folder_path, logs):
-    with open(folder_path + f'log_{str(datetime.now()).replace(":", "")}', mode='w') as f:
+    log_name = 'log_' + str(datetime.now()).replace(":", "-").replace(' ', '')
+    with open(folder_path + log_name, mode='w') as f:
         total_lines = 0
         for log in logs:
             total_lines += len(log)
@@ -759,7 +760,7 @@ while True:
                 if m.n_turns >= m.free_turn:
                     if m.n_turns == m.free_turn:
                         m.logs[m.n_turns].append(f"The pirate is free")
-                    m.pirate_action()
+                    m.pirate_turn()
 
                 if m.n_turns == 1:
                     print(m.logs[0], '\n')
@@ -862,7 +863,7 @@ while True:
                     if m.n_turns >= m.free_turn:
                         if m.n_turns == m.free_turn:
                             m.logs[m.n_turns].append(f"The pirate is free")
-                        m.pirate_action()
+                        m.pirate_turn()
 
                     if m.n_turns == 1:
                         print(m.logs[0], '\n')

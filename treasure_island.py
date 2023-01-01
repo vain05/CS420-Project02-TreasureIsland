@@ -292,7 +292,7 @@ class Map:
 
         self.pirate = Pirate(map.place_pirate())
         # self.value[self.pirate.coord] = 'Pi'
-        self.pirate_dir = None
+        self.pirate_action = None
 
         self.treasure = map.place_treasure()
         # self.value[self.treasure] = 'T'
@@ -399,7 +399,7 @@ class Map:
         self.jacksparrow = JackSparrow(self.place_agent())
 
         self.pirate = Pirate(self.place_pirate())
-        self.pirate_dir = None
+        self.pirate_action = None
 
         treasure = read_map[4][0].split()
         self.treasure = tuple([int(i) for i in treasure])
@@ -423,7 +423,8 @@ class Map:
         self.pirate_path = deque(pirate_path)
 
     def export_map(self, export_folder: str):
-        with open(export_folder + f'map_export_{str(datetime.now()).replace(":", "")}.txt', 'w') as f:
+        map_name = 'map_export_' + str(datetime.now()).replace(":", "-").replace(' ', '') + '.txt'
+        with open(export_folder + map_name, 'w') as f:
             f.write(f"{self.shape[0]} {self.shape[1]}\n")
             f.write(f"{self.reveal_turn}\n")
             f.write(f"{self.free_turn}\n")
@@ -1011,12 +1012,12 @@ class Map:
 
         end_col = min(self.jacksparrow.coord[1] + size // 2, self.shape[1] - 1)
         
-        self.logs[self.n_turns].append(f"AGENT PERFOMED A [{size} x {size}] SCAN")
+        self.logs[self.n_turns].append(f"THE AGENT PERFOMED A [{size} x {size}] SCAN")
 
         self.potential[start_row: end_row + 1, start_col: end_col + 1] = False
 
         if start_row <= self.treasure[0] <= end_row and start_col <= self.treasure[1] <= end_col:
-            self.logs[self.n_turns].append("AGENT WIN")
+            self.logs[self.n_turns].append("THE AGENT WIN")
             self.is_win = True
             return True
 
@@ -1155,7 +1156,7 @@ class Map:
         return res
     
     def shortest_path(self, source, dest):
-        path, step = self.BFS(self.value, source,dest)
+        path, step = self.BFS(self.value, source, dest)
 
         if step == np.inf:
             path = []
@@ -1211,101 +1212,228 @@ class Map:
         # generate first hint
         self.gen_1st_hint()
 
-        if self.n_turns == self.free_turn:
-            pass
+        if not self.is_teleported and self.potential.sum() == 1:
+            coord = list(zip(*np.where(self.potential)))
+            self.teleport(coord[0])
 
+        if self.n_turns == self.free_turn and self.pirate_path:
+            self.teleport(self.pirate.coord)
 
-        n_clusters = int(self.potential.sum() ** (1/5))
-        path = self.nearest_path(n_clusters=max(2, n_clusters))
-        direction = ''
-        n_steps = 0
-
-        if path:
-            direction, n_steps = path[0]
-        else:        
-            direction = rng.choice(['NORTH', 'EAST', 'WEST', 'SOUTH'])
-            n_steps = rng.randint(1, 5)
-
-        # first action
-        self.scan(5)
-
-        if self.is_win:
-            return
-
-        # second action
-        move_steps = min(n_steps, 4)
-        self.move_jack(direction, move_steps)
-        
-        if move_steps < 3:
-            self.scan(3)
-
-            if self.is_win:
-                return
-
-    def normal_turn(self) -> None:
-        n_actions = 2
-
-        if rng.rand() > 0.7:
-            rand_hint = rng.randint(len(self.hint_list)) 
-            self.verify_hint(*self.hint_list[rand_hint])
-            n_actions -= 1
-        
-        n_clusters = int(self.potential.sum() ** (1/3))
-        path = self.nearest_path(n_clusters=max(2, n_clusters))
-        direction = ''
-        n_steps = 0
-
-        if path:
-            direction, n_steps = path[0]
-        else:        
-            direction = rng.choice(['NORTH', 'EAST', 'WEST', 'SOUTH'])
-            n_steps = rng.randint(1, 5)
-
-        if n_actions == 2:
+            # first action
             self.scan(5)
 
             if self.is_win:
                 return
 
-            self.move_jack(direction, min(n_steps, 2))
+            # second action
+            rand_hint = rng.randint(len(self.hint_list)) 
+            self.verify_hint(*self.hint_list[rand_hint])
+            self.hint_list.pop(rand_hint)
+
+        elif self.pirate_action and self.n_turns > self.free_turn:
+            direction, move_steps = self.pirate_action
+
+            # first action
+            self.move_jack(direction, move_steps)
             self.scan(3)
 
             if self.is_win:
                 return
-        else:
-            action_choice = rng.choice(np.arange(3)) 
 
-            if action_choice == 0:
+            # second action
+            self.scan(5)
+
+            if self.is_win:
+                return
+        else:
+            n_clusters = int(self.potential.sum() ** (1/5))
+            path = self.nearest_path(n_clusters=max(2, n_clusters))
+            direction = ''
+            n_steps = 0
+
+            if path:
+                direction, n_steps = path[0]
+            else:        
+                x, y = self.jacksparrow.coord
+                directions = ['NORTH', 'EAST', 'WEST', 'SOUTH']
+                rng.shuffle(directions)
+                n_steps = 1 
+                for i in directions:
+                    if i == 'NORTH':
+                        if x - 1 < 0:
+                            continue
+                        elif self.value[x - 1, y] != '~' and self.value[x - 1, y] != 'M':
+                            direction = i
+                            break
+                    elif i == 'SOUTH':
+                        if x + 1 >= self.shape[0]:
+                            continue
+                        elif self.value[x + 1, y] != '~' and self.value[x + 1, y] != 'M':
+                            direction = i
+                            break
+                    elif i == 'WEST':
+                        if y - 1 < 0:
+                            continue
+                        elif self.value[x, y - 1] != '~' and self.value[x, y - 1] != 'M':
+                            direction = i
+                            break
+                    elif i == 'EAST':
+                        if y + 1 >= self.shape[1]:
+                            continue
+                        elif self.value[x, y + 1] != '~' and self.value[x, y + 1] != 'M':
+                            direction = i
+                            break
+                    else:
+                        self.logs[self.n_turns].append("THE AGENT IS STUCK, HE CANNOT REACH THE TREASURE")
+                        self.logs[self.n_turns].append("THE GAME IS STOPPED")
+
+
+            # first action
+            self.scan(5)
+
+            if self.is_win:
+                return
+
+            # second action
+            move_steps = min(n_steps, 4)
+            self.move_jack(direction, move_steps)
+            
+            if move_steps < 3:
+                self.scan(3)
+
+                if self.is_win:
+                    return
+
+    def normal_turn(self) -> None:
+        n_actions = 2
+
+        if not self.is_teleported and self.potential.sum() == 1:
+            coord = list(zip(*np.where(self.potential)))
+            self.teleport(coord[0])
+
+        if self.n_turns == self.free_turn and self.pirate_path:
+            self.teleport(self.pirate.coord)
+
+            # first action
+            self.scan(5)
+
+            if self.is_win:
+                return
+
+            # second action
+            rand_hint = rng.randint(len(self.hint_list)) 
+            self.verify_hint(*self.hint_list[rand_hint])
+            self.hint_list.pop(rand_hint)
+
+        elif self.pirate_action and self.n_turns > self.free_turn:
+            direction, move_steps = self.pirate_action
+
+            # first action
+            self.move_jack(direction, move_steps)
+            self.scan(3)
+
+            if self.is_win:
+                return
+
+            # second action
+            self.scan(5)
+
+            if self.is_win:
+                return
+
+        else: # self.n_turns < self.free_turn - 1 or not self.pirate_path:
+            if rng.rand() > 0.7:
+                rand_hint = rng.randint(len(self.hint_list)) 
+                self.verify_hint(*self.hint_list[rand_hint])
+                self.hint_list.pop(rand_hint)
+                n_actions -= 1
+            
+            n_clusters = int(self.potential.sum() ** (1/3))
+            path = self.nearest_path(n_clusters=max(2, n_clusters))
+            direction = ''
+            n_steps = 0
+
+            if path:
+                direction, n_steps = path[0]
+            else:
+                x, y = self.jacksparrow.coord
+                directions = ['NORTH', 'EAST', 'WEST', 'SOUTH']
+                rng.shuffle(directions)
+                n_steps = 1 
+                for i in directions:
+                    if i == 'NORTH':
+                        if x - 1 < 0:
+                            continue
+                        elif self.value[x - 1, y] != '~' and self.value[x - 1, y] != 'M':
+                            direction = i
+                            break
+                    elif i == 'SOUTH':
+                        if x + 1 >= self.shape[0]:
+                            continue
+                        elif self.value[x + 1, y] != '~' and self.value[x + 1, y] != 'M':
+                            direction = i
+                            break
+                    elif i == 'WEST':
+                        if y - 1 < 0:
+                            continue
+                        elif self.value[x, y - 1] != '~' and self.value[x, y - 1] != 'M':
+                            direction = i
+                            break
+                    elif i == 'EAST':
+                        if y + 1 >= self.shape[1]:
+                            continue
+                        elif self.value[x, y + 1] != '~' and self.value[x, y + 1] != 'M':
+                            direction = i
+                            break
+                    else:
+                        self.logs[self.n_turns].append("THE AGENT IS STUCK, HE CANNOT REACH THE TREASURE")
+                        self.logs[self.n_turns].append("THE GAME IS STOPPED") 
+
+            if n_actions == 2:
+                self.scan(5)
+
+                if self.is_win:
+                    return
+
                 self.move_jack(direction, min(n_steps, 2))
                 self.scan(3)
 
                 if self.is_win:
                     return
-            elif action_choice == 1:
-                self.scan(5)
-
-                if self.is_win:
-                    return
             else:
-                move_steps = min(n_steps, 4)
-                self.move_jack(direction, move_steps)
-                
-                if move_steps < 3:
+                action_choice = rng.choice(np.arange(3)) 
+
+                if action_choice == 0:
+                    self.move_jack(direction, min(n_steps, 2))
                     self.scan(3)
 
                     if self.is_win:
                         return
+                elif action_choice == 1:
+                    self.scan(5)
 
-    def pirate_action(self) -> None:
+                    if self.is_win:
+                        return
+                else:
+                    move_steps = min(n_steps, 4)
+                    self.move_jack(direction, move_steps)
+                    
+                    if move_steps < 3:
+                        self.scan(3)
+
+                        if self.is_win:
+                            return
+
+    def pirate_turn(self) -> None:
         direction = None
         if self.pirate_path:
             direction, n_steps = self.pirate_path[0]
             move_steps = min(n_steps, 2)
-            self.pirate_dir = direction, move_steps
+            self.pirate_action = direction, move_steps
             self.move_pirate(direction, move_steps)
 
             if self.pirate.coord == self.treasure:
-                self.logs[self.n_turns].append("AGENT LOSE, THE PIRATE FOUND THE TREASURE")
+                self.logs[self.n_turns].append("THE AGENT LOSE, THE PIRATE FOUND THE TREASURE")
                 self.is_lose = True
                 self.n_turns += 1
 
@@ -1316,9 +1444,9 @@ class Map:
             else:
                 self.pirate_path[0] = direction, n_steps
 
-        if self.pirate_dir and not self.is_lose and not self.is_teleported:
-            self.is_teleported = True
-            self.teleport(self.pirate.coord)
+        # if self.pirate_pa and not self.is_lose and not self.is_teleported:
+        #     self.is_teleported = True
+        #     self.teleport(self.pirate.coord)
 
     def teleport_coord(self, direction):
         masked_tiles = np.ones(self.shape, dtype=bool)
@@ -1338,6 +1466,6 @@ class Map:
         idx_tiles = np.where(masked_tiles)
 
         coords = list(zip(*idx_tiles))
-        choices = np.random.choice(np.arange(len(coords)))
+        choice = np.random.choice(np.arange(len(coords)))
 
-        return coords[choices]
+        return coords[choice]
