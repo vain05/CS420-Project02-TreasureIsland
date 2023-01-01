@@ -17,11 +17,11 @@ HEIGTH, WIDTH = 16, 16
 #Colors
 default_tile_color = 'azure'
 tile_text_color = 'grey1'
-sea_color = 'SteelBlue1'
+sea_color = '#54cff7'
 land_color = 'forest green'
 mountain_color = 'dark slate gray'
 prison_color = 'indian red'
-scanned_color = 'DarkSeaGreen1'
+scanned_color = '#20c200'
 # potential_color = 'LightGoldenrod1'
 
 main_color = 'NavajoWhite2'
@@ -277,6 +277,22 @@ class Button:
 ###########################################################################################
 
 pg.init()
+
+###########################################################################################
+color_list = []
+
+color_list.append('#B5D5C5')
+color_list.append('#B08BBB')
+color_list.append('#F1F7B5')
+color_list.append('#FFD4B2')
+color_list.append('#FFDDD2')
+color_list.append('#8B7E74')
+color_list.append('#B6E2A1')
+color_list.append('#CDFCF6')
+color_list.append('#665A48')
+color_list.append('#DEBACE')
+color_list.append('#BB6464')
+color_list.append('#FD8A8A')
 
 ###########################################################################################
 
@@ -550,13 +566,13 @@ while True:
                     
                     if value == '~':
                         tile = Button(tile_size, tile_size, sea_color, '', 0, tile_text_color)
-                    elif value == '_' or value in str_regions:
+                    elif value in str_regions:
                         # if m.scanned[i][j] == 1:
                         #     tile = Button(tile_size, tile_size, scanned_color, str(value), 0, tile_text_color)
                         if m.potential[i][j] == 0:
                             tile = Button(tile_size, tile_size, scanned_color, str(value), 0, tile_text_color)
                         else: 
-                            tile = Button(tile_size, tile_size, land_color, str(value), 0, tile_text_color)
+                            tile = Button(tile_size, tile_size, color_list[int(value)%12], str(value), 0, tile_text_color)
                     elif value == 'M':
                         tile = Button(tile_size, tile_size, mountain_color, str(value), 0, tile_text_color)
                     elif value == 'p':
@@ -652,7 +668,7 @@ while True:
                         if m.potential[i][j] == 0:
                             tile = Button(tile_size, tile_size, scanned_color, str(value), 0, tile_text_color)
                         else: 
-                            tile = Button(tile_size, tile_size, land_color, str(value), 0, tile_text_color)
+                            tile = Button(tile_size, tile_size, color_list[int(value)%12], str(value), 0, tile_text_color)
                     elif value == 'M':
                         tile = Button(tile_size, tile_size, mountain_color, str(value), 0, tile_text_color)
                     elif value == 'p':
@@ -694,13 +710,13 @@ while True:
                     
                     if value == '~':
                         tile = Button(tile_size, tile_size, sea_color, '', 0, tile_text_color)
-                    elif value == '_' or value in str_regions:
+                    elif value in str_regions:
                         # if m.scanned[i][j] == 1:
                         #     tile = Button(tile_size, tile_size, scanned_color, str(value), 0, tile_text_color)
                         if m.potential[i][j] == 0:
                             tile = Button(tile_size, tile_size, scanned_color, str(value), 0, tile_text_color)
                         else: 
-                            tile = Button(tile_size, tile_size, land_color, str(value), 0, tile_text_color)
+                            tile = Button(tile_size, tile_size, color_list[int(value)%12], str(value), 0, tile_text_color)
                     elif value == 'M':
                         tile = Button(tile_size, tile_size, mountain_color, str(value), 0, tile_text_color)
                     elif value == 'p':
