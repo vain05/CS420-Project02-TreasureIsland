@@ -1,0 +1,617 @@
+614
+WIN
+81
+Game start
+Agent appears at (1, 4)
+The pirate’s prison is going to reveal the coordinate
+at the beginning of turn number 23
+The pirate is free at the beginning of turn number 46
+START TURN 1
+The treasure is in between 2 squares: S1=[(2, 8),(76, 82)], S2=[(22, 20),(84, 82)]
+ADD HINT1 TO HINT LIST
+HINT1: is_verified = TRUE, is_truth = True
+The treasure is in between 2 squares: S1=[(2, 8),(76, 82)], S2=[(22, 20),(84, 82)]
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 2
+HINT2: The agent receives a hint:
+[(33, 61), (56, 5), (22, 51), (32, 67), (27, 30), (81, 42), (12, 78), (93, 70), (25, 51), (91, 65), (57, 95), (89, 53), (33, 60), (88, 86), (55, 31), (25, 14), (86, 70), (73, 69), (31, 83), (45, 9), (21, 91), (85, 11), (11, 47), (63, 16), (77, 65), (16, 71), (78, 15), (57, 78), (42, 16), (35, 58), (92, 48), (14, 21), (86, 87), (26, 27), (20, 17), (63, 56), (5, 78), (86, 89)] do not contain treasure
+ADD HINT2 TO HINT LIST
+HINT2: is_verified = TRUE, is_truth = True
+[(33, 61), (56, 5), (22, 51), (32, 67), (27, 30), (81, 42), (12, 78), (93, 70), (25, 51), (91, 65), (57, 95), (89, 53), (33, 60), (88, 86), (55, 31), (25, 14), (86, 70), (73, 69), (31, 83), (45, 9), (21, 91), (85, 11), (11, 47), (63, 16), (77, 65), (16, 71), (78, 15), (57, 78), (42, 16), (35, 58), (92, 48), (14, 21), (86, 87), (26, 27), (20, 17), (63, 56), (5, 78), (86, 89)] do not contain treasure
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 3
+HINT3: The agent receives a hint:
+Large rectangle area has the treasure: [21, 40, 70, 95]
+ADD HINT3 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 4
+HINT4: The agent receives a hint:
+Small rectangle area has no treasure: [34, 38, 78, 78]
+ADD HINT4 TO HINT LIST
+HINT4: is_verified = TRUE, is_truth = True
+Small rectangle area has no treasure: [34, 38, 78, 78]
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 5
+HINT5: The agent receives a hint:
+[(46, 60), (27, 56), (68, 43), (24, 79), (22, 39), (57, 15), (5, 54), (93, 16), (27, 94), (46, 44), (35, 17), (27, 28), (59, 82), (26, 0), (61, 64), (30, 21), (69, 49), (73, 68), (74, 2), (63, 85), (24, 26), (7, 1), (73, 50), (0, 66), (75, 31), (23, 64), (27, 27), (95, 30), (8, 25), (14, 55), (80, 24), (4, 48), (66, 27), (50, 89), (2, 93), (24, 71), (39, 62), (49, 49), (6, 44), (77, 2), (68, 55), (80, 49), (16, 79), (86, 33), (25, 77), (73, 9), (40, 19), (75, 1), (26, 90)] do not contain treasure
+ADD HINT5 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 6
+HINT6: The agent receives a hint:
+Row 75 does not contain the treasure
+ADD HINT6 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 7
+HINT7: The agent receives a hint:
+[(43, 28), (59, 28), (69, 70), (0, 57), (73, 53), (66, 86), (86, 53)] do not contain treasure
+ADD HINT7 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 8
+HINT8: The agent receives a hint:
+top part of the map does not contain the treasure.
+ADD HINT8 TO HINT LIST
+HINT6: is_verified = TRUE, is_truth = True
+Row 75 does not contain the treasure
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 9
+HINT9: The agent receives a hint:
+Row 90 contains the treasure
+ADD HINT9 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 10
+HINT10: The agent receives a hint:
+You are the nearest person to the treasure
+ADD HINT10 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 11
+HINT11: The agent receives a hint:
+Small rectangle area has no treasure: [21, 11, 59, 53]
+ADD HINT11 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 12
+HINT12: The agent receives a hint:
+These regions do not contain the treasure: [30, 11, 35, 38, 9, 19, 13, 40, 32, 8, 20, 7, 37, 17, 24, 1]
+ADD HINT12 TO HINT LIST
+HINT5: is_verified = TRUE, is_truth = True
+[(46, 60), (27, 56), (68, 43), (24, 79), (22, 39), (57, 15), (5, 54), (93, 16), (27, 94), (46, 44), (35, 17), (27, 28), (59, 82), (26, 0), (61, 64), (30, 21), (69, 49), (73, 68), (74, 2), (63, 85), (24, 26), (7, 1), (73, 50), (0, 66), (75, 31), (23, 64), (27, 27), (95, 30), (8, 25), (14, 55), (80, 24), (4, 48), (66, 27), (50, 89), (2, 93), (24, 71), (39, 62), (49, 49), (6, 44), (77, 2), (68, 55), (80, 49), (16, 79), (86, 33), (25, 77), (73, 9), (40, 19), (75, 1), (26, 90)] do not contain treasure
+The agent move 1 steps to the WEST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 13
+HINT13: The agent receives a hint:
+You are the nearest person to the treasure
+ADD HINT13 TO HINT LIST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 14
+HINT14: The agent receives a hint:
+Row 90 does not contain the treasure
+ADD HINT14 TO HINT LIST
+HINT9: is_verified = TRUE, is_truth = False
+Row 90 contains the treasure
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 15
+HINT15: The agent receives a hint:
+The treasure is in between 2 squares: S1=[(18, 13),(85, 80)], S2=[(79, 53),(90, 64)]
+ADD HINT15 TO HINT LIST
+HINT12: is_verified = TRUE, is_truth = True
+These regions do not contain the treasure: [30, 11, 35, 38, 9, 19, 13, 40, 32, 8, 20, 7, 37, 17, 24, 1]
+The agent move 3 steps to the SOUTH
+START TURN 16
+HINT16: The agent receives a hint:
+Small rectangle area has no treasure: [13, 47, 52, 93]
+ADD HINT16 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 17
+HINT17: The agent receives a hint:
+The treasure is in the South of the center of the map
+ADD HINT17 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 18
+HINT18: The agent receives a hint:
+Column 49 does not contain the treasure
+ADD HINT18 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 19
+HINT19: The agent receives a hint:
+You are the nearest person to the treasure
+ADD HINT19 TO HINT LIST
+HINT18: is_verified = TRUE, is_truth = True
+Column 49 does not contain the treasure
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 20
+HINT20: The agent receives a hint:
+The treasure is in the South of the center of the map
+ADD HINT20 TO HINT LIST
+HINT16: is_verified = TRUE, is_truth = False
+Small rectangle area has no treasure: [13, 47, 52, 93]
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 21
+HINT21: The agent receives a hint:
+Small rectangle area has no treasure: [40, 45, 85, 69]
+ADD HINT21 TO HINT LIST
+HINT15: is_verified = TRUE, is_truth = True
+The treasure is in between 2 squares: S1=[(18, 13),(85, 80)], S2=[(79, 53),(90, 64)]
+The agent move 4 steps to the EAST
+START TURN 22
+HINT22: The agent receives a hint:
+The treasure is somewhere in the boundary of region 21 and region 13
+ADD HINT22 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 23
+HINT23: The agent receives a hint:
+The treasure is somewhere in the boundary of region 22 and region 10
+ADD HINT23 TO HINT LIST
+The pirate is at the (47, 37) prison
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 24
+HINT24: The agent receives a hint:
+Small rectangle area has no treasure: [51, 34, 78, 68]
+ADD HINT24 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 25
+HINT25: The agent receives a hint:
+Row 72 contains the treasure
+ADD HINT25 TO HINT LIST
+HINT8: is_verified = TRUE, is_truth = False
+top part of the map does not contain the treasure.
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 26
+HINT26: The agent receives a hint:
+The treasure is in the North East of the center of the map
+ADD HINT26 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 27
+HINT27: The agent receives a hint:
+The treasure is in the North East of the center of the map
+ADD HINT27 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 28
+HINT28: The agent receives a hint:
+The treasure is somewhere in the boundary of region 38 and region 13
+ADD HINT28 TO HINT LIST
+HINT21: is_verified = TRUE, is_truth = True
+Small rectangle area has no treasure: [40, 45, 85, 69]
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 29
+HINT29: The agent receives a hint:
+Row 64 does not contain the treasure
+ADD HINT29 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 30
+HINT30: The agent receives a hint:
+The treasure is somewhere in a boundary of 2 regions
+ADD HINT30 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 31
+HINT31: The agent receives a hint:
+One of these regions contain the treasure: [24, 21, 39, 7, 9, 14, 8, 38, 4, 26, 17, 32, 22, 41, 27, 33, 13, 1, 18, 36, 23, 40, 3, 11, 28, 6, 25, 35, 19, 15]
+ADD HINT31 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 32
+HINT32: The agent receives a hint:
+Small rectangle area has no treasure: [2, 64, 24, 93]
+ADD HINT32 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 33
+HINT33: The agent receives a hint:
+Row 10 does not contain the treasure
+ADD HINT33 TO HINT LIST
+HINT33: is_verified = TRUE, is_truth = True
+Row 10 does not contain the treasure
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 34
+HINT34: The agent receives a hint:
+The treasure is in between 2 squares: S1=[(20, 5),(67, 52)], S2=[(61, 57),(86, 82)]
+ADD HINT34 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 35
+HINT35: The agent receives a hint:
+The treasure is in the South West of the center of the map
+ADD HINT35 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 36
+HINT36: The agent receives a hint:
+The treasure is in the South of the center of the map
+ADD HINT36 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 37
+HINT37: The agent receives a hint:
+The treasure is in between 2 squares: S1=[(4, 27),(68, 91)], S2=[(21, 35),(30, 44)]
+ADD HINT37 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 38
+HINT38: The agent receives a hint:
+These regions do not contain the treasure: [15, 24, 25, 19, 39, 6, 21, 9, 23]
+ADD HINT38 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 39
+HINT39: The agent receives a hint:
+The treasure is somewhere in the boundary of region 31 and region 21
+ADD HINT39 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 40
+HINT40: The agent receives a hint:
+Small rectangle area has no treasure: [38, 7, 79, 43]
+ADD HINT40 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 41
+HINT41: The agent receives a hint:
+The treasure is somewhere in the boundary of region 3 and region 12
+ADD HINT41 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 42
+HINT42: The agent receives a hint:
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT42 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 43
+HINT43: The agent receives a hint:
+One of these regions contain the treasure: [1, 37, 30, 22, 15, 41, 3, 29, 10, 7]
+ADD HINT43 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 44
+HINT44: The agent receives a hint:
+The treasure is in the South West of the center of the map
+ADD HINT44 TO HINT LIST
+HINT26: is_verified = TRUE, is_truth = False
+The treasure is in the North East of the center of the map
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 45
+HINT45: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT45 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 46
+HINT46: The agent receives a hint:
+You are the nearest person to the treasure
+ADD HINT46 TO HINT LIST
+The pirate is free
+The pirate move 1 steps to the EAST
+The agent teleports to (47, 38)
+THE AGENT PERFOMED A [5 x 5] SCAN
+HINT45: is_verified = TRUE, is_truth = True
+The treasure is in a region that has mountain
+START TURN 47
+HINT47: The agent receives a hint:
+One of these regions contain the treasure: [41, 15, 16, 5, 35, 33, 3, 31, 7, 13, 38, 37, 10, 19, 12, 21, 6, 26, 2, 28, 30, 14, 25, 24, 8, 34, 4, 17, 23, 40, 27, 39]
+ADD HINT47 TO HINT LIST
+The pirate move 1 steps to the NORTH
+The agent move 1 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 48
+HINT48: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT48 TO HINT LIST
+The pirate move 1 steps to the EAST
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 49
+HINT49: The agent receives a hint:
+[(54, 30), (10, 79), (93, 79), (90, 17), (13, 90), (64, 11), (19, 54), (12, 49), (38, 2), (55, 11)] do not contain treasure
+ADD HINT49 TO HINT LIST
+The pirate move 2 steps to the NORTH
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 50
+HINT50: The agent receives a hint:
+You are the nearest person to the treasure
+ADD HINT50 TO HINT LIST
+The pirate move 2 steps to the NORTH
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 51
+HINT51: The agent receives a hint:
+The treasure is somewhere in the boundary of region 8 and region 27
+ADD HINT51 TO HINT LIST
+The pirate move 1 steps to the NORTH
+The agent move 1 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 52
+HINT52: The agent receives a hint:
+The treasure is somewhere in the boundary of region 17 and region 3
+ADD HINT52 TO HINT LIST
+The pirate move 1 steps to the EAST
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 53
+HINT53: The agent receives a hint:
+bottom part of the map does not contain the treasure.
+ADD HINT53 TO HINT LIST
+The pirate move 2 steps to the NORTH
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 54
+HINT54: The agent receives a hint:
+These regions do not contain the treasure: [12, 28, 9, 10, 13, 34, 5, 30, 20, 11, 22, 8, 38, 29]
+ADD HINT54 TO HINT LIST
+The pirate move 2 steps to the NORTH
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 55
+HINT55: The agent receives a hint:
+The treasure is somewhere in a boundary of 2 regions
+ADD HINT55 TO HINT LIST
+The pirate move 2 steps to the NORTH
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 56
+HINT56: The agent receives a hint:
+Row 28 or column 79 do not contain the treasure
+ADD HINT56 TO HINT LIST
+The pirate move 2 steps to the NORTH
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 57
+HINT57: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT57 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 58
+HINT58: The agent receives a hint:
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT58 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 59
+HINT59: The agent receives a hint:
+The treasure is in the South East of the center of the map
+ADD HINT59 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 60
+HINT60: The agent receives a hint:
+The treasure is somewhere in the boundary of region 16 and region 37
+ADD HINT60 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 61
+HINT61: The agent receives a hint:
+[(27, 7), (77, 93), (4, 35), (35, 92), (44, 76), (16, 54), (54, 38), (32, 37), (0, 60), (38, 47), (43, 36), (57, 54), (83, 79), (42, 38), (73, 47), (21, 29), (92, 90), (31, 23), (90, 10), (61, 75), (3, 27), (67, 69), (58, 7), (41, 31), (49, 21), (17, 46)] do not contain treasure
+ADD HINT61 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 62
+HINT62: The agent receives a hint:
+top part of the map does not contain the treasure.
+ADD HINT62 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 63
+HINT63: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT63 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 64
+HINT64: The agent receives a hint:
+The treasure is somewhere in the boundary of region 9 and region 24
+ADD HINT64 TO HINT LIST
+The pirate move 1 steps to the NORTH
+The agent move 1 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 65
+HINT65: The agent receives a hint:
+The treasure is in between 2 squares: S1=[(10, 28),(69, 87)], S2=[(15, 36),(69, 90)]
+ADD HINT65 TO HINT LIST
+The pirate move 1 steps to the EAST
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 66
+HINT66: The agent receives a hint:
+The treasure is in the North East of the center of the map
+ADD HINT66 TO HINT LIST
+The pirate move 2 steps to the NORTH
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 67
+HINT67: The agent receives a hint:
+The treasure is in between 2 squares: S1=[(24, 29),(89, 94)], S2=[(58, 49),(95, 86)]
+ADD HINT67 TO HINT LIST
+The pirate move 2 steps to the NORTH
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 68
+HINT68: The agent receives a hint:
+You are the nearest person to the treasure
+ADD HINT68 TO HINT LIST
+The pirate move 2 steps to the NORTH
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 69
+HINT69: The agent receives a hint:
+The treasure is somewhere in a boundary of 2 regions
+ADD HINT69 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 70
+HINT70: The agent receives a hint:
+Column 18 contains the treasure
+ADD HINT70 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 71
+HINT71: The agent receives a hint:
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT71 TO HINT LIST
+The pirate move 1 steps to the EAST
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 72
+HINT72: The agent receives a hint:
+These regions do not contain the treasure: [39, 41, 1, 6]
+ADD HINT72 TO HINT LIST
+The pirate move 2 steps to the NORTH
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 73
+HINT73: The agent receives a hint:
+The treasure is in between 2 squares: S1=[(18, 6),(69, 57)], S2=[(72, 50),(82, 60)]
+ADD HINT73 TO HINT LIST
+The pirate move 2 steps to the NORTH
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 74
+HINT74: The agent receives a hint:
+The treasure is in the East of the center of the map
+ADD HINT74 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 75
+HINT75: The agent receives a hint:
+The treasure is somewhere in a boundary of 2 regions
+ADD HINT75 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 76
+HINT76: The agent receives a hint:
+The treasure is somewhere in a boundary of 2 regions
+ADD HINT76 TO HINT LIST
+The pirate move 1 steps to the EAST
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 77
+HINT77: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT77 TO HINT LIST
+The pirate move 2 steps to the NORTH
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 78
+HINT78: The agent receives a hint:
+The treasure is somewhere in the boundary of region 23 and region 28
+ADD HINT78 TO HINT LIST
+The pirate move 1 steps to the NORTH
+The agent move 1 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 79
+HINT79: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT79 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 80
+HINT80: The agent receives a hint:
+One of these regions contain the treasure: [28, 4, 21, 27, 31, 20, 11, 10, 12]
+ADD HINT80 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 81
+HINT81: The agent receives a hint:
+Row 19 or column 37 contain the treasure
+ADD HINT81 TO HINT LIST
+The pirate move 2 steps to the EAST
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+THE AGENT WIN

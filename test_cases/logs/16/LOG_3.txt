@@ -1,0 +1,64 @@
+61
+WIN
+7
+Game start
+Agent appears at (2, 13)
+The pirate’s prison is going to reveal the coordinate
+at the beginning of turn number 2
+The pirate is free at the beginning of turn number 4
+START TURN 1
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT1 TO HINT LIST
+HINT1: is_verified = TRUE, is_truth = True
+The treasure is somewhere in an area bounded by 2 tiles from sea
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 4 steps to the SOUTH
+START TURN 2
+HINT2: The agent receives a hint:
+These regions do not contain the treasure: [3, 7]
+ADD HINT2 TO HINT LIST
+The pirate is at the (11, 7) prison
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 3
+HINT3: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT3 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the WEST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 4
+HINT4: The agent receives a hint:
+You are the nearest person to the treasure
+ADD HINT4 TO HINT LIST
+The pirate is free
+The pirate move 2 steps to the NORTH
+The agent teleports to (9, 7)
+THE AGENT PERFOMED A [5 x 5] SCAN
+HINT3: is_verified = TRUE, is_truth = False
+The treasure is in a region that has mountain
+START TURN 5
+HINT5: The agent receives a hint:
+You are the nearest person to the treasure
+ADD HINT5 TO HINT LIST
+The pirate move 1 steps to the WEST
+The agent move 1 steps to the WEST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 6
+HINT6: The agent receives a hint:
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT6 TO HINT LIST
+The pirate move 2 steps to the NORTH
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 7
+HINT7: The agent receives a hint:
+The treasure is somewhere in a boundary of 2 regions
+ADD HINT7 TO HINT LIST
+The pirate move 2 steps to the WEST
+The agent move 2 steps to the WEST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT WIN

@@ -1,0 +1,176 @@
+173
+WIN
+23
+Game start
+Agent appears at (12, 86)
+The pirate’s prison is going to reveal the coordinate
+at the beginning of turn number 23
+The pirate is free at the beginning of turn number 47
+START TURN 1
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT1 TO HINT LIST
+HINT1: is_verified = TRUE, is_truth = True
+The treasure is somewhere in an area bounded by 2 tiles from sea
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 2
+HINT2: The agent receives a hint:
+bottom part of the map does not contain the treasure.
+ADD HINT2 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the WEST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 3
+HINT3: The agent receives a hint:
+These regions do not contain the treasure: [33, 17, 26, 10, 2, 22, 37, 23, 21, 30, 32, 8, 19, 5]
+ADD HINT3 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 4
+HINT4: The agent receives a hint:
+Column 25 does not contain the treasure
+ADD HINT4 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 5
+HINT5: The agent receives a hint:
+The treasure is in between 2 squares: S1=[(20, 22),(86, 88)], S2=[(57, 48),(71, 62)]
+ADD HINT5 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 6
+HINT6: The agent receives a hint:
+The treasure is somewhere in a boundary of 2 regions
+ADD HINT6 TO HINT LIST
+HINT2: is_verified = TRUE, is_truth = True
+bottom part of the map does not contain the treasure.
+The agent move 1 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 7
+HINT7: The agent receives a hint:
+The treasure is somewhere in a boundary of 2 regions
+ADD HINT7 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 8
+HINT8: The agent receives a hint:
+Row 3 or column 86 do not contain the treasure
+ADD HINT8 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 9
+HINT9: The agent receives a hint:
+Row 10 does not contain the treasure
+ADD HINT9 TO HINT LIST
+HINT3: is_verified = TRUE, is_truth = False
+These regions do not contain the treasure: [33, 17, 26, 10, 2, 22, 37, 23, 21, 30, 32, 8, 19, 5]
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 10
+HINT10: The agent receives a hint:
+Large rectangle area has the treasure: [10, 4, 83, 70]
+ADD HINT10 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 11
+HINT11: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT11 TO HINT LIST
+HINT8: is_verified = TRUE, is_truth = True
+Row 3 or column 86 do not contain the treasure
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 12
+HINT12: The agent receives a hint:
+Row 72 does not contain the treasure
+ADD HINT12 TO HINT LIST
+HINT9: is_verified = TRUE, is_truth = True
+Row 10 does not contain the treasure
+The agent move 1 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 13
+HINT13: The agent receives a hint:
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT13 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 14
+HINT14: The agent receives a hint:
+These regions do not contain the treasure: [34, 27, 1]
+ADD HINT14 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 15
+HINT15: The agent receives a hint:
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT15 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 16
+HINT16: The agent receives a hint:
+The treasure is somewhere in the boundary of region 22 and region 20
+ADD HINT16 TO HINT LIST
+HINT16: is_verified = TRUE, is_truth = False
+The treasure is somewhere in the boundary of region 22 and region 20
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 17
+HINT17: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT17 TO HINT LIST
+HINT13: is_verified = TRUE, is_truth = True
+The treasure is somewhere in an area bounded by 2 tiles from sea
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 18
+HINT18: The agent receives a hint:
+The treasure is in the South East of the center of the map
+ADD HINT18 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 19
+HINT19: The agent receives a hint:
+Row 4 contains the treasure
+ADD HINT19 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 20
+HINT20: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT20 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the WEST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 21
+HINT21: The agent receives a hint:
+The treasure is somewhere in a boundary of 2 regions
+ADD HINT21 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the WEST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 22
+HINT22: The agent receives a hint:
+Row 27 or column 19 do not contain the treasure
+ADD HINT22 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 23
+HINT23: The agent receives a hint:
+Small rectangle area has no treasure: [2, 2, 32, 48]
+ADD HINT23 TO HINT LIST
+The pirate is at the (85, 64) prison
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT WIN

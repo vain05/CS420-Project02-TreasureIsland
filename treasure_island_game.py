@@ -384,14 +384,24 @@ map_gen = mg.MapGenerator(HEIGTH, WIDTH)
 m = mg.Map(map_gen)
 running = 0
 
-def output_log(folder_path, logs):
-    log_name = 'log_' + str(datetime.now()).replace(":", "-").replace(' ', '')
-    with open(folder_path + log_name, mode='w') as f:
+def output_log(folder_path, is_win, is_lose, n_turns, logs):
+    log_name = 'LOG_' + str(len(os.listdir(folder_path)))
+    with open(folder_path + log_name + '.txt', mode='w') as f:
         total_lines = 0
         for log in logs:
             total_lines += len(log)
         
         f.write(str(total_lines) + '\n')
+
+        if is_win and is_lose:
+            f.write('THE AGENT CANNOT WIN\n')
+        elif is_win:
+            f.write('WIN\n')
+
+        elif is_lose:
+            f.write('LOSE\n')
+
+        f.write(str(n_turns) + '\n')
         
         for log in logs:
             for line in log:
@@ -782,7 +792,7 @@ while True:
                 if m.is_lose or m.is_win:
                     running = 0
 
-                    output_log('./outputs_logs/', m.logs)
+                    output_log('./outputs_logs/', m.is_win, m.is_lose, m.n_turns - 1, m.logs)
 
             update = 1
 

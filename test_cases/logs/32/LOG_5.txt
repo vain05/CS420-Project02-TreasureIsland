@@ -1,0 +1,43 @@
+40
+WIN
+5
+Game start
+Agent appears at (7, 25)
+The pirate’s prison is going to reveal the coordinate
+at the beginning of turn number 4
+The pirate is free at the beginning of turn number 9
+START TURN 1
+Row 27 or column 8 do not contain the treasure
+ADD HINT1 TO HINT LIST
+HINT1: is_verified = TRUE, is_truth = True
+Row 27 or column 8 do not contain the treasure
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 4 steps to the WEST
+START TURN 2
+HINT2: The agent receives a hint:
+Row 21 does not contain the treasure
+ADD HINT2 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 3
+HINT3: The agent receives a hint:
+Column 15 contains the treasure
+ADD HINT3 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 4
+HINT4: The agent receives a hint:
+The treasure is in between 2 squares: S1=[(3, 6),(22, 25)], S2=[(6, 12),(21, 27)]
+ADD HINT4 TO HINT LIST
+The pirate is at the (30, 17) prison
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 5
+HINT5: The agent receives a hint:
+Small rectangle area has no treasure: [11, 22, 19, 30]
+ADD HINT5 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+THE AGENT WIN

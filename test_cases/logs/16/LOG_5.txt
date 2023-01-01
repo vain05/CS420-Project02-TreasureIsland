@@ -1,0 +1,21 @@
+18
+WIN
+2
+Game start
+Agent appears at (10, 11)
+The pirate’s prison is going to reveal the coordinate
+at the beginning of turn number 3
+The pirate is free at the beginning of turn number 6
+START TURN 1
+Large rectangle area has the treasure: [3, 4, 11, 15]
+ADD HINT1 TO HINT LIST
+HINT1: is_verified = TRUE, is_truth = True
+Large rectangle area has the treasure: [3, 4, 11, 15]
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 3 steps to the NORTH
+START TURN 2
+HINT2: The agent receives a hint:
+Large rectangle area has the treasure: [0, 5, 9, 15]
+ADD HINT2 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+THE AGENT WIN

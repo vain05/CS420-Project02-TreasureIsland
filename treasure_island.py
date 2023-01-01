@@ -8,6 +8,7 @@
 import numpy as np
 from numpy import typing as npt
 from scipy.ndimage.morphology import binary_dilation
+import os
 
 from typing import List, Tuple
 
@@ -357,7 +358,7 @@ class Map:
         self.shape = tuple([int(i) for i in shape])
         self.total_tile = self.shape[0] * self.shape[1]
 
-        self.avg_size = (self.shape[0] * self.shape[1]) / 2
+        self.avg_size = (self.shape[0] + self.shape[1]) / 2
         self.total_region = int(read_map[3][0]) - 1
 
         raw_map = read_map[5:5 + self.shape[0]]
@@ -423,8 +424,8 @@ class Map:
         self.pirate_path = deque(pirate_path)
 
     def export_map(self, export_folder: str):
-        map_name = 'map_export_' + str(datetime.now()).replace(":", "-").replace(' ', '') + '.txt'
-        with open(export_folder + map_name, 'w') as f:
+        map_name = 'EXPORTED_MAP_' + str(len(os.listdir(export_folder)))
+        with open(export_folder + map_name + '.txt', 'w') as f:
             f.write(f"{self.shape[0]} {self.shape[1]}\n")
             f.write(f"{self.reveal_turn}\n")
             f.write(f"{self.free_turn}\n")
@@ -1212,9 +1213,10 @@ class Map:
         # generate first hint
         self.gen_1st_hint()
 
-        if not self.is_teleported and self.potential.sum() == 1:
-            coord = list(zip(*np.where(self.potential)))
-            self.teleport(coord[0])
+        if not self.is_teleported and self.potential.sum() <= 4:
+            coords = list(zip(*np.where(self.potential)))
+            choice = rng.choice(len(coords))
+            self.teleport(coords[choice])
 
         if self.n_turns == self.free_turn and self.pirate_path:
             self.teleport(self.pirate.coord)
@@ -1307,9 +1309,10 @@ class Map:
     def normal_turn(self) -> None:
         n_actions = 2
 
-        if not self.is_teleported and self.potential.sum() == 1:
-            coord = list(zip(*np.where(self.potential)))
-            self.teleport(coord[0])
+        if not self.is_teleported and self.potential.sum() <= 4:
+            coords = list(zip(*np.where(self.potential)))
+            choice = rng.choice(len(coords))
+            self.teleport(coords[choice])
 
         if self.n_turns == self.free_turn and self.pirate_path:
             self.teleport(self.pirate.coord)

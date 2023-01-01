@@ -1,0 +1,101 @@
+98
+WIN
+13
+Game start
+Agent appears at (27, 65)
+The pirate’s prison is going to reveal the coordinate
+at the beginning of turn number 17
+The pirate is free at the beginning of turn number 35
+START TURN 1
+You are the nearest person to the treasure
+ADD HINT1 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 2
+HINT2: The agent receives a hint:
+[(53, 13), (62, 37), (35, 57), (50, 37), (5, 13), (74, 75)] do not contain treasure
+ADD HINT2 TO HINT LIST
+HINT2: is_verified = TRUE, is_truth = True
+[(53, 13), (62, 37), (35, 57), (50, 37), (5, 13), (74, 75)] do not contain treasure
+The agent move 1 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 3
+HINT3: The agent receives a hint:
+Large rectangle area has the treasure: [27, 33, 73, 73]
+ADD HINT3 TO HINT LIST
+HINT3: is_verified = TRUE, is_truth = False
+Large rectangle area has the treasure: [27, 33, 73, 73]
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 4
+HINT4: The agent receives a hint:
+The treasure is somewhere in the boundary of region 18 and region 29
+ADD HINT4 TO HINT LIST
+HINT4: is_verified = TRUE, is_truth = False
+The treasure is somewhere in the boundary of region 18 and region 29
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 5
+HINT5: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT5 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 6
+HINT6: The agent receives a hint:
+These regions do not contain the treasure: [20, 9, 30, 14, 13, 22, 29]
+ADD HINT6 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 7
+HINT7: The agent receives a hint:
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT7 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 8
+HINT8: The agent receives a hint:
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT8 TO HINT LIST
+HINT5: is_verified = TRUE, is_truth = True
+The treasure is in a region that has mountain
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 9
+HINT9: The agent receives a hint:
+Small rectangle area has no treasure: [25, 4, 57, 22]
+ADD HINT9 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 10
+HINT10: The agent receives a hint:
+You are the nearest person to the treasure
+ADD HINT10 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 11
+HINT11: The agent receives a hint:
+These regions do not contain the treasure: [12]
+ADD HINT11 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 12
+HINT12: The agent receives a hint:
+The treasure is somewhere in an area bounded by 2 tiles from sea
+ADD HINT12 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 1 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 13
+HINT13: The agent receives a hint:
+The treasure is somewhere in a boundary of 2 regions
+ADD HINT13 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the NORTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT WIN

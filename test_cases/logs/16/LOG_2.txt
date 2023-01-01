@@ -1,0 +1,89 @@
+86
+WIN
+10
+Game start
+Agent appears at (0, 3)
+The pirate’s prison is going to reveal the coordinate
+at the beginning of turn number 2
+The pirate is free at the beginning of turn number 5
+START TURN 1
+These regions do not contain the treasure: [3]
+ADD HINT1 TO HINT LIST
+HINT1: is_verified = TRUE, is_truth = True
+These regions do not contain the treasure: [3]
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 2
+HINT2: The agent receives a hint:
+[(6, 15), (12, 0), (8, 13), (2, 15), (13, 2), (15, 4)] do not contain treasure
+ADD HINT2 TO HINT LIST
+The pirate is at the (2, 4) prison
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the EAST
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 3
+HINT3: The agent receives a hint:
+[(15, 15), (5, 12), (1, 0), (4, 0), (1, 14)] do not contain treasure
+ADD HINT3 TO HINT LIST
+HINT3: is_verified = TRUE, is_truth = True
+[(15, 15), (5, 12), (1, 0), (4, 0), (1, 14)] do not contain treasure
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 4
+HINT4: The agent receives a hint:
+[(0, 12), (7, 2), (15, 7), (5, 2), (6, 4), (9, 4), (0, 10)] do not contain treasure
+ADD HINT4 TO HINT LIST
+THE AGENT PERFOMED A [5 x 5] SCAN
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+START TURN 5
+HINT5: The agent receives a hint:
+The treasure is in a region that has mountain
+ADD HINT5 TO HINT LIST
+The pirate is free
+The pirate move 1 steps to the EAST
+The agent teleports to (2, 5)
+THE AGENT PERFOMED A [5 x 5] SCAN
+HINT2: is_verified = TRUE, is_truth = True
+[(6, 15), (12, 0), (8, 13), (2, 15), (13, 2), (15, 4)] do not contain treasure
+START TURN 6
+HINT6: The agent receives a hint:
+[(6, 14), (3, 11), (3, 5), (7, 1), (12, 5), (12, 10)] do not contain treasure
+ADD HINT6 TO HINT LIST
+The pirate move 2 steps to the SOUTH
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 7
+HINT7: The agent receives a hint:
+The treasure is in the North West of the center of the map
+ADD HINT7 TO HINT LIST
+The pirate move 2 steps to the SOUTH
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 8
+HINT8: The agent receives a hint:
+The treasure is in the West of the center of the map
+ADD HINT8 TO HINT LIST
+The pirate move 2 steps to the SOUTH
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 9
+HINT9: The agent receives a hint:
+The treasure is in the North East of the center of the map
+ADD HINT9 TO HINT LIST
+The pirate move 1 steps to the WEST
+The agent move 1 steps to the WEST
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+START TURN 10
+HINT10: The agent receives a hint:
+The treasure is in the East of the center of the map
+ADD HINT10 TO HINT LIST
+The pirate move 2 steps to the SOUTH
+The agent move 2 steps to the SOUTH
+THE AGENT PERFOMED A [3 x 3] SCAN
+THE AGENT PERFOMED A [5 x 5] SCAN
+THE AGENT WIN
