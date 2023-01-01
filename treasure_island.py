@@ -292,6 +292,7 @@ class Map:
 
         self.pirate = Pirate(map.place_pirate())
         # self.value[self.pirate.coord] = 'Pi'
+        self.pirate_dir = None
 
         self.treasure = map.place_treasure()
         # self.value[self.treasure] = 'T'
@@ -398,6 +399,7 @@ class Map:
         self.jacksparrow = JackSparrow(self.place_agent())
 
         self.pirate = Pirate(self.place_pirate())
+        self.pirate_dir = None
 
         treasure = read_map[4][0].split()
         self.treasure = tuple([int(i) for i in treasure])
@@ -1069,19 +1071,6 @@ class Map:
         
         self.apply_masked_tiles(trueness, masked_tiles)
 
-    # def choose_direction(self) -> str:
-    #     x_coord, y_coord = self.jacksparrow.coord
-
-    #     dir = ["N", "W", "S", "E"]
-        
-    #     north = self.potential[:x_coord + 1, :].sum()
-    #     west = self.potential[:, :y_coord + 1].sum()
-    #     south = self.potential[x_coord:, :].sum()
-    #     east = self.potential[:, y_coord:].sum()
-
-    #     direction = np.array([north, west, south, east])
-    #     return dir[direction.argmax()]
-
     def isValid(self, row: int, col: int):
             return (row >= 0) and (row < self.shape[0]) and (col >= 0) and (col < self.shape[1])
         
@@ -1222,6 +1211,10 @@ class Map:
         # generate first hint
         self.gen_1st_hint()
 
+        if self.n_turns == self.free_turn:
+            pass
+
+
         n_clusters = int(self.potential.sum() ** (1/5))
         path = self.nearest_path(n_clusters=max(2, n_clusters))
         direction = ''
@@ -1307,25 +1300,25 @@ class Map:
         direction = None
         if self.pirate_path:
             direction, n_steps = self.pirate_path[0]
-            steps = min(n_steps, 2)
-            self.move_pirate(direction, min(n_steps, 2))
+            move_steps = min(n_steps, 2)
+            self.pirate_dir = direction, move_steps
+            self.move_pirate(direction, move_steps)
 
             if self.pirate.coord == self.treasure:
                 self.logs[self.n_turns].append("AGENT LOSE, THE PIRATE FOUND THE TREASURE")
                 self.is_lose = True
                 self.n_turns += 1
 
-            n_steps -= steps
+            n_steps -= move_steps
 
             if n_steps == 0:
                 self.pirate_path.popleft()
             else:
                 self.pirate_path[0] = direction, n_steps
 
-        if not self.is_lose and not self.is_teleported:
-            if rng.rand() > self.avg_size / (self.avg_size + 5):
-                self.is_teleported = True
-                self.teleport(self.teleport_coord(direction))
+        if self.pirate_dir and not self.is_lose and not self.is_teleported:
+            self.is_teleported = True
+            self.teleport(self.pirate.coord)
 
     def teleport_coord(self, direction):
         masked_tiles = np.ones(self.shape, dtype=bool)

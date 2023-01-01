@@ -1,5 +1,5 @@
 Please make sure your environment match our environment.yaml:
-conda env create --file enviroment.yaml
+conda env create --file environment.yaml
 
 How to run the game:
 python ./treasure_island_game.py
