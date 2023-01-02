@@ -523,7 +523,11 @@ while True:
             tile_font_size = int(360/max(HEIGTH, WIDTH))
             font_list[0] = pg.font.Font('font/BlackRose.ttf', tile_font_size)
 
-        
+            agent_icon = ImageSurface('asset/agent.png', icon_size)
+            pirate_icon = ImageSurface('asset/pirate.png', icon_size)
+            treasure_icon = ImageSurface('asset/treasure.png', icon_size)
+            both_icon = ImageSurface('asset/both.png', icon_size)
+
             update = 1
             background_loading.draw_center(screen)
             rows, cols = m.shape
@@ -619,6 +623,12 @@ while True:
             gap_size = 900*0.1/(max(HEIGTH, WIDTH) - 1)
             tile_font_size = int(360/max(HEIGTH, WIDTH))
             font_list[0] = pg.font.Font('font/BlackRose.ttf', tile_font_size)
+
+            agent_icon = ImageSurface('asset/agent.png', icon_size)
+            pirate_icon = ImageSurface('asset/pirate.png', icon_size)
+            treasure_icon = ImageSurface('asset/treasure.png', icon_size)
+            both_icon = ImageSurface('asset/both.png', icon_size)
+
 
             background_loading.draw_center(screen)
             map_gen = mg.MapGenerator(HEIGTH, WIDTH)
